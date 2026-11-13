@@ -1,1 +1,1205 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة مركز التخاطب</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.cdnfonts.com/css/cairo" rel="stylesheet">
+    <style>
+        * { font-family: 'Cairo', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .whatsapp-bubble { background: #dcf8c6; border-radius: 10px; padding: 10px; margin: 5px 0; white-space: pre-wrap; }
+        .admin-bubble { background: #fff; border-radius: 10px; padding: 10px; margin: 5px 0; white-space: pre-wrap; }
+        .tab-active { background: #667eea; color: white; }
+        .report-card { border-right: 4px solid #667eea; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+        .modal.active { display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 15px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; }
+        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; padding: 15px 30px; border-radius: 10px; color: white; font-weight: bold; animation: slideDown 0.3s ease; max-width: 90%; }
+        @keyframes slideDown { from { top: -100px; opacity: 0; } to { top: 20px; opacity: 1; } }
+        .toast-success { background: #10b981; }
+        .toast-error { background: #ef4444; }
+        .toast-info { background: #3b82f6; }
+        .btn { transition: all 0.2s ease; cursor: pointer; }
+        .btn:active { transform: scale(0.95); }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-left: 5px; }
+        .status-ok { background: #10b981; }
+        .status-error { background: #ef4444; }
+        .status-warn { background: #f59e0b; }
+        .debug-box { background: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; padding: 12px; margin-top: 10px; font-size: 12px; }
+        .storage-info { background: #e0f2fe; border: 2px solid #0ea5e9; border-radius: 8px; padding: 12px; margin-top: 10px; font-size: 12px; }
+        .credential-box { background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%); border: 2px solid #3b82f6; border-radius: 12px; padding: 15px; margin-top: 15px; }
+        .pulse { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); } 50% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); } }
+        .error-banner { background: #fee2e2; border: 2px solid #ef4444; color: #991b1b; padding: 12px; border-radius: 8px; margin-bottom: 15px; }
+        .success-banner { background: #dcfce7; border: 2px solid #22c55e; color: #166534; padding: 12px; border-radius: 8px; margin-bottom: 15px; }
+        .input-error { border-color: #ef4444 !important; background: #fef2f2 !important; }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- صفحة تسجيل الدخول -->
+    <div id="loginPage" class="min-h-screen flex items-center justify-center gradient-bg p-4">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md fade-in">
+            <div class="text-center mb-6">
+                <div class="w-20 h-20 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full mx-auto flex items-center justify-center mb-4">
+                    <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                </div>
+                <h1 class="text-3xl font-bold text-gray-800">مركز التخاطب</h1>
+                <p class="text-gray-600 mt-2">نظام إدارة التقارير</p>
+                <div id="storageBadge" class="mt-2 text-xs"></div>
+            </div>
+            
+            <div id="storageBanner"></div>
+            
+            <!-- 🔥 الإصلاح: شيلنا form tag واستخدمنا div + button -->
+            <!-- السبب: iframe sandboxed بيسمحش بـ form submission -->
+            <div id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 mb-2 font-semibold">📧 اسم المستخدم</label>
+                    <input type="text" id="username" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition" placeholder="admin" autocomplete="username">
+                </div>
+                <div>
+                    <label class="block text-gray-700 mb-2 font-semibold">🔑 كلمة المرور</label>
+                    <input type="text" id="password" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition" placeholder="admin123" autocomplete="current-password">
+                </div>
+                
+                <div id="loginError" class="hidden bg-red-50 border border-red-300 text-red-700 p-3 rounded-lg text-sm"></div>
+                
+                <!-- 🔥 نستخدم type="button" بدل submit عشان نتجنب مشكلة sandbox -->
+                <button type="button" id="loginBtn" class="btn w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg text-lg pulse">
+                    🔐 تسجيل الدخول
+                </button>
+            </div>
+            
+            <div class="credential-box">
+                <p class="font-bold text-blue-800 mb-3 text-center text-lg">🔑 بيانات الدخول الصحيحة</p>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-white p-3 rounded-lg border-2 border-blue-300">
+                        <p class="text-gray-500 text-xs mb-1">اسم المستخدم</p>
+                        <p class="font-mono font-bold text-blue-700 text-lg cursor-pointer" onclick="copyText('admin')" title="اضغط للنسخ">admin</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg border-2 border-blue-300">
+                        <p class="text-gray-500 text-xs mb-1">كلمة المرور</p>
+                        <p class="font-mono font-bold text-blue-700 text-lg cursor-pointer" onclick="copyText('admin123')" title="اضغط للنسخ">admin123</p>
+                    </div>
+                </div>
+                <button type="button" onclick="fillDefaultCredentials()" class="btn w-full mt-3 bg-blue-600 text-white py-2 rounded-lg text-sm hover:bg-blue-700 font-bold">
+                    ⚡ تعبئة تلقائية
+                </button>
+            </div>
+
+            <div class="storage-info mt-4">
+                <p class="font-bold text-sky-800 mb-2">💾 حالة نظام التخزين:</p>
+                <div id="storageStatus" class="text-xs text-gray-700 space-y-1"></div>
+            </div>
+
+            <div class="debug-box mt-4">
+                <p class="font-bold text-yellow-800 mb-2">🔍 تشخيص النظام:</p>
+                <div id="diagnosticInfo" class="text-xs text-gray-700 space-y-1"></div>
+            </div>
+            
+            <div class="mt-4 space-y-2">
+                <button type="button" onclick="forceFixLogin()" class="btn w-full bg-orange-500 text-white py-2 rounded-lg font-semibold hover:bg-orange-600 text-sm">
+                    🔧 إصلاح مشكلة تسجيل الدخول
+                </button>
+                <button type="button" onclick="resetAllData()" class="btn w-full bg-red-500 text-white py-2 rounded-lg font-semibold hover:bg-red-600 text-sm">
+                    🔄 إعادة تعيين جميع البيانات
+                </button>
+                <button type="button" onclick="runSystemTest()" class="btn w-full bg-green-500 text-white py-2 rounded-lg font-semibold hover:bg-green-600 text-sm">
+                    ✅ اختبار النظام
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- لوحة التحكم -->
+    <div id="dashboard" class="hidden">
+        <nav class="bg-white shadow-lg">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full flex items-center justify-center ml-3">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                        <span class="text-xl font-bold text-gray-800">مركز التخاطب</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span id="currentUser" class="text-gray-700 font-semibold"></span>
+                        <span id="userRole" class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full"></span>
+                        <button type="button" onclick="logout()" class="btn bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
+                            خروج
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="max-w-7xl mx-auto px-4 py-8">
+            <div id="adminTabs" class="hidden">
+                <div class="flex flex-wrap gap-2 mb-6 bg-white p-2 rounded-lg shadow">
+                    <button type="button" onclick="showAdminTab('users', this)" class="tab-btn btn px-6 py-3 rounded-lg font-semibold tab-active">
+                        إدارة المستخدمين
+                    </button>
+                    <button type="button" onclick="showAdminTab('template', this)" class="tab-btn btn px-6 py-3 rounded-lg font-semibold">
+                        نموذج التقرير
+                    </button>
+                    <button type="button" onclick="showAdminTab('reports', this)" class="tab-btn btn px-6 py-3 rounded-lg font-semibold">
+                        جميع التقارير
+                    </button>
+                    <button type="button" onclick="showAdminTab('whatsapp', this)" class="tab-btn btn px-6 py-3 rounded-lg font-semibold">
+                        بوت الواتساب
+                    </button>
+                </div>
+
+                <div id="usersTab" class="tab-content">
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">إدارة المستخدمين</h2>
+                            <button type="button" onclick="showAddUserModal()" class="btn bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-lg hover:shadow-lg">
+                                + إضافة مستخدم جديد
+                            </button>
+                        </div>
+                        <div id="usersList" class="space-y-4"></div>
+                    </div>
+                </div>
+
+                <div id="templateTab" class="tab-content hidden">
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">نموذج التقرير الموحد</h2>
+                        <p class="text-gray-600 mb-4">هذا النموذج سيتم تحويل جميع التقارير إليه تلقائياً</p>
+                        <div id="templateForm" class="space-y-4"></div>
+                        <div class="mt-6 flex gap-4 flex-wrap">
+                            <button type="button" onclick="addField()" class="btn bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600">
+                                + إضافة حقل جديد
+                            </button>
+                            <button type="button" onclick="saveTemplate()" class="btn bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-lg hover:shadow-lg">
+                                💾 حفظ النموذج
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="reportsTab" class="tab-content hidden">
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">جميع التقارير</h2>
+                        <div id="allReportsList" class="space-y-4"></div>
+                    </div>
+                </div>
+
+                <div id="whatsappTab" class="tab-content hidden">
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">محاكاة بوت الواتساب</h2>
+                        <div class="bg-gray-100 rounded-lg p-4 mb-4">
+                            <p class="text-sm text-gray-600 mb-2">رقم النظام: <span class="font-bold">+201234567890</span></p>
+                            <p class="text-sm text-gray-600">الأوامر المتاحة:</p>
+                            <ul class="text-sm text-gray-600 list-disc list-inside mt-2">
+                                <li>تسجيل - لتسجيل عميل جديد</li>
+                                <li>تقارير - لعرض التقارير</li>
+                                <li>مساعدة - للمساعدة</li>
+                            </ul>
+                        </div>
+                        <div id="whatsappChat" class="bg-gray-50 rounded-lg p-4 h-96 overflow-y-auto mb-4"></div>
+                        <div class="flex gap-2">
+                            <input type="text" id="whatsappInput" placeholder="اكتب رسالة..." class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500">
+                            <button type="button" onclick="sendWhatsAppMessage()" class="btn bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600">
+                                إرسال
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="employeeView" class="hidden">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl shadow-lg p-6 text-white card-hover">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-purple-100 text-sm">تقاريري</p>
+                                <p class="text-3xl font-bold mt-2" id="myReportsCount">0</p>
+                            </div>
+                            <svg class="w-12 h-12 text-purple-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-r from-green-500 to-teal-600 rounded-xl shadow-lg p-6 text-white card-hover">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-green-100 text-sm">هذا الشهر</p>
+                                <p class="text-3xl font-bold mt-2" id="monthReportsCount">0</p>
+                            </div>
+                            <svg class="w-12 h-12 text-green-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-r from-orange-500 to-red-600 rounded-xl shadow-lg p-6 text-white card-hover">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-orange-100 text-sm">العملاء</p>
+                                <p class="text-3xl font-bold mt-2" id="clientsCount">0</p>
+                            </div>
+                            <svg class="w-12 h-12 text-orange-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">إضافة تقرير جديد</h2>
+                        <div id="newReportForm" class="space-y-4">
+                            <div>
+                                <label class="block text-gray-700 mb-2">اسم العميل</label>
+                                <input type="text" id="clientName" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 mb-2">عمر العميل</label>
+                                <input type="number" id="clientAge" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 mb-2">التقرير</label>
+                                <textarea id="reportContent" rows="6" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" placeholder="اكتب التقرير..."></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 mb-2">ملاحظات إضافية</label>
+                                <textarea id="additionalNotes" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"></textarea>
+                            </div>
+                            <button type="button" onclick="submitReport()" class="btn w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg">
+                                حفظ التقرير
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">تقاريري الأخيرة</h2>
+                        <div id="myReportsList" class="space-y-4 max-h-96 overflow-y-auto"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">إضافة مستخدم جديد</h3>
+            <div id="addUserForm" class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 mb-2">اسم المستخدم</label>
+                    <input type="text" id="newUsername" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                </div>
+                <div>
+                    <label class="block text-gray-700 mb-2">كلمة المرور</label>
+                    <input type="text" id="newPassword" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                </div>
+                <div>
+                    <label class="block text-gray-700 mb-2">الاسم الكامل</label>
+                    <input type="text" id="newFullName" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                </div>
+                <div>
+                    <label class="block text-gray-700 mb-2">رقم الهاتف</label>
+                    <input type="tel" id="newPhone" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                </div>
+                <div>
+                    <label class="block text-gray-700 mb-2">نوع الحساب</label>
+                    <select id="newRole" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                        <option value="employee">موظف</option>
+                        <option value="admin">أدمن</option>
+                    </select>
+                </div>
+                <div class="flex gap-4">
+                    <button type="button" onclick="submitAddUser()" class="btn flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg">
+                        إضافة
+                    </button>
+                    <button type="button" onclick="closeModal('addUserModal')" class="btn flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400">
+                        إلغاء
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="viewReportModal" class="modal">
+        <div class="modal-content">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">تفاصيل التقرير</h3>
+            <div id="reportDetails"></div>
+            <button type="button" onclick="closeModal('viewReportModal')" class="btn w-full mt-6 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400">
+                إغلاق
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ═══════════════════════════════════════════════════════════════
+        // 🔧 نظام التخزين الذكي
+        // ═══════════════════════════════════════════════════════════════
+        const StorageSystem = {
+            activeLayer: null,
+            layers: {},
+            _memory: {},
+            
+            testLocalStorage() {
+                try {
+                    if (typeof localStorage === 'undefined') return false;
+                    const k = '__test_' + Date.now();
+                    localStorage.setItem(k, '1');
+                    const v = localStorage.getItem(k);
+                    localStorage.removeItem(k);
+                    return v === '1';
+                } catch (e) { return false; }
+            },
+            
+            init() {
+                this.layers = {
+                    localStorage: this.testLocalStorage(),
+                    memory: true
+                };
+                this.activeLayer = this.layers.localStorage ? 'localStorage' : 'memory';
+                console.log('💾 الطبقة النشطة:', this.activeLayer);
+                return this.activeLayer;
+            },
+            
+            get(key) {
+                try {
+                    let raw = null;
+                    if (this.activeLayer === 'localStorage') {
+                        raw = localStorage.getItem(key);
+                    } else {
+                        raw = this._memory[key] || null;
+                    }
+                    return raw === null ? null : JSON.parse(raw);
+                } catch (e) { return null; }
+            },
+            
+            set(key, value) {
+                try {
+                    const raw = JSON.stringify(value);
+                    if (this.activeLayer === 'localStorage') {
+                        localStorage.setItem(key, raw);
+                    } else {
+                        this._memory[key] = raw;
+                    }
+                    return true;
+                } catch (e) { return false; }
+            },
+            
+            clear() {
+                try {
+                    if (this.activeLayer === 'localStorage') localStorage.clear();
+                    this._memory = {};
+                } catch (e) {}
+            },
+            
+            getInfo() {
+                return {
+                    activeLayer: this.activeLayer,
+                    layers: this.layers
+                };
+            }
+        };
+        
+        StorageSystem.init();
+        
+        function getData(key) { return StorageSystem.get(key); }
+        function setData(key, value) { return StorageSystem.set(key, value); }
+
+        // ═══════════════════════════════════════════════════════════════
+        // البيانات الافتراضية
+        // ═══════════════════════════════════════════════════════════════
+        const DEFAULT_ADMIN = {
+            id: 1,
+            username: 'admin',
+            password: 'admin123',
+            fullName: 'المدير العام',
+            phone: '+201234567890',
+            role: 'admin'
+        };
+
+        const DEFAULT_TEMPLATE = {
+            fields: [
+                { id: 1, label: 'اسم العميل', type: 'text', required: true },
+                { id: 2, label: 'عمر العميل', type: 'number', required: false },
+                { id: 3, label: 'التشخيص', type: 'text', required: true },
+                { id: 4, label: 'ملاحظات الجلسة', type: 'textarea', required: true },
+                { id: 5, label: 'الخطة العلاجية', type: 'textarea', required: false },
+                { id: 6, label: 'تقييم التقدم', type: 'select', options: ['ممتاز', 'جيد جداً', 'جيد', 'يحتاج تحسين'], required: false }
+            ]
+        };
+
+        // ═══════════════════════════════════════════════════════════════
+        // Toast
+        // ═══════════════════════════════════════════════════════════════
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'slideDown 0.3s ease reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function copyText(text) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast('✅ تم النسخ: ' + text, 'success');
+                }).catch(() => {
+                    showToast('انسخ يدوياً: ' + text, 'info');
+                });
+            } else {
+                showToast('انسخ يدوياً: ' + text, 'info');
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // تهيئة البيانات
+        // ═══════════════════════════════════════════════════════════════
+        function initializeData() {
+            let users = getData('users');
+            
+            if (!Array.isArray(users) || users.length === 0) {
+                users = [DEFAULT_ADMIN];
+            } else {
+                const hasAdmin = users.some(u => u.username === 'admin');
+                if (!hasAdmin) {
+                    users.unshift(DEFAULT_ADMIN);
+                } else {
+                    const adminUser = users.find(u => u.username === 'admin');
+                    if (adminUser.password !== 'admin123') {
+                        adminUser.password = 'admin123';
+                    }
+                }
+            }
+            
+            setData('users', users);
+            
+            if (!Array.isArray(getData('reports'))) {
+                setData('reports', []);
+            }
+            
+            const template = getData('template');
+            if (!template || !template.fields) {
+                setData('template', DEFAULT_TEMPLATE);
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // عرض معلومات التخزين
+        // ═══════════════════════════════════════════════════════════════
+        function showStorageStatus() {
+            const statusEl = document.getElementById('storageStatus');
+            const badgeEl = document.getElementById('storageBadge');
+            const bannerEl = document.getElementById('storageBanner');
+            
+            const info = StorageSystem.getInfo();
+            const layer = info.activeLayer;
+            
+            const layerNames = {
+                localStorage: '💾 localStorage (الأفضل)',
+                memory: '⚠️ ذاكرة مؤقتة فقط'
+            };
+            
+            const layerColors = {
+                localStorage: 'bg-green-100 text-green-800 border-green-500',
+                memory: 'bg-red-100 text-red-800 border-red-500'
+            };
+            
+            statusEl.innerHTML = `
+                <div class="flex items-center">
+                    <span class="status-dot ${layer === 'localStorage' ? 'status-ok' : 'status-warn'}"></span>
+                    <b>الطبقة النشطة: ${layerNames[layer]}</b>
+                </div>
+                <div class="mt-2">
+                    <div class="flex items-center">
+                        <span class="status-dot ${StorageSystem.layers.localStorage ? 'status-ok' : 'status-error'}"></span>
+                        <span>localStorage: ${StorageSystem.layers.localStorage ? '✅ متاح' : '❌ معطل'}</span>
+                    </div>
+                </div>
+                <div class="mt-2 text-gray-600">
+                    📍 البروتوكول: <code class="bg-gray-200 px-1 rounded">${window.location.protocol}</code><br>
+                    🌐 النطاق: <code class="bg-gray-200 px-1 rounded">${window.location.hostname || 'ملف محلي'}</code>
+                </div>
+            `;
+            
+            badgeEl.innerHTML = `<span class="inline-block px-3 py-1 rounded-full text-xs font-bold ${layerColors[layer]} border">${layerNames[layer]}</span>`;
+            
+            if (layer === 'localStorage') {
+                bannerEl.innerHTML = `
+                    <div class="success-banner">
+                        <p class="font-bold">✅ localStorage يعمل!</p>
+                        <p class="text-sm">البيانات محفوظة بشكل دائم.</p>
+                    </div>
+                `;
+            } else {
+                bannerEl.innerHTML = `
+                    <div class="error-banner">
+                        <p class="font-bold">⚠️ localStorage غير متاح</p>
+                        <p class="text-sm">البيانات ستضيع عند تحديث الصفحة.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function showDiagnosticInfo() {
+            const info = document.getElementById('diagnosticInfo');
+            
+            const users = getData('users');
+            const hasAdmin = Array.isArray(users) && users.some(u => u.username === 'admin');
+            const adminUser = hasAdmin ? users.find(u => u.username === 'admin') : null;
+            const reports = getData('reports');
+            const template = getData('template');
+            
+            info.innerHTML = `
+                <div class="flex items-center">
+                    <span class="status-dot ${Array.isArray(users) ? 'status-ok' : 'status-error'}"></span>
+                    <span>المستخدمين: ${Array.isArray(users) ? users.length + ' مستخدم' : 'لا يوجد'}</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="status-dot ${hasAdmin ? 'status-ok' : 'status-error'}"></span>
+                    <span>حساب الأدمن: ${hasAdmin ? 'موجود ✓' : 'غير موجود ✗'}</span>
+                </div>
+                ${adminUser ? `<div class="mr-4 text-blue-700 font-bold">🔑 كلمة المرور: ${adminUser.password}</div>` : ''}
+                <div class="flex items-center">
+                    <span class="status-dot ${Array.isArray(reports) ? 'status-ok' : 'status-error'}"></span>
+                    <span>التقارير: ${Array.isArray(reports) ? reports.length : 0}</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="status-dot ${template ? 'status-ok' : 'status-error'}"></span>
+                    <span>النموذج: ${template ? 'موجود ✓' : 'غير موجود ✗'}</span>
+                </div>
+            `;
+        }
+
+        function fillDefaultCredentials() {
+            const users = getData('users') || [DEFAULT_ADMIN];
+            const adminUser = users.find(u => u.username === 'admin') || DEFAULT_ADMIN;
+            
+            document.getElementById('username').value = adminUser.username;
+            document.getElementById('password').value = adminUser.password;
+            document.getElementById('username').classList.remove('input-error');
+            document.getElementById('password').classList.remove('input-error');
+            document.getElementById('loginError').classList.add('hidden');
+            
+            showToast('✅ تم تعبئة: ' + adminUser.username + ' / ' + adminUser.password, 'success');
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🔧 إصلاح
+        // ═══════════════════════════════════════════════════════════════
+        function forceFixLogin() {
+            setData('users', [DEFAULT_ADMIN]);
+            setData('reports', getData('reports') || []);
+            setData('template', getData('template') || DEFAULT_TEMPLATE);
+            
+            document.getElementById('username').value = 'admin';
+            document.getElementById('password').value = 'admin123';
+            
+            showStorageStatus();
+            showDiagnosticInfo();
+            
+            showToast('✅ تم الإصلاح! اضغط "تسجيل الدخول"', 'success');
+        }
+
+        function runSystemTest() {
+            initializeData();
+            const users = getData('users');
+            const adminUser = users.find(u => u.username === 'admin');
+            
+            let results = ['=== اختبار النظام ===', ''];
+            results.push('💾 الطبقة: ' + StorageSystem.activeLayer);
+            results.push('');
+            
+            if (adminUser) {
+                results.push('✅ الأدمن موجود');
+                results.push('📝 المستخدم: ' + adminUser.username);
+                results.push('🔑 كلمة المرور: ' + adminUser.password);
+            } else {
+                results.push('❌ الأدمن غير موجود');
+            }
+            
+            alert(results.join('\n'));
+            showDiagnosticInfo();
+        }
+
+        function resetAllData() {
+            if (!confirm('⚠️ هل أنت متأكد من إعادة تعيين جميع البيانات؟')) return;
+            
+            try {
+                StorageSystem.clear();
+                initializeData();
+                showToast('✅ تم إعادة التعيين!', 'success');
+                setTimeout(() => window.location.reload(), 1000);
+            } catch (error) {
+                showToast('❌ خطأ: ' + error.message, 'error');
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // متغيرات عامة
+        // ═══════════════════════════════════════════════════════════════
+        let currentUser = null;
+        let currentTab = 'users';
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🔐 تسجيل الدخول - بدون form tag
+        // ═══════════════════════════════════════════════════════════════
+        function handleLogin() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const loginError = document.getElementById('loginError');
+            
+            loginError.classList.add('hidden');
+            document.getElementById('username').classList.remove('input-error');
+            document.getElementById('password').classList.remove('input-error');
+            
+            if (!username || !password) {
+                loginError.classList.remove('hidden');
+                loginError.innerHTML = '❌ يرجى ملء جميع الحقول';
+                if (!username) document.getElementById('username').classList.add('input-error');
+                if (!password) document.getElementById('password').classList.add('input-error');
+                return;
+            }
+            
+            console.log('🔐 محاولة تسجيل دخول:', { username });
+            
+            let users = getData('users');
+            
+            if (!Array.isArray(users) || users.length === 0) {
+                users = [DEFAULT_ADMIN];
+                setData('users', users);
+            }
+            
+            const hasAdmin = users.some(u => u.username === 'admin');
+            if (!hasAdmin) {
+                users.unshift(DEFAULT_ADMIN);
+                setData('users', users);
+            }
+            
+            const user = users.find(u => u.username === username && u.password === password);
+            
+            if (user) {
+                console.log('✅ تم تسجيل الدخول');
+                currentUser = user;
+                showDashboard();
+                showToast('✅ مرحباً ' + user.fullName, 'success');
+            } else {
+                const userExists = users.find(u => u.username === username);
+                let errorMsg = '';
+                
+                if (userExists) {
+                    errorMsg = `❌ كلمة المرور غير صحيحة!<br>
+                        <span class="font-bold text-green-700">💡 الصحيحة: ${userExists.password}</span>`;
+                    document.getElementById('password').classList.add('input-error');
+                } else {
+                    errorMsg = `❌ اسم المستخدم "${username}" غير موجود!<br>
+                        <span class="text-sm">المتاحون: ${users.map(u => u.username).join(', ')}</span>`;
+                    document.getElementById('username').classList.add('input-error');
+                }
+                
+                loginError.classList.remove('hidden');
+                loginError.innerHTML = errorMsg;
+                showToast('❌ فشل تسجيل الدخول', 'error');
+            }
+        }
+
+        // ربط الزر بالدالة
+        document.getElementById('loginBtn').addEventListener('click', handleLogin);
+        
+        // دعم Enter key
+        document.getElementById('password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') handleLogin();
+        });
+        document.getElementById('username').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') handleLogin();
+        });
+
+        function showDashboard() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            document.getElementById('currentUser').textContent = currentUser.fullName;
+            document.getElementById('userRole').textContent = currentUser.role === 'admin' ? '👑 أدمن' : '👤 موظف';
+            
+            if (currentUser.role === 'admin') {
+                document.getElementById('adminTabs').classList.remove('hidden');
+                document.getElementById('employeeView').classList.add('hidden');
+                showAdminTab('users', document.querySelector('.tab-btn'));
+            } else {
+                document.getElementById('adminTabs').classList.add('hidden');
+                document.getElementById('employeeView').classList.remove('hidden');
+                loadEmployeeData();
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('dashboard').classList.add('hidden');
+            fillDefaultCredentials();
+            showDiagnosticInfo();
+            showToast('تم تسجيل الخروج', 'info');
+        }
+
+        function showAdminTab(tabName, btn) {
+            currentTab = tabName;
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('tab-active'));
+            
+            document.getElementById(tabName + 'Tab').classList.remove('hidden');
+            if (btn) btn.classList.add('tab-active');
+            
+            if (tabName === 'users') loadUsers();
+            if (tabName === 'template') loadTemplate();
+            if (tabName === 'reports') loadAllReports();
+        }
+
+        function loadUsers() {
+            const users = getData('users') || [];
+            const usersList = document.getElementById('usersList');
+            
+            if (users.length === 0) {
+                usersList.innerHTML = '<p class="text-gray-500 text-center py-8">لا يوجد مستخدمين</p>';
+                return;
+            }
+            
+            usersList.innerHTML = users.map(user => `
+                <div class="bg-gray-50 rounded-lg p-4 flex items-center justify-between card-hover">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold ml-4">
+                            ${user.fullName.charAt(0)}
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-800">${user.fullName}</h3>
+                            <p class="text-sm text-gray-600">@${user.username} • ${user.role === 'admin' ? '👑 أدمن' : '👤 موظف'}</p>
+                            ${user.phone ? `<p class="text-sm text-gray-500">📱 ${user.phone}</p>` : ''}
+                        </div>
+                    </div>
+                    ${user.username !== 'admin' ? `
+                        <div class="flex gap-2">
+                            <button type="button" onclick="editUser(${user.id})" class="btn bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+                                تعديل
+                            </button>
+                            <button type="button" onclick="deleteUser(${user.id})" class="btn bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
+                                حذف
+                            </button>
+                        </div>
+                    ` : '<span class="text-gray-400 text-sm">حساب رئيسي</span>'}
+                </div>
+            `).join('');
+        }
+
+        function showAddUserModal() {
+            document.getElementById('addUserModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function submitAddUser() {
+            const users = getData('users') || [];
+            const newUsername = document.getElementById('newUsername').value.trim();
+            const newPassword = document.getElementById('newPassword').value;
+            const newFullName = document.getElementById('newFullName').value.trim();
+            
+            if (!newUsername || !newPassword || !newFullName) {
+                showToast('❌ يرجى ملء جميع الحقول المطلوبة', 'error');
+                return;
+            }
+            
+            if (users.some(u => u.username === newUsername)) {
+                showToast('❌ اسم المستخدم موجود بالفعل!', 'error');
+                return;
+            }
+            
+            const newUser = {
+                id: Date.now(),
+                username: newUsername,
+                password: newPassword,
+                fullName: newFullName,
+                phone: document.getElementById('newPhone').value,
+                role: document.getElementById('newRole').value
+            };
+            
+            users.push(newUser);
+            setData('users', users);
+            
+            closeModal('addUserModal');
+            document.getElementById('newUsername').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('newFullName').value = '';
+            document.getElementById('newPhone').value = '';
+            loadUsers();
+            showToast('✅ تم إضافة المستخدم بنجاح', 'success');
+        }
+
+        function deleteUser(userId) {
+            if (!confirm('هل أنت متأكد من حذف هذا المستخدم؟')) return;
+            let users = getData('users') || [];
+            users = users.filter(u => u.id !== userId);
+            setData('users', users);
+            loadUsers();
+            showToast('✅ تم حذف المستخدم', 'success');
+        }
+
+        function editUser(userId) {
+            let users = getData('users') || [];
+            const user = users.find(u => u.id === userId);
+            if (!user) {
+                showToast('❌ المستخدم غير موجود', 'error');
+                return;
+            }
+            
+            const newFullName = prompt('الاسم الكامل:', user.fullName);
+            if (newFullName === null) return;
+            
+            const newPhone = prompt('رقم الهاتف:', user.phone || '');
+            if (newPhone === null) return;
+            
+            const newPassword = prompt('كلمة المرور (اتركها فارغة للإبقاء):', '');
+            
+            user.fullName = newFullName || user.fullName;
+            user.phone = newPhone;
+            if (newPassword && newPassword.trim()) user.password = newPassword.trim();
+            
+            setData('users', users);
+            loadUsers();
+            showToast('✅ تم التعديل بنجاح', 'success');
+        }
+
+        function loadTemplate() {
+            let template = getData('template');
+            if (!template) template = DEFAULT_TEMPLATE;
+            
+            const templateForm = document.getElementById('templateForm');
+            
+            if (!template.fields || template.fields.length === 0) {
+                templateForm.innerHTML = '<p class="text-gray-500 text-center py-8">لا توجد حقول</p>';
+                return;
+            }
+            
+            templateForm.innerHTML = template.fields.map((field, index) => `
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <h4 class="font-semibold text-gray-800">حقل ${index + 1}</h4>
+                        <button type="button" onclick="removeField(${index})" class="btn text-red-500 hover:text-red-700">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-700 mb-1">اسم الحقل</label>
+                            <input type="text" value="${field.label}" onchange="updateField(${index}, 'label', this.value)" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-700 mb-1">نوع الحقل</label>
+                            <select onchange="updateField(${index}, 'type', this.value)" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                <option value="text" ${field.type === 'text' ? 'selected' : ''}>نص</option>
+                                <option value="number" ${field.type === 'number' ? 'selected' : ''}>رقم</option>
+                                <option value="textarea" ${field.type === 'textarea' ? 'selected' : ''}>نص طويل</option>
+                                <option value="select" ${field.type === 'select' ? 'selected' : ''}>قائمة اختيار</option>
+                            </select>
+                        </div>
+                        <div class="col-span-2">
+                            <label class="flex items-center">
+                                <input type="checkbox" ${field.required ? 'checked' : ''} onchange="updateField(${index}, 'required', this.checked)" class="ml-2">
+                                <span class="text-sm text-gray-700">حقل مطلوب</span>
+                            </label>
+                        </div>
+                        ${field.type === 'select' ? `
+                            <div class="col-span-2">
+                                <label class="block text-sm text-gray-700 mb-1">الخيارات (مفصولة بفاصلة)</label>
+                                <input type="text" value="${field.options ? field.options.join(',') : ''}" onchange="updateFieldOptions(${index}, this.value)" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addField() {
+            let template = getData('template');
+            if (!template) template = DEFAULT_TEMPLATE;
+            template.fields.push({ id: Date.now(), label: 'حقل جديد', type: 'text', required: false });
+            setData('template', template);
+            loadTemplate();
+            showToast('✅ تم إضافة حقل جديد', 'success');
+        }
+
+        function updateField(index, property, value) {
+            let template = getData('template');
+            if (!template) template = DEFAULT_TEMPLATE;
+            template.fields[index][property] = value;
+            setData('template', template);
+        }
+
+        function updateFieldOptions(index, value) {
+            let template = getData('template');
+            if (!template) template = DEFAULT_TEMPLATE;
+            template.fields[index].options = value.split(',').map(o => o.trim());
+            setData('template', template);
+            loadTemplate();
+        }
+
+        function removeField(index) {
+            if (!confirm('هل أنت متأكد من حذف هذا الحقل؟')) return;
+            let template = getData('template');
+            if (!template) template = DEFAULT_TEMPLATE;
+            template.fields.splice(index, 1);
+            setData('template', template);
+            loadTemplate();
+            showToast('✅ تم حذف الحقل', 'success');
+        }
+
+        function saveTemplate() {
+            showToast('✅ تم حفظ النموذج بنجاح', 'success');
+        }
+
+        function loadAllReports() {
+            const reports = getData('reports') || [];
+            const allReportsList = document.getElementById('allReportsList');
+            
+            if (reports.length === 0) {
+                allReportsList.innerHTML = '<p class="text-gray-500 text-center py-8">لا توجد تقارير بعد</p>';
+                return;
+            }
+            
+            allReportsList.innerHTML = reports.slice().reverse().map(report => `
+                <div class="bg-gray-50 rounded-lg p-4 report-card">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h3 class="font-semibold text-gray-800">${report.clientName}</h3>
+                            <p class="text-sm text-gray-600">بواسطة: ${report.employeeName}</p>
+                            <p class="text-sm text-gray-500">${new Date(report.date).toLocaleString('ar-EG')}</p>
+                        </div>
+                        <button type="button" onclick="viewReport(${report.id})" class="btn bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600">
+                            عرض
+                        </button>
+                    </div>
+                    <p class="text-gray-700 text-sm">${(report.originalContent || '').substring(0, 100)}...</p>
+                </div>
+            `).join('');
+        }
+
+        function viewReport(reportId) {
+            const reports = getData('reports') || [];
+            const report = reports.find(r => r.id === reportId);
+            
+            if (!report) {
+                showToast('❌ التقرير غير موجود', 'error');
+                return;
+            }
+            
+            const reportDetails = document.getElementById('reportDetails');
+            reportDetails.innerHTML = `
+                <div class="space-y-4">
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h4 class="font-semibold text-gray-800 mb-2">معلومات أساسية</h4>
+                        <p class="text-sm text-gray-600">العميل: ${report.clientName}</p>
+                        <p class="text-sm text-gray-600">العمر: ${report.clientAge || 'غير محدد'}</p>
+                        <p class="text-sm text-gray-600">الموظف: ${report.employeeName}</p>
+                        <p class="text-sm text-gray-600">التاريخ: ${new Date(report.date).toLocaleString('ar-EG')}</p>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h4 class="font-semibold text-gray-800 mb-2">التقرير الأصلي</h4>
+                        <p class="text-gray-700 whitespace-pre-wrap">${report.originalContent || 'لا يوجد'}</p>
+                    </div>
+                    <div class="bg-purple-50 rounded-lg p-4">
+                        <h4 class="font-semibold text-gray-800 mb-2">التقرير الموحد</h4>
+                        ${report.formattedData ? Object.entries(report.formattedData).map(([key, value]) => `
+                            <div class="mb-2">
+                                <span class="font-semibold text-gray-700">${key}:</span>
+                                <span class="text-gray-600">${value || 'غير محدد'}</span>
+                            </div>
+                        `).join('') : '<p class="text-gray-500">لا يوجد</p>'}
+                    </div>
+                    ${report.additionalNotes ? `
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h4 class="font-semibold text-gray-800 mb-2">ملاحظات إضافية</h4>
+                            <p class="text-gray-700 whitespace-pre-wrap">${report.additionalNotes}</p>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            document.getElementById('viewReportModal').classList.add('active');
+        }
+
+        function loadEmployeeData() {
+            const reports = getData('reports') || [];
+            const myReports = reports.filter(r => r.employeeId === currentUser.id);
+            
+            document.getElementById('myReportsCount').textContent = myReports.length;
+            document.getElementById('monthReportsCount').textContent = myReports.filter(r => {
+                const reportDate = new Date(r.date);
+                const now = new Date();
+                return reportDate.getMonth() === now.getMonth() && reportDate.getFullYear() === now.getFullYear();
+            }).length;
+            
+            const uniqueClients = [...new Set(myReports.map(r => r.clientName))];
+            document.getElementById('clientsCount').textContent = uniqueClients.length;
+            
+            const myReportsList = document.getElementById('myReportsList');
+            if (myReports.length === 0) {
+                myReportsList.innerHTML = '<p class="text-gray-500 text-center py-8">لا توجد تقارير بعد</p>';
+            } else {
+                myReportsList.innerHTML = myReports.slice(-5).reverse().map(report => `
+                    <div class="bg-gray-50 rounded-lg p-4 report-card">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-semibold text-gray-800">${report.clientName}</h3>
+                                <p class="text-sm text-gray-500">${new Date(report.date).toLocaleString('ar-EG')}</p>
+                            </div>
+                            <button type="button" onclick="viewReport(${report.id})" class="btn text-purple-600 hover:text-purple-800">
+                                عرض
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function submitReport() {
+            const clientName = document.getElementById('clientName').value.trim();
+            const reportContent = document.getElementById('reportContent').value.trim();
+            
+            if (!clientName || !reportContent) {
+                showToast('❌ يرجى ملء اسم العميل ومحتوى التقرير', 'error');
+                return;
+            }
+            
+            const reports = getData('reports') || [];
+            let template = getData('template');
+            if (!template) template = DEFAULT_TEMPLATE;
+            
+            const report = {
+                id: Date.now(),
+                employeeId: currentUser.id,
+                employeeName: currentUser.fullName,
+                clientName: clientName,
+                clientAge: document.getElementById('clientAge').value,
+                originalContent: reportContent,
+                additionalNotes: document.getElementById('additionalNotes').value,
+                date: new Date().toISOString(),
+                formattedData: convertToTemplate(reportContent, template)
+            };
+            
+            reports.push(report);
+            setData('reports', reports);
+            
+            document.getElementById('clientName').value = '';
+            document.getElementById('clientAge').value = '';
+            document.getElementById('reportContent').value = '';
+            document.getElementById('additionalNotes').value = '';
+            
+            loadEmployeeData();
+            showToast('✅ تم حفظ التقرير بنجاح', 'success');
+        }
+
+        function convertToTemplate(content, template) {
+            const formattedData = {};
+            const lines = content.split('\n').filter(l => l.trim());
+            
+            template.fields.forEach(field => {
+                let value = '';
+                const patterns = [
+                    new RegExp(`${field.label}[\\s:：]+(.+)`, 'i'),
+                    new RegExp(`${field.label}\\s*[:：]?\\s*(.+)`, 'i')
+                ];
+                
+                for (let pattern of patterns) {
+                    const match = content.match(pattern);
+                    if (match) {
+                        value = match[1].trim();
+                        break;
+                    }
+                }
+                
+                if (!value && lines.length > 0) {
+                    const fieldIndex = lines.findIndex(l => l.includes(field.label));
+                    if (fieldIndex !== -1 && fieldIndex + 1 < lines.length) {
+                        value = lines[fieldIndex + 1].trim();
+                    }
+                }
+                
+                formattedData[field.label] = value;
+            });
+            
+            return formattedData;
+        }
+
+        function sendWhatsAppMessage() {
+            const input = document.getElementById('whatsappInput');
+            const message = input.value.trim();
+            if (!message) return;
+            
+            const chat = document.getElementById('whatsappChat');
+            chat.innerHTML += `<div class="whatsapp-bubble">${message}</div>`;
+            input.value = '';
+            
+            setTimeout(() => {
+                const response = processWhatsAppCommand(message);
+                chat.innerHTML += `<div class="admin-bubble">${response}</div>`;
+                chat.scrollTop = chat.scrollHeight;
+            }, 500);
+            
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        function processWhatsAppCommand(command) {
+            const cmd = command.toLowerCase();
+            
+            if (cmd === 'تسجيل') {
+                return 'مرحباً! لتسجيل عميل جديد، أرسل البيانات التالية:\n\n• اسم العميل\n• عمر العميل\n• رقم الهاتف';
+            } else if (cmd === 'تقارير') {
+                const reports = getData('reports') || [];
+                if (reports.length === 0) return 'لا توجد تقارير مسجلة بعد';
+                const recentReports = reports.slice(-3).reverse();
+                return `آخر ${recentReports.length} تقارير:\n\n` + recentReports.map(r => 
+                    `• ${r.clientName} - ${new Date(r.date).toLocaleDateString('ar-EG')}`
+                ).join('\n');
+            } else if (cmd === 'مساعدة') {
+                return 'الأوامر المتاحة:\n\n• تسجيل - لتسجيل عميل جديد\n• تقارير - لعرض آخر التقارير\n• مساعدة - لعرض هذه الرسالة';
+            } else {
+                return 'عذراً، لم أفهم الأمر. أرسل "مساعدة" لعرض الأوامر المتاحة';
+            }
+        }
+
+        document.getElementById('whatsappInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendWhatsAppMessage();
+        });
+
+        // ═══════════════════════════════════════════════════════════════
+        // 🚀 بدء التشغيل
+        // ═══════════════════════════════════════════════════════════════
+        initializeData();
+        showStorageStatus();
+        showDiagnosticInfo();
+        fillDefaultCredentials();
+        
+        console.log('═══════════════════════════════════');
+        console.log('🏥 نظام مركز التخاطب - نسخة محسنة');
+        console.log('═══════════════════════════════════');
+        console.log('💾 الطبقة النشطة:', StorageSystem.activeLayer);
+        console.log('👤 المستخدمون:', getData('users').map(u => `${u.username}/${u.password}`));
+        console.log('═══════════════════════════════════');
+        
+        setTimeout(() => {
+            showToast('✅ النظام جاهز! اضغط "تسجيل الدخول"', 'success');
+        }, 500);
+    </script>
+</body>
+</html>
 
