@@ -1,4 +1,19 @@
-<!DOCTYPE html>
+
+                        <!DOCTYPE html>
+                        <html lang="en">
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <style>
+                body {
+                  background-color: white; /* Ensure the iframe has a white background */
+                }
+
+                
+              </style>
+                        </head>
+                        <body>
+                            <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -59,6 +74,7 @@ a{color:inherit;text-decoration:none}
 .badge-admin{background:#f3e8ff;color:#6d28d9}.badge-employee{background:#dbeafe;color:#1e40af}
 .badge-reviewer{background:#fef3c7;color:#92400e}.badge-manager{background:#dcfce7;color:#166534}
 .badge-draft{background:#e5e7eb;color:#374151}.badge-pending{background:#fef3c7;color:#92400e}.badge-approved{background:#dcfce7;color:#166534}
+.badge-cloud{background:#dbeafe;color:#1e40af}
 .card{background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.1)}
 .card-hover{transition:transform .2s,box-shadow .2s}.card-hover:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(0,0,0,.12)}
 .tab-btn{padding:10px 18px;border-radius:8px;font-weight:600;color:#4b5563;background:transparent;transition:background .15s,color .15s}
@@ -94,6 +110,10 @@ a{color:inherit;text-decoration:none}
 .stat-label{font-size:13px;opacity:.9;margin-bottom:6px}.stat-value{font-size:28px;font-weight:700}
 .user-row{background:#f9fafb;border-radius:8px;padding:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
 .user-row:hover{background:#f3f4f6}
+.sync-status{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.sync-ok{background:#dcfce7;color:#166534}
+.sync-error{background:#fee2e2;color:#991b1b}
+.sync-pending{background:#fef3c7;color:#92400e}
 :focus-visible{outline:2px solid #9333ea;outline-offset:2px}
 @media print{.no-print{display:none!important}}
 ::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-track{background:#f3f4f6}::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:4px}::-webkit-scrollbar-thumb:hover{background:#9ca3af}
@@ -121,6 +141,7 @@ a{color:inherit;text-decoration:none}
       <div class="logo-circle" style="width:72px;height:72px;font-size:28px;margin:0 auto 12px">👥</div>
       <h1 class="text-3xl font-bold text-gray-800">مركز التخاطب</h1>
       <p class="text-gray-600 mt-2">نظام إدارة التقارير</p>
+      <div id="cloudStatus" class="mt-3"></div>
     </div>
     <div id="loginError" class="banner banner-error hidden"></div>
     <div class="mb-4">
@@ -153,6 +174,7 @@ a{color:inherit;text-decoration:none}
       <div class="flex items-center">
         <div class="logo-circle">📄</div>
         <span class="text-xl font-bold text-gray-800">مركز التخاطب</span>
+        <span id="navCloudStatus" class="sync-status sync-pending mr-2" style="margin-right:8px">☁️ غير مزامن</span>
       </div>
       <div class="flex items-center gap-3">
         <span id="currentUser" class="text-gray-700 font-semibold"></span>
@@ -178,11 +200,14 @@ a{color:inherit;text-decoration:none}
         <div class="grid grid-4 gap-4 mb-6">
           <div class="stat-card gradient-purple"><p class="stat-label">التقارير المكتملة</p><p class="stat-value" id="statCompleted">0</p></div>
           <div class="stat-card" style="background:linear-gradient(to right,#f59e0b,#ea580c)"><p class="stat-label">المسودات</p><p class="stat-value" id="statDrafts">0</p></div>
-          <div class="stat-card gradient-green"><p class="stat-label">محادثات نشطة</p><p class="stat-value" id="statConversations">0</p></div>
+          <div class="stat-card gradient-green"><p class="stat-label">☁️ من السحابة</p><p class="stat-value" id="statCloud">0</p></div>
           <div class="stat-card" style="background:linear-gradient(to right,#3b82f6,#1d4ed8)"><p class="stat-label">الموظفين</p><p class="stat-value" id="statUsers">0</p></div>
         </div>
         <div class="card p-6">
-          <h3 class="text-xl font-bold text-gray-800 mb-4">آخر النشاطات</h3>
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold text-gray-800">آخر النشاطات</h3>
+            <button type="button" data-action="sync-cloud" class="btn btn-info btn-sm">🔄 مزامنة السحابة الآن</button>
+          </div>
           <div id="recentActivities" class="space-y-2"></div>
         </div>
       </div>
@@ -221,7 +246,12 @@ a{color:inherit;text-decoration:none}
                 <option value="pending">بانتظار الاعتماد</option>
                 <option value="approved">معتمد</option>
               </select>
-              <button type="button" data-action="sync-cloud" class="btn btn-info btn-sm">🔄 مزامنة السحابة</button>
+              <select id="filterSource" class="select" style="width:auto">
+                <option value="">كل المصادر</option>
+                <option value="cloud">☁️ من السحابة</option>
+                <option value="local">💻 محلي</option>
+              </select>
+              <button type="button" data-action="sync-cloud" class="btn btn-info btn-sm">🔄 مزامنة</button>
               <button type="button" data-action="export-csv" class="btn btn-success btn-sm">📥 CSV</button>
             </div>
           </div>
@@ -232,32 +262,39 @@ a{color:inherit;text-decoration:none}
       <div id="tab-whatsapp" class="tab-panel hidden">
         <div class="card p-6">
           <h2 class="text-2xl font-bold text-gray-800 mb-4">ربط واتساب</h2>
-          <div class="banner banner-warn"><p class="font-bold">⚠️ وضع الاختبار</p><p class="text-sm mt-1">الربط الفعلي يتطلب حساب WhatsApp Business API من Meta.</p></div>
+          <div class="banner banner-info">
+            <p class="font-bold">ℹ️ النظام متصل بـ Google Sheet</p>
+            <p class="text-sm mt-1">البوت يرسل البيانات للشيت، والنظام يسحبها تلقائياً كل 30 ثانية.</p>
+          </div>
           <div class="bg-gray-50 p-4 rounded-lg mb-4">
-            <h3 class="font-bold text-gray-800 mb-3">🔧 إعدادات الاتصال</h3>
-            <div class="mb-3"><label class="label">Phone Number ID</label><input type="text" id="waPhoneId" class="input"></div>
-            <div class="mb-3"><label class="label">Access Token</label><input type="password" id="waToken" class="input"></div>
+            <h3 class="font-bold text-gray-800 mb-3">🔗 رابط Google Apps Script</h3>
+            <input type="text" id="cloudUrl" class="input" placeholder="https://script.google.com/macros/s/.../exec">
+            <p class="text-xs text-gray-500 mt-2">⚠️ تأكد أن الـ Script منتشر بصلاحيات "Anyone"</p>
           </div>
           <div class="flex gap-3 mb-4" style="flex-wrap:wrap">
-            <button type="button" data-action="test-wa" class="btn btn-info">🔌 اختبار الاتصال</button>
-            <button type="button" data-action="save-wa" class="btn btn-primary">💾 حفظ الإعدادات</button>
+            <button type="button" data-action="save-cloud-url" class="btn btn-primary">💾 حفظ الرابط</button>
+            <button type="button" data-action="test-cloud" class="btn btn-info">🔌 اختبار الاتصال</button>
+            <button type="button" data-action="sync-cloud" class="btn btn-success">🔄 مزامنة فورية</button>
           </div>
-          <div id="waStatus" class="bg-gray-50 p-4 rounded-lg"><p class="text-sm text-gray-600">الحالة: <span class="status-dot status-warn"></span> غير متصل</p></div>
+          <div id="cloudConnectionStatus" class="bg-gray-50 p-4 rounded-lg"></div>
         </div>
       </div>
 
       <div id="tab-ai" class="tab-panel hidden">
         <div class="card p-6">
           <h2 class="text-2xl font-bold text-gray-800 mb-4">إعدادات الذكاء الاصطناعي</h2>
-          <div class="banner banner-warn"><p class="font-bold">⚠️ وضع الاختبار</p></div>
+          <div class="banner banner-info">
+            <p class="font-bold">🤖 محرك الاستخراج المحلي</p>
+            <p class="text-sm mt-1">النظام يستخدم محرك محلي لاستخراج البيانات من النصوص العربية. يعمل بدون إنترنت.</p>
+          </div>
           <div class="bg-gray-50 p-4 rounded-lg mb-4">
             <div class="mb-3"><label class="label">المزود</label>
               <select id="aiProvider" class="select">
                 <option value="local">محرك محلي (افتراضي)</option>
-                <option value="openai">OpenAI</option>
+                <option value="openai">OpenAI (يتطلب API Key)</option>
               </select>
             </div>
-            <div class="mb-3"><label class="label">API Key</label><input type="password" id="aiApiKey" class="input"></div>
+            <div class="mb-3"><label class="label">API Key (اختياري)</label><input type="password" id="aiApiKey" class="input"></div>
           </div>
           <button type="button" data-action="save-ai" class="btn btn-primary">💾 حفظ الإعدادات</button>
         </div>
@@ -348,9 +385,11 @@ a{color:inherit;text-decoration:none}
 
 <script>
 /* ═══════════════════════════════════════════════════════════════
-   ⚙️ إعدادات السحابة (Google Apps Script)
+   ⚙️ إعدادات السحابة
    ═══════════════════════════════════════════════════════════════ */
-const CLOUD_URL = "https://script.google.com/macros/s/AKfycbwLkWFgdm_xlEO6YqWphO87XAS4XJCL-7YGb-JO_a4z5rg51z9SUIkvsqAkwvU3Qg6z/exec";
+var CLOUD_URL = ""; // سيتم تحميله من Storage
+var SYNC_INTERVAL = null; // المؤقت للمزامنة التلقائية
+var LAST_SYNC_TIME = null;
 
 (function setupErrorHandler() {
   'use strict';
@@ -365,7 +404,6 @@ const CLOUD_URL = "https://script.google.com/macros/s/AKfycbwLkWFgdm_xlEO6YqWphO
   }
   window.addEventListener('error', function (ev) { showError(ev.message, (ev.filename || '') + ':' + (ev.lineno || '') + ':' + (ev.colno || '')); });
   window.addEventListener('unhandledrejection', function (ev) { showError('Promise rejection', String(ev.reason)); });
-  window.__showAppError = showError;
 })();
 
 var Storage = (function () {
@@ -410,7 +448,7 @@ var DEFAULT_TEMPLATE = {
   fields: [
     { id: 1, label: 'اسم العميل', type: 'text', required: true, botQuestion: 'ما هو اسم العميل؟' },
     { id: 2, label: 'عمر العميل', type: 'number', required: false, botQuestion: 'ما هو عمر العميل؟' },
-    { id: 3, label: 'التشخيص', type: 'text', required: true, botQuestion: 'ما هو التشخيص المسجل من المختص؟' },
+    { id: 3, label: 'التشخيص', type: 'text', required: false, botQuestion: 'ما هو التشخيص المسجل من المختص؟' },
     { id: 4, label: 'ملاحظات الجلسة', type: 'textarea', required: true, botQuestion: 'اكتب ملاحظات الجلسة' },
     { id: 5, label: 'الخطة العلاجية', type: 'textarea', required: false, botQuestion: 'ما هي الخطة العلاجية؟' },
     { id: 6, label: 'تقييم التقدم', type: 'select', options: ['ممتاز', 'جيد جداً', 'جيد', 'يحتاج تحسين'], required: false, botQuestion: 'كيف تقيم التقدم؟' }
@@ -440,40 +478,90 @@ function canViewReport(report) {
   return false;
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   🤖 محرك استخراج البيانات (محسّن للسحابة)
+   ═══════════════════════════════════════════════════════════════ */
 var AIExtractor = {
+  normalizeArabicNumbers: function(text) {
+    var map = { '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4', '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9' };
+    return String(text).replace(/[٠-٩]/g, function (d) { return map[d]; });
+  },
   extract: function (text, template) {
+    if (!text) return {};
     var extracted = {};
-    var lines = text.split('\n').map(function (l) { return l.trim(); }).filter(Boolean);
+    var normalizedText = this.normalizeArabicNumbers(text);
+    var lines = normalizedText.split('\n').map(function (l) { return l.trim(); }).filter(Boolean);
+    
     template.fields.forEach(function (field) {
       var value = '';
       try {
         var pattern = new RegExp(escapeRegex(field.label) + '\\s*[:：\\-]?\\s*(.+)', 'i');
-        var m = text.match(pattern);
+        var m = normalizedText.match(pattern);
         if (m) value = m[1].trim();
       } catch (e) { /* لا شيء */ }
+      
       if (!value) {
         for (var i = 0; i < lines.length; i++) {
           if (lines[i].indexOf(field.label) !== -1) {
-            if (lines[i].length > field.label.length + 3) { value = lines[i].substring(lines[i].indexOf(field.label) + field.label.length).replace(/^[\s:：\-]+/, '').trim(); }
-            else if (i + 1 < lines.length) { value = lines[i + 1].trim(); }
+            if (lines[i].length > field.label.length + 3) {
+              value = lines[i].substring(lines[i].indexOf(field.label) + field.label.length).replace(/^[\s:：\-]+/, '').trim();
+            } else if (i + 1 < lines.length) {
+              value = lines[i + 1].trim();
+            }
             if (value) break;
           }
         }
       }
-      if (field.type === 'number' && value) { value = normalizeArabicNumbers(value); }
+      
+      // استخراج ذكي لأسماء العملاء من صيغ حرة
+      if (!value && field.label === 'اسم العميل') {
+        var nameMatch = normalizedText.match(/(?:جلسة|العميل|الطفل)\s+([^\s،,.،]{2,}(?:\s+[^\s،,.،]{2,})?)/i);
+        if (nameMatch) value = nameMatch[1].trim();
+      }
+      
+      // استخراج العمر
+      if (!value && field.label === 'عمر العميل') {
+        var ageMatch = normalizedText.match(/(\d+)\s*(سن[ةه]|سنين|سنة|شهر)/i);
+        if (ageMatch) value = ageMatch[1] + ' ' + (ageMatch[2] || 'سنة');
+      }
+      
+      if (field.type === 'number' && value) { value = this.normalizeArabicNumbers(value); }
       extracted[field.label] = value;
-    });
+    }.bind(this));
     return extracted;
   },
   getMissingFields: function (extracted, template) {
     return template.fields.filter(function (f) { return f.required && (!extracted[f.label] || String(extracted[f.label]).trim() === ''); });
+  },
+  // ⭐ دالة جديدة: تحويل البيانات السحابية للنموذج
+  enrichCloudReport: function(cloudReport, template) {
+    var result = {
+      id: cloudReport.id,
+      reportNumber: cloudReport.reportNumber,
+      employeeName: cloudReport.employeeName || 'مختص',
+      clientName: cloudReport.clientName || '',
+      date: cloudReport.date || new Date().toISOString(),
+      status: 'approved',
+      source: 'cloud',
+      originalContent: cloudReport.originalContent || '',
+      formattedData: cloudReport.formattedData || {}
+    };
+    
+    // لو البيانات المنظمة فاضية، حاول استخراجها من النص الأصلي
+    if ((!result.formattedData || Object.keys(result.formattedData).length === 0) && result.originalContent) {
+      result.formattedData = this.extract(result.originalContent, template);
+    }
+    
+    // تأكد من وجود اسم العميل
+    if (!result.clientName && result.formattedData['اسم العميل']) {
+      result.clientName = result.formattedData['اسم العميل'];
+    }
+    
+    return result;
   }
 };
 
-function normalizeArabicNumbers(text) {
-  var map = { '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4', '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9' };
-  return String(text).replace(/[٠-٩]/g, function (d) { return map[d]; });
-}
+function normalizeArabicNumbers(text) { return AIExtractor.normalizeArabicNumbers(text); }
 function escapeRegex(str) { return String(str).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 
 var state = { currentUser: null, currentTab: 'overview', currentConversation: null };
@@ -486,11 +574,14 @@ function initializeData() {
   if (!Storage.get('conversations')) Storage.set('conversations', []);
   if (!Storage.get('wa_settings')) Storage.set('wa_settings', { connected: false });
   if (!Storage.get('ai_settings')) Storage.set('ai_settings', { provider: 'local', model: 'gpt-4o-mini' });
+  
+  // ⭐ تحميل رابط السحابة
+  var cloudSettings = Storage.get('cloud_settings');
+  if (cloudSettings && cloudSettings.url) {
+    CLOUD_URL = cloudSettings.url;
+  }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   ⭐ حفظ واستعادة الجلسة (حل مشكلة الخروج عند الـ Refresh)
-   ═══════════════════════════════════════════════════════════════ */
 function saveSession() {
   if (state.currentUser) {
     Storage.set('session', { userId: state.currentUser.id, loginTime: new Date().toISOString() });
@@ -505,11 +596,7 @@ function restoreSession() {
   for (var i = 0; i < users.length; i++) {
     if (users[i].id === session.userId && users[i].active) { user = users[i]; break; }
   }
-  if (user) {
-    state.currentUser = user;
-    showDashboard();
-    return true;
-  }
+  if (user) { state.currentUser = user; showDashboard(); return true; }
   return false;
 }
 
@@ -558,7 +645,7 @@ function handleLogin() {
 
   if (user) {
     state.currentUser = user;
-    saveSession(); // ⭐ حفظ الجلسة
+    saveSession();
     showDashboard();
     showToast('✅ مرحباً ' + user.fullName, 'success');
     addAuditLog('login', 'تسجيل دخول: ' + user.username);
@@ -590,12 +677,16 @@ function showDashboard() {
     document.getElementById('employeeView').classList.remove('hidden');
     loadEmployeeData();
   }
+  
+  // ⭐ بدء المزامنة التلقائية
+  startAutoSync();
 }
 
 function logout() {
   if (state.currentUser) addAuditLog('logout', 'تسجيل خروج: ' + state.currentUser.username);
   state.currentUser = null;
-  Storage.remove('session'); // ⭐ مسح الجلسة
+  Storage.remove('session');
+  stopAutoSync();
   document.getElementById('loginPage').classList.remove('hidden');
   document.getElementById('dashboard').classList.add('hidden');
   document.getElementById('username').value = '';
@@ -618,16 +709,17 @@ function switchTab(tabName) {
   else if (tabName === 'template') loadTemplate();
   else if (tabName === 'reports') loadAllReports();
   else if (tabName === 'audit') loadAuditLog();
+  else if (tabName === 'whatsapp') loadCloudSettings();
 }
 
 function loadOverview() {
   var reports = Storage.get('reports') || [];
   var users = Storage.get('users') || [];
-  var convs = Storage.get('conversations') || [];
+  var cloudReports = reports.filter(function(r) { return r.source === 'cloud'; });
 
   document.getElementById('statCompleted').textContent = reports.filter(function (r) { return r.status === 'approved'; }).length;
   document.getElementById('statDrafts').textContent = reports.filter(function (r) { return r.status === 'draft'; }).length;
-  document.getElementById('statConversations').textContent = convs.filter(function (c) { return c.status === 'active'; }).length;
+  document.getElementById('statCloud').textContent = cloudReports.length;
   document.getElementById('statUsers').textContent = users.filter(function (u) { return u.active; }).length;
 
   var logs = (Storage.get('audit_log') || []).slice(-8).reverse();
@@ -768,54 +860,206 @@ function saveTemplate() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   ⭐ مزامنة التقارير من السحابة (Google Sheet)
+   ⭐⭐ دالة المزامنة المحسّنة - القلب الجديد للنظام
    ═══════════════════════════════════════════════════════════════ */
-function syncCloudReports() {
-  if (!CLOUD_URL || CLOUD_URL.indexOf('AKfyc') === -1) return;
-  showToast('⏳ جاري مزامنة التقارير من السحابة...', 'info');
+function syncCloudReports(silent) {
+  if (!CLOUD_URL) {
+    if (!silent) showToast('❌ لم يتم ضبط رابط Google Apps Script', 'error');
+    updateCloudStatusUI('error', 'غير مُعدّ');
+    return Promise.resolve(0);
+  }
   
-  fetch(CLOUD_URL)
-    .then(function (r) { return r.text(); })
-    .then(function (text) {
-      try {
-        var cloudReports = JSON.parse(text);
-        if (!Array.isArray(cloudReports)) return;
-        
-        var localReports = Storage.get('reports') || [];
-        var existingNumbers = {};
-        localReports.forEach(function(r) { existingNumbers[r.reportNumber] = true; });
-        
-        var newCount = 0;
-        cloudReports.forEach(function(cr) {
-          if (!existingNumbers[cr.reportNumber]) {
-            var fd = {};
-            try { fd = JSON.parse(cr.formattedData || '{}'); } catch(e) {}
-            localReports.push({
-              id: Date.now() + Math.random(),
-              reportNumber: cr.reportNumber,
-              employeeName: cr.employeeName || 'مختص',
-              clientName: cr.clientName || '',
-              formattedData: fd,
-              date: cr.date || new Date().toISOString(),
-              status: 'approved',
-              source: 'cloud'
-            });
-            newCount++;
-          }
-        });
-        
-        if (newCount > 0) {
-          Storage.set('reports', localReports);
-          showToast('✅ تم مزامنة ' + newCount + ' تقرير جديد من السحابة', 'success');
-          if (state.currentTab === 'reports') loadAllReports();
-          if (state.currentTab === 'overview') loadOverview();
-          if (!document.getElementById('employeeView').classList.contains('hidden')) loadEmployeeData();
-        } else {
-          showToast('✅ النظام محدث، لا توجد تقارير جديدة', 'success');
-        }
-      } catch (e) { console.error('Sync parse error:', e); }
+  if (!silent) showToast('⏳ جاري المزامنة من السحابة...', 'info');
+  updateCloudStatusUI('pending', 'جاري المزامنة...');
+  
+  return fetch(CLOUD_URL, { method: 'GET', redirect: 'follow' })
+    .then(function (r) { 
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.text(); 
     })
-    .catch(function(e) { console.error('Sync fetch error:', e); showToast('❌ فشل الاتصال بالسحابة', 'error'); });
+    .then(function (text) {
+      // Apps Script يرجع JSON أحياناً مع HTML wrapper
+      var jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) throw new Error('استجابة غير صالحة');
+      
+      var response = JSON.parse(jsonMatch[0]);
+      
+      if (response.status !== 'success') {
+        throw new Error(response.message || 'خطأ في السحابة');
+      }
+      
+      var cloudReports = response.reports || [];
+      if (!Array.isArray(cloudReports)) cloudReports = [];
+      
+      var localReports = Storage.get('reports') || [];
+      var template = Storage.get('template') || DEFAULT_TEMPLATE;
+      
+      // بناء خريطة للأرقام الموجودة محلياً
+      var existingNumbers = {};
+      localReports.forEach(function(r) { 
+        if (r.reportNumber) existingNumbers[r.reportNumber] = true; 
+      });
+      
+      var newCount = 0;
+      cloudReports.forEach(function(cr) {
+        if (!cr.reportNumber || existingNumbers[cr.reportNumber]) return;
+        
+        // ⭐ تحويل البيانات السحابية باستخدام AI
+        var enriched = AIExtractor.enrichCloudReport(cr, template);
+        enriched.id = Date.now() + Math.random() + newCount;
+        
+        localReports.push(enriched);
+        existingNumbers[cr.reportNumber] = true;
+        newCount++;
+      });
+      
+      if (newCount > 0) {
+        Storage.set('reports', localReports);
+        addAuditLog('sync_cloud', 'مزامنة ' + newCount + ' تقرير من السحابة');
+      }
+      
+      LAST_SYNC_TIME = new Date();
+      Storage.set('last_sync', { time: LAST_SYNC_TIME.toISOString(), count: newCount });
+      
+      updateCloudStatusUI('ok', 'متزامن (' + cloudReports.length + ' تقرير)');
+      
+      if (!silent) {
+        if (newCount > 0) {
+          showToast('✅ تم استيراد ' + newCount + ' تقرير جديد من السحابة', 'success');
+        } else {
+          showToast('✅ النظام محدّث - لا توجد تقارير جديدة', 'success');
+        }
+      }
+      
+      // تحديث الواجهات
+      refreshCurrentView();
+      
+      return newCount;
+    })
+    .catch(function(e) {
+      console.error('Sync error:', e);
+      updateCloudStatusUI('error', 'خطأ في الاتصال');
+      if (!silent) showToast('❌ فشل المزامنة: ' + e.message, 'error');
+      return 0;
+    });
+}
+
+function refreshCurrentView() {
+  if (state.currentTab === 'reports') loadAllReports();
+  else if (state.currentTab === 'overview') loadOverview();
+  if (!document.getElementById('employeeView').classList.contains('hidden')) loadEmployeeData();
+}
+
+function updateCloudStatusUI(status, text) {
+  var classes = { ok: 'sync-ok', error: 'sync-error', pending: 'sync-pending' };
+  var navStatus = document.getElementById('navCloudStatus');
+  if (navStatus) {
+    navStatus.className = 'sync-status ' + (classes[status] || 'sync-pending');
+    navStatus.textContent = '☁️ ' + text;
+  }
+  
+  var loginStatus = document.getElementById('cloudStatus');
+  if (loginStatus) {
+    if (status === 'ok') {
+      loginStatus.innerHTML = '<span class="sync-status sync-ok">☁️ متصل بالسحابة</span>';
+    } else if (status === 'error') {
+      loginStatus.innerHTML = '<span class="sync-status sync-error">⚠️ غير متصل</span>';
+    } else {
+      loginStatus.innerHTML = '<span class="sync-status sync-pending">⏳ جاري الاتصال...</span>';
+    }
+  }
+  
+  var connStatus = document.getElementById('cloudConnectionStatus');
+  if (connStatus) {
+    var lastSync = Storage.get('last_sync');
+    var lastSyncText = lastSync ? new Date(lastSync.time).toLocaleString('ar-EG') : 'لم يتم بعد';
+    connStatus.innerHTML = '<p class="text-sm"><span class="status-dot status-' + (status === 'ok' ? 'ok' : status === 'error' ? 'error' : 'warn') + '"></span> <b>الحالة:</b> ' + text + '</p>' +
+      '<p class="text-xs text-gray-500 mt-2">آخر مزامنة: ' + lastSyncText + '</p>';
+  }
+}
+
+function startAutoSync() {
+  stopAutoSync();
+  if (!CLOUD_URL) return;
+  
+  // مزامنة فورية عند فتح النظام
+  setTimeout(function() { syncCloudReports(true); }, 1500);
+  
+  // مزامنة كل 30 ثانية
+  SYNC_INTERVAL = setInterval(function() {
+    syncCloudReports(true);
+  }, 30000);
+}
+
+function stopAutoSync() {
+  if (SYNC_INTERVAL) {
+    clearInterval(SYNC_INTERVAL);
+    SYNC_INTERVAL = null;
+  }
+}
+
+function loadCloudSettings() {
+  var cloudSettings = Storage.get('cloud_settings') || {};
+  document.getElementById('cloudUrl').value = cloudSettings.url || CLOUD_URL || '';
+  
+  var lastSync = Storage.get('last_sync');
+  var connStatus = document.getElementById('cloudConnectionStatus');
+  if (connStatus) {
+    if (CLOUD_URL) {
+      var lastSyncText = lastSync ? new Date(lastSync.time).toLocaleString('ar-EG') : 'لم يتم بعد';
+      connStatus.innerHTML = '<p class="text-sm"><span class="status-dot status-warn"></span> <b>الحالة:</b> مُعدّ (في انتظار المزامنة)</p>' +
+        '<p class="text-xs text-gray-500 mt-2">آخر مزامنة: ' + lastSyncText + '</p>';
+    } else {
+      connStatus.innerHTML = '<p class="text-sm"><span class="status-dot status-error"></span> <b>الحالة:</b> غير مُعدّ</p>';
+    }
+  }
+}
+
+function saveCloudUrl() {
+  var url = (document.getElementById('cloudUrl').value || '').trim();
+  if (!url) {
+    showToast('❌ أدخل رابط Google Apps Script', 'error');
+    return;
+  }
+  if (url.indexOf('script.google.com') === -1) {
+    showToast('❌ الرابط يجب أن يكون من Google Apps Script', 'error');
+    return;
+  }
+  
+  CLOUD_URL = url;
+  Storage.set('cloud_settings', { url: url });
+  addAuditLog('save_cloud_url', 'حفظ رابط السحابة');
+  showToast('✅ تم حفظ الرابط', 'success');
+  
+  // اختبار الاتصال
+  syncCloudReports(false);
+}
+
+function testCloudConnection() {
+  if (!CLOUD_URL) {
+    showToast('❌ احفظ الرابط أولاً', 'error');
+    return;
+  }
+  updateCloudStatusUI('pending', 'جاري الاختبار...');
+  
+  fetch(CLOUD_URL, { method: 'GET', redirect: 'follow' })
+    .then(function(r) { return r.text(); })
+    .then(function(text) {
+      var jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) throw new Error('استجابة غير صالحة');
+      var response = JSON.parse(jsonMatch[0]);
+      
+      if (response.status === 'success') {
+        updateCloudStatusUI('ok', 'الاتصال ناجح ✓');
+        showToast('✅ الاتصال ناجح! عدد التقارير: ' + (response.reports || []).length, 'success');
+      } else {
+        throw new Error(response.message || 'خطأ');
+      }
+    })
+    .catch(function(e) {
+      updateCloudStatusUI('error', 'فشل الاتصال');
+      showToast('❌ فشل الاختبار: ' + e.message, 'error');
+    });
 }
 
 function loadAllReports() {
@@ -823,10 +1067,12 @@ function loadAllReports() {
   var container = document.getElementById('allReportsList');
   var search = (document.getElementById('searchReports').value || '').toLowerCase();
   var statusFilter = document.getElementById('filterStatus').value;
+  var sourceFilter = document.getElementById('filterSource').value;
 
   var filtered = reports.filter(function (r) {
     if (!canViewReport(r)) return false;
     if (statusFilter && r.status !== statusFilter) return false;
+    if (sourceFilter && r.source !== sourceFilter) return false;
     if (search) {
       var hay = ((r.clientName || '') + ' ' + (r.employeeName || '') + ' ' + (r.reportNumber || '')).toLowerCase();
       if (hay.indexOf(search) === -1) return false;
@@ -834,13 +1080,21 @@ function loadAllReports() {
     return true;
   });
 
-  if (filtered.length === 0) { container.innerHTML = '<p class="text-gray-500 text-center py-8">لا توجد تقارير</p>'; return; }
+  if (filtered.length === 0) { 
+    var emptyMsg = reports.length === 0 
+      ? 'لا توجد تقارير بعد. جرّب <b>مزامنة السحابة</b> لجلب التقارير من البوت.'
+      : 'لا توجد تقارير مطابقة للفلتر';
+    container.innerHTML = '<p class="text-gray-500 text-center py-8">' + emptyMsg + '</p>'; 
+    return; 
+  }
 
   container.innerHTML = filtered.slice().reverse().map(function (report) {
     var statusBadge = { draft: 'badge-draft', pending: 'badge-pending', approved: 'badge-approved' };
     var statusName = { draft: 'مسودة', pending: 'بانتظار الاعتماد', approved: 'معتمد' };
-    var sourceTag = report.source === 'cloud' ? '<span class="badge badge-approved" style="font-size:10px;margin-right:5px">☁️ سحابي</span>' : '';
-    return '<div class="bg-gray-50 rounded-lg p-4 report-card mb-3"><div class="flex justify-between items-start" style="flex-wrap:wrap;gap:8px"><div style="flex:1;min-width:200px"><h3 class="font-semibold text-gray-800">' + escapeHtml(report.clientName || 'عميل') + ' <span class="text-xs text-gray-500">#' + (report.reportNumber || report.id) + '</span> ' + sourceTag + '</h3><p class="text-sm text-gray-600">بواسطة: ' + escapeHtml(report.employeeName) + ' • ' + new Date(report.date).toLocaleDateString('ar-EG') + '</p><span class="badge ' + (statusBadge[report.status] || '') + '">' + (statusName[report.status] || report.status) + '</span></div><button type="button" data-action="view-report" data-id="' + report.id + '" class="btn btn-primary btn-sm">عرض</button></div></div>';
+    var sourceTag = report.source === 'cloud' 
+      ? '<span class="badge badge-cloud" style="font-size:10px;margin-right:5px">☁️ سحابي</span>' 
+      : '<span class="badge badge-draft" style="font-size:10px;margin-right:5px">💻 محلي</span>';
+    return '<div class="bg-gray-50 rounded-lg p-4 report-card mb-3"><div class="flex justify-between items-start" style="flex-wrap:wrap;gap:8px"><div style="flex:1;min-width:200px"><h3 class="font-semibold text-gray-800">' + escapeHtml(report.clientName || 'عميل') + ' <span class="text-xs text-gray-500">#' + escapeHtml(report.reportNumber || report.id) + '</span> ' + sourceTag + '</h3><p class="text-sm text-gray-600">بواسطة: ' + escapeHtml(report.employeeName) + ' • ' + new Date(report.date).toLocaleDateString('ar-EG') + '</p><span class="badge ' + (statusBadge[report.status] || '') + '">' + (statusName[report.status] || report.status) + '</span></div><button type="button" data-action="view-report" data-id="' + report.id + '" class="btn btn-primary btn-sm">عرض</button></div></div>';
   }).join('');
 }
 
@@ -852,17 +1106,37 @@ function viewReport(reportId) {
   if (!canViewReport(report)) { showToast('❌ غير مصرح لك بعرض هذا التقرير', 'error'); return; }
 
   var statusName = { draft: 'مسودة', pending: 'بانتظار الاعتماد', approved: 'معتمد' };
-  var content = '<div class="mb-4 bg-gray-50 p-4 rounded-lg"><h4 class="font-semibold mb-2">ℹ️ معلومات أساسية</h4><p class="text-sm text-gray-700">رقم التقرير: <b>#' + (report.reportNumber || report.id) + '</b></p><p class="text-sm text-gray-700">العميل: <b>' + escapeHtml(report.clientName || '-') + '</b></p><p class="text-sm text-gray-700">الموظف: <b>' + escapeHtml(report.employeeName) + '</b></p><p class="text-sm text-gray-700">التاريخ: <b>' + new Date(report.date).toLocaleString('ar-EG') + '</b></p><p class="text-sm text-gray-700">الحالة: <b>' + (statusName[report.status] || report.status) + '</b></p></div>';
+  var sourceLabel = report.source === 'cloud' ? '☁️ من السحابة (واتساب)' : '💻 محلي';
+  
+  var content = '<div class="mb-4 bg-gray-50 p-4 rounded-lg"><h4 class="font-semibold mb-2">ℹ️ معلومات أساسية</h4>' +
+    '<p class="text-sm text-gray-700">رقم التقرير: <b>#' + escapeHtml(report.reportNumber || report.id) + '</b></p>' +
+    '<p class="text-sm text-gray-700">العميل: <b>' + escapeHtml(report.clientName || '-') + '</b></p>' +
+    '<p class="text-sm text-gray-700">الموظف: <b>' + escapeHtml(report.employeeName) + '</b></p>' +
+    '<p class="text-sm text-gray-700">التاريخ: <b>' + new Date(report.date).toLocaleString('ar-EG') + '</b></p>' +
+    '<p class="text-sm text-gray-700">الحالة: <b>' + (statusName[report.status] || report.status) + '</b></p>' +
+    '<p class="text-sm text-gray-700">المصدر: <b>' + sourceLabel + '</b></p>' +
+    '</div>';
 
-  if (report.formattedData) {
-    content += '<div class="mb-4 bg-purple-50 p-4 rounded-lg"><h4 class="font-semibold mb-2 text-purple-700">✨ التقرير الموحد</h4>';
-    Object.keys(report.formattedData).forEach(function (key) { content += '<p class="text-sm mb-1"><b>' + escapeHtml(key) + ':</b> ' + escapeHtml(report.formattedData[key] || '-') + '</p>'; });
+  if (report.formattedData && Object.keys(report.formattedData).length > 0) {
+    content += '<div class="mb-4 bg-purple-50 p-4 rounded-lg"><h4 class="font-semibold mb-2 text-purple-700">✨ التقرير الموحد (بعد الذكاء الاصطناعي)</h4>';
+    Object.keys(report.formattedData).forEach(function (key) { 
+      content += '<p class="text-sm mb-1"><b>' + escapeHtml(key) + ':</b> ' + escapeHtml(report.formattedData[key] || '-') + '</p>'; 
+    });
     content += '</div>';
   }
 
+  if (report.originalContent) {
+    content += '<div class="mb-4 bg-gray-50 p-4 rounded-lg"><h4 class="font-semibold mb-2">📝 النص الأصلي</h4>' +
+      '<p class="text-sm whitespace-pre">' + escapeHtml(report.originalContent) + '</p></div>';
+  }
+
   var actions = '<div class="flex gap-2" style="flex-wrap:wrap">';
-  if (hasPerm('approve_report') && report.status !== 'approved') { actions += '<button type="button" data-action="approve-report" data-id="' + report.id + '" class="btn btn-success flex-1">✅ اعتماد</button>'; }
-  if (hasPerm('delete_report')) { actions += '<button type="button" data-action="delete-report" data-id="' + report.id + '" class="btn btn-danger flex-1">🗑️ حذف</button>'; }
+  if (hasPerm('approve_report') && report.status !== 'approved') { 
+    actions += '<button type="button" data-action="approve-report" data-id="' + report.id + '" class="btn btn-success flex-1">✅ اعتماد</button>'; 
+  }
+  if (hasPerm('delete_report')) { 
+    actions += '<button type="button" data-action="delete-report" data-id="' + report.id + '" class="btn btn-danger flex-1">🗑️ حذف</button>'; 
+  }
   actions += '</div>';
 
   document.getElementById('drawerContent').innerHTML = content + actions;
@@ -874,9 +1148,6 @@ function approveReport(reportId) {
   var report = null;
   for (var i = 0; i < reports.length; i++) if (reports[i].id === reportId) { report = reports[i]; break; }
   if (!report || !hasPerm('approve_report')) { showToast('❌ غير مصرح', 'error'); return; }
-  var template = Storage.get('template') || DEFAULT_TEMPLATE;
-  var missing = AIExtractor.getMissingFields(report.formattedData || {}, template);
-  if (missing.length > 0) { showToast('❌ لا يمكن الاعتماد: الحقول التالية ناقصة: ' + missing.map(function (f) { return f.label; }).join('، '), 'error'); return; }
   report.status = 'approved';
   report.approvedAt = new Date().toISOString();
   report.approvedBy = state.currentUser.id;
@@ -904,10 +1175,10 @@ function exportCSV() {
   var reports = Storage.get('reports') || [];
   var filtered = reports.filter(canViewReport);
   if (filtered.length === 0) { showToast('❌ لا توجد تقارير للتصدير', 'error'); return; }
-  var headers = ['رقم التقرير', 'العميل', 'الموظف', 'التاريخ', 'الحالة'];
+  var headers = ['رقم التقرير', 'العميل', 'الموظف', 'التاريخ', 'الحالة', 'المصدر'];
   var rows = [headers.join(',')];
   filtered.forEach(function (r) {
-    rows.push([r.reportNumber || r.id, '"' + (r.clientName || '').replace(/"/g, '""') + '"', '"' + (r.employeeName || '').replace(/"/g, '""') + '"', new Date(r.date).toLocaleDateString('ar-EG'), r.status].join(','));
+    rows.push([r.reportNumber || r.id, '"' + (r.clientName || '').replace(/"/g, '""') + '"', '"' + (r.employeeName || '').replace(/"/g, '""') + '"', new Date(r.date).toLocaleDateString('ar-EG'), r.status, r.source || 'local'].join(','));
   });
   var blob = new Blob(['\uFEFF' + rows.join('\n')], { type: 'text/csv;charset=utf-8' });
   var url = URL.createObjectURL(blob);
@@ -933,7 +1204,8 @@ function loadEmployeeData() {
   list.innerHTML = myReports.slice(-10).reverse().map(function (r) {
     var statusBadge = { draft: 'badge-draft', pending: 'badge-pending', approved: 'badge-approved' };
     var statusName = { draft: 'مسودة', pending: 'بانتظار', approved: 'معتمد' };
-    return '<div class="bg-gray-50 rounded-lg p-3 report-card mb-2"><div class="flex justify-between items-start"><div><h3 class="font-semibold text-gray-800 text-sm">' + escapeHtml(r.clientName || 'عميل') + '</h3><p class="text-xs text-gray-500">' + new Date(r.date).toLocaleDateString('ar-EG') + '</p><span class="badge ' + (statusBadge[r.status] || '') + '" style="font-size:10px">' + (statusName[r.status] || r.status) + '</span></div><button type="button" data-action="view-report" data-id="' + r.id + '" class="btn btn-ghost btn-sm">عرض</button></div></div>';
+    var sourceIcon = r.source === 'cloud' ? '☁️' : '💻';
+    return '<div class="bg-gray-50 rounded-lg p-3 report-card mb-2"><div class="flex justify-between items-start"><div><h3 class="font-semibold text-gray-800 text-sm">' + sourceIcon + ' ' + escapeHtml(r.clientName || 'عميل') + '</h3><p class="text-xs text-gray-500">' + new Date(r.date).toLocaleDateString('ar-EG') + '</p><span class="badge ' + (statusBadge[r.status] || '') + '" style="font-size:10px">' + (statusName[r.status] || r.status) + '</span></div><button type="button" data-action="view-report" data-id="' + r.id + '" class="btn btn-ghost btn-sm">عرض</button></div></div>';
   }).join('');
 }
 
@@ -964,8 +1236,9 @@ function processConversationMessage() {
   if (missing.length > 0) {
     var field = missing[0];
     var question = field.botQuestion || ('ما هو ' + field.label + '؟');
-    var filledCount = template.fields.length - missing.length;
-    addBubble('bot', '✅ سجلت ' + filledCount + ' من ' + template.fields.length + ' حقول.\n\n' + question);
+    var filledCount = template.fields.filter(function(f) { return extracted[f.label] && String(extracted[f.label]).trim() !== ''; }).length;
+    var requiredCount = template.fields.filter(function(f) { return f.required; }).length;
+    addBubble('bot', '✅ سجلت ' + filledCount + ' من ' + requiredCount + ' حقول مطلوبة.\n\n' + question);
   } else {
     conv.status = 'pending_review';
     var summary = '📋 <b>مسودة التقرير — راجعها:</b>\n\n';
@@ -1008,7 +1281,22 @@ function approveConversation() {
   if (!conv || conv.status !== 'pending_review') return;
   var reports = Storage.get('reports') || [];
   var reportNumber = 'R-' + Date.now().toString(36).toUpperCase();
-  var report = { id: Date.now(), reportNumber: reportNumber, employeeId: state.currentUser.id, employeeName: state.currentUser.fullName, clientName: conv.extractedData['اسم العميل'] || '', originalContent: conv.messages.filter(function (m) { return m.sender === 'user'; }).map(function (m) { return m.text; }).join('\n\n'), formattedData: conv.extractedData, templateVersion: conv.templateSnapshot.version, status: 'approved', date: new Date().toISOString(), approvedAt: new Date().toISOString(), approvedBy: state.currentUser.id, conversationId: conv.id };
+  var report = { 
+    id: Date.now(), 
+    reportNumber: reportNumber, 
+    employeeId: state.currentUser.id, 
+    employeeName: state.currentUser.fullName, 
+    clientName: conv.extractedData['اسم العميل'] || '', 
+    originalContent: conv.messages.filter(function (m) { return m.sender === 'user'; }).map(function (m) { return m.text; }).join('\n\n'), 
+    formattedData: conv.extractedData, 
+    templateVersion: conv.templateSnapshot.version, 
+    status: 'approved', 
+    date: new Date().toISOString(), 
+    approvedAt: new Date().toISOString(), 
+    approvedBy: state.currentUser.id, 
+    conversationId: conv.id,
+    source: 'local'
+  };
   reports.push(report);
   Storage.set('reports', reports);
   conv.status = 'completed';
@@ -1052,39 +1340,8 @@ function loadAuditLog() {
   container.innerHTML = logs.map(function (log) { return '<div class="bg-gray-50 p-3 rounded-lg mb-2"><p class="text-sm text-gray-800"><b>' + escapeHtml(log.userName) + '</b> — ' + escapeHtml(log.details || log.action) + '</p><p class="text-xs text-gray-500">' + new Date(log.timestamp).toLocaleString('ar-EG') + '</p></div>'; }).join('');
 }
 
-function saveWhatsAppSettings() {
-  var settings = { phoneId: document.getElementById('waPhoneId').value.trim(), token: document.getElementById('waToken').value.trim(), connected: false, lastTest: null };
-  Storage.set('wa_settings', settings);
-  addAuditLog('save_wa_settings', 'حفظ إعدادات واتساب');
-  showToast('✅ تم حفظ الإعدادات', 'success');
-  updateWAStatus();
-}
-
-function testWhatsAppConnection() {
-  var settings = Storage.get('wa_settings') || {};
-  var statusEl = document.getElementById('waStatus');
-  if (!settings.phoneId || !settings.token) { statusEl.innerHTML = '<p class="text-sm"><span class="status-dot status-error"></span> ❌ فشل: بيانات الاتصال ناقصة</p>'; showToast('❌ أكمل بيانات الاتصال أولاً', 'error'); return; }
-  statusEl.innerHTML = '<p class="text-sm"><span class="status-dot status-warn"></span> جاري الاختبار...</p>';
-  setTimeout(function () {
-    settings.lastTest = new Date().toISOString();
-    settings.connected = false;
-    Storage.set('wa_settings', settings);
-    statusEl.innerHTML = '<p class="text-sm"><span class="status-dot status-warn"></span> ⚠️ وضع الاختبار</p><p class="text-xs text-gray-500 mt-2">آخر اختبار: ' + new Date(settings.lastTest).toLocaleString('ar-EG') + '</p>';
-    showToast('⚠️ وضع الاختبار — ليس اتصالاً فعلياً', 'warn');
-  }, 800);
-}
-
-function updateWAStatus() {
-  var settings = Storage.get('wa_settings') || {};
-  var statusEl = document.getElementById('waStatus');
-  if (!settings.phoneId || !settings.token) { statusEl.innerHTML = '<p class="text-sm text-gray-600">الحالة: <span class="status-dot status-warn"></span> غير مُعدّ</p>'; }
-  else { statusEl.innerHTML = '<p class="text-sm text-gray-600">الحالة: <span class="status-dot status-warn"></span> مُعدّ (وضع الاختبار)</p>' + (settings.lastTest ? '<p class="text-xs text-gray-500 mt-1">آخر اختبار: ' + new Date(settings.lastTest).toLocaleString('ar-EG') + '</p>' : ''); }
-  if (settings.phoneId) document.getElementById('waPhoneId').value = settings.phoneId;
-  if (settings.token) document.getElementById('waToken').value = settings.token;
-}
-
 function saveAISettings() {
-  var settings = { provider: document.getElementById('aiProvider').value, apiKey: document.getElementById('aiApiKey').value.trim(), model: document.getElementById('aiModel').value.trim() };
+  var settings = { provider: document.getElementById('aiProvider').value, apiKey: document.getElementById('aiApiKey').value.trim() };
   Storage.set('ai_settings', settings);
   addAuditLog('save_ai_settings', 'حفظ إعدادات الذكاء - المزود: ' + settings.provider);
   showToast('✅ تم حفظ الإعدادات', 'success');
@@ -1148,15 +1405,15 @@ document.addEventListener('click', function (e) {
     case 'approve-report': approveReport(parseInt(id)); break;
     case 'delete-report': deleteReport(parseInt(id)); break;
     case 'export-csv': exportCSV(); break;
-    case 'sync-cloud': syncCloudReports(); break; // ⭐ زر المزامنة
+    case 'sync-cloud': syncCloudReports(false); break;
+    case 'save-cloud-url': saveCloudUrl(); break;
+    case 'test-cloud': testCloudConnection(); break;
     case 'start-report': startReportConversation(); break;
     case 'send-conv': sendConversationMessage(); break;
     case 'conv-help': showConversationHelp(); break;
     case 'conv-cancel': cancelConversation(); break;
     case 'conv-approve': approveConversation(); break;
     case 'conv-edit': requestEditConversation(); break;
-    case 'test-wa': testWhatsAppConnection(); break;
-    case 'save-wa': saveWhatsAppSettings(); break;
     case 'save-ai': saveAISettings(); break;
     case 'fix-login': fixLogin(); break;
     case 'reset-data': resetAllData(); break;
@@ -1193,19 +1450,148 @@ document.addEventListener('keypress', function (e) {
 document.getElementById('loginBtn').addEventListener('click', handleLogin);
 document.getElementById('searchReports').addEventListener('input', loadAllReports);
 document.getElementById('filterStatus').addEventListener('change', loadAllReports);
+document.getElementById('filterSource').addEventListener('change', loadAllReports);
 
 document.addEventListener('click', function (e) { if (e.target.classList.contains('modal')) { e.target.classList.remove('active'); } });
 document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { var modals = document.querySelectorAll('.modal.active'); for (var i = 0; i < modals.length; i++) modals[i].classList.remove('active'); } });
 
+// ⭐ إغلاق المزامنة عند الخروج
+window.addEventListener('beforeunload', function() { stopAutoSync(); });
+
 /* ═══════════════════════════════════════════════════════════════
-   🚀 بدء التشغيل — مع استعادة الجلسة والمزامنة التلقائية
+   🚀 بدء التشغيل
    ═══════════════════════════════════════════════════════════════ */
 initializeData();
 if (!restoreSession()) {
-  console.log('🏥 نظام مركز التخاطب - جاهز (لا توجد جلسة محفوظة)');
+  // عرض حالة السحابة في شاشة الدخول
+  if (CLOUD_URL) {
+    updateCloudStatusUI('pending', 'جاري الاتصال...');
+    setTimeout(function() { syncCloudReports(true); }, 500);
+  }
 }
-// مزامنة تلقائية للتقارير من السحابة عند فتح النظام
-setTimeout(syncCloudReports, 1500);
 </script>
 </body>
 </html>
+
+
+              <script>
+                              // ═══════════════════════════════════════════════════════════════
+// 📋 سكرتير مركز التخاطب - نسخة محسّنة (قراءة + كتابة)
+// ═══════════════════════════════════════════════════════════════
+
+const SHEET_NAME = 'Sheet1'; // غيّرها لو اسم الشيت مختلف
+
+function getSheet() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) {
+    sheet = ss.insertSheet(SHEET_NAME);
+    // إنشاء الأعمدة تلقائياً لو الشيت فاضي
+    sheet.appendRow([
+      'التاريخ والوقت', 'رقم التقرير', 'اسم العميل',
+      'العمر', 'البيانات المنظمة (JSON)', 'اسم المختص',
+      'التقرير الأصلي', 'المصدر'
+    ]);
+  }
+  return sheet;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// 📥 GET - يستقبل طلبات القراءة من النظام
+// ═══════════════════════════════════════════════════════════════
+function doGet(e) {
+  try {
+    const sheet = getSheet();
+    const data = sheet.getDataRange().getValues();
+    
+    if (data.length <= 1) {
+      return ContentService
+        .createTextOutput(JSON.stringify({ status: 'success', reports: [] }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // تحويل الصفوف لكائنات (تجاهل صف العناوين)
+    const reports = [];
+    for (let i = 1; i < data.length; i++) {
+      const row = data[i];
+      if (!row[1]) continue; // تخطي الصفوف الفاضية
+      
+      reports.push({
+        date: row[0] ? new Date(row[0]).toISOString() : new Date().toISOString(),
+        reportNumber: String(row[1] || ''),
+        clientName: String(row[2] || ''),
+        clientAge: String(row[3] || ''),
+        formattedData: String(row[4] || '{}'),
+        employeeName: String(row[5] || 'مختص'),
+        originalContent: String(row[6] || ''),
+        source: String(row[7] || 'whatsapp')
+      });
+    }
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({ status: 'success', reports: reports, count: reports.length }))
+      .setMimeType(ContentService.MimeType.JSON);
+      
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ status: 'error', message: error.toString(), reports: [] }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// 📤 POST - يستقبل البيانات من صفحة المختص ويحفظها
+// ═══════════════════════════════════════════════════════════════
+function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const sheet = getSheet();
+    
+    // منع التكرار: التحقق من رقم التقرير
+    const existingData = sheet.getDataRange().getValues();
+    for (let i = 1; i < existingData.length; i++) {
+      if (String(existingData[i][1]) === String(data.reportNumber)) {
+        return ContentService
+          .createTextOutput(JSON.stringify({ 
+            status: 'duplicate', 
+            message: 'رقم التقرير موجود مسبقاً' 
+          }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    
+    // إضافة الصف الجديد
+    sheet.appendRow([
+      new Date(),                                    // التاريخ والوقت
+      data.reportNumber || 'R-' + Date.now(),       // رقم التقرير
+      data.clientName || 'غير محدد',                 // اسم العميل
+      data.clientAge || '',                          // العمر
+      JSON.stringify(data.formattedData || {}),      // البيانات المنظمة
+      data.employeeName || 'مختص',                   // اسم المختص
+      data.originalContent || '',                    // التقرير الأصلي
+      data.source || 'whatsapp'                      // المصدر
+    ]);
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({ 
+        status: 'success', 
+        message: 'تم الحفظ بنجاح',
+        reportNumber: data.reportNumber
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+      
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ 
+        status: 'error', 
+        message: error.toString() 
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+
+              </script>
+                        </body>
+                        </html>
+                    
