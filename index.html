@@ -2,1199 +2,68 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>مركز التخاطب - نظام إدارة التقارير الذكي</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>مركز التخاطب - إرسال تقرير</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.cdnfonts.com/css/cairo" rel="stylesheet">
 <style>
-* { font-family: 'Cairo', sans-serif; }
-.gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-.card-hover { transition: all 0.3s ease; }
-.card-hover:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
-.tab-active { background: linear-gradient(135deg, #667eea, #764ba2); color: white !important; }
-.modal { display: none; position: fixed; z-index: 1000; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
-.modal.active { display: flex; align-items: center; justify-content: center; }
-.modal-content { background: white; padding: 30px; border-radius: 20px; max-width: 700px; width: 95%; max-height: 90vh; overflow-y: auto; }
-.toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; padding: 14px 28px; border-radius: 12px; color: white; font-weight: bold; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-.toast-success { background: linear-gradient(135deg, #10b981, #059669); }
-.toast-error { background: linear-gradient(135deg, #ef4444, #dc2626); }
-.toast-info { background: linear-gradient(135deg, #3b82f6, #2563eb); }
-.btn { transition: all 0.2s ease; cursor: pointer; }
-.btn:active { transform: scale(0.97); }
-.wa-chat-container { background: #e5ddd5; border-radius: 12px; }
-.wa-bubble-user { background: #dcf8c6; border-radius: 10px 10px 0 10px; padding: 10px 14px; margin: 6px 0; max-width: 75%; align-self: flex-end; }
-.wa-bubble-bot { background: white; border-radius: 10px 10px 10px 0; padding: 10px 14px; margin: 6px 0; max-width: 75%; align-self: flex-start; }
-.wa-bubble-draft { background: linear-gradient(135deg, #ede9fe, #ddd6fe); border: 2px solid #8b5cf6; border-radius: 12px; padding: 14px; margin: 10px 0; max-width: 90%; }
-.wa-time { font-size: 10px; color: #667781; margin-top: 4px; display: block; }
-.status-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
-.status-draft { background: #fef3c7; color: #92400e; }
-.status-complete { background: #d1fae5; color: #065f46; }
-.status-compiled { background: linear-gradient(135deg, #ede9fe, #ddd6fe); color: #5b21b6; border: 1px solid #8b5cf6; }
-.report-card { border-right: 4px solid #667eea; }
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #f1f1f1; }
-::-webkit-scrollbar-thumb { background: #a78bfa; border-radius: 4px; }
-.phone-tag { background: linear-gradient(135deg, #dbeafe, #e0e7ff); border: 2px solid #3b82f6; border-radius: 12px; padding: 12px; margin: 8px 0; }
-.pulse-dot { width: 10px; height: 10px; border-radius: 50%; background: #10b981; animation: pulse 2s infinite; }
-@keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.7); } 50% { box-shadow: 0 0 0 8px rgba(16,185,129,0); } }
+  * { font-family: 'Cairo', sans-serif; box-sizing: border-box; }
+  body { background-color: #e5ddd5; height: 100vh; display: flex; flex-direction: column; margin: 0; }
+  .wa-header { background: #075e54; color: white; padding: 15px; display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+  .wa-chat { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 8px; }
+  .wa-bubble { max-width: 85%; padding: 10px 14px; border-radius: 10px; position: relative; font-size: 15px; line-height: 1.5; word-wrap: break-word; }
+  .wa-bubble-bot { background: white; align-self: flex-start; border-top-right-radius: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+  .wa-bubble-user { background: #dcf8c6; align-self: flex-end; border-top-left-radius: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+  .wa-bubble-draft { background: #f3e5f5; border: 2px solid #8e24aa; align-self: center; max-width: 95%; border-radius: 12px; }
+  .wa-time { font-size: 11px; color: #999; text-align: left; margin-top: 4px; display: block; }
+  .wa-input-area { background: #f0f0f0; padding: 10px; display: flex; gap: 8px; align-items: center; }
+  .wa-input { flex: 1; padding: 12px; border-radius: 25px; border: none; outline: none; font-size: 16px; }
+  .wa-btn { background: #075e54; color: white; border: none; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; flex-shrink: 0; }
+  .wa-btn:active { transform: scale(0.9); }
+  .btn-action { padding: 10px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; font-size: 14px; margin: 5px; }
+  .btn-confirm { background: #25d366; color: white; }
+  .btn-cancel { background: #ef4444; color: white; }
+  .typing { font-style: italic; color: #075e54; font-size: 13px; padding: 0 15px; display: none; }
 </style>
 </head>
-<body class="bg-gray-100">
+<body>
 
-<!-- صفحة تسجيل الدخول -->
-<div id="loginPage" class="min-h-screen flex items-center justify-center gradient-bg p-4">
-  <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
-    <div class="text-center mb-6">
-      <div class="w-20 h-20 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full mx-auto flex items-center justify-center mb-4">
-        <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-        </svg>
-      </div>
-      <h1 class="text-3xl font-bold text-gray-800">مركز التخاطب</h1>
-      <p class="text-gray-600 mt-2">نظام إدارة التقارير الذكي</p>
-    </div>
-    <div class="space-y-4">
-      <div>
-        <label class="block text-gray-700 mb-2 font-semibold">📧 اسم المستخدم</label>
-        <input type="text" id="username" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none" placeholder="admin">
-      </div>
-      <div>
-        <label class="block text-gray-700 mb-2 font-semibold">🔑 كلمة المرور</label>
-        <input type="password" id="password" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none" placeholder="••••••••">
-      </div>
-      <div id="loginError" class="hidden bg-red-50 border border-red-300 text-red-700 p-3 rounded-lg text-sm"></div>
-      <button onclick="handleLogin()" class="btn w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg text-lg">🔐 تسجيل الدخول</button>
-    </div>
-    <div class="mt-6 bg-blue-50 border-2 border-blue-200 rounded-xl p-4">
-      <p class="font-bold text-blue-800 mb-2 text-center text-sm">🔑 بيانات تجريبية</p>
-      <div class="grid grid-cols-2 gap-2 text-xs">
-        <div class="bg-white p-2 rounded border border-blue-200">
-          <p class="text-gray-500">مدير</p>
-          <p class="font-mono font-bold text-blue-700">admin / admin123</p>
-        </div>
-        <div class="bg-white p-2 rounded border border-blue-200">
-          <p class="text-gray-500">موظف</p>
-          <p class="font-mono font-bold text-blue-700">employee / 1234</p>
-        </div>
-      </div>
+  <!-- رأس الصفحة -->
+  <div class="wa-header">
+    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-2xl">🏥</div>
+    <div>
+      <div class="font-bold text-lg">مركز التخاطب</div>
+      <div class="text-xs opacity-80">مساعد التقارير الذكي</div>
     </div>
   </div>
-</div>
 
-<!-- لوحة التحكم -->
-<div id="dashboard" class="hidden">
-  <nav class="bg-white shadow-lg sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4">
-      <div class="flex justify-between items-center h-16">
-        <div class="flex items-center">
-          <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full flex items-center justify-center ml-3">
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-            </svg>
-          </div>
-          <span class="text-xl font-bold text-gray-800">مركز التخاطب</span>
-        </div>
-        <div class="flex items-center gap-3">
-          <span id="currentUser" class="text-gray-700 font-semibold"></span>
-          <span id="userRole" class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full"></span>
-          <button onclick="logout()" class="btn bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 text-sm">خروج</button>
-        </div>
-      </div>
-    </div>
-  </nav>
-
-  <div class="max-w-7xl mx-auto px-4 py-6">
-    <!-- تبويبات الأدمن -->
-    <div id="adminTabs" class="hidden">
-      <div class="flex flex-wrap gap-2 mb-6 bg-white p-2 rounded-xl shadow">
-        <button onclick="showAdminTab('dashboard', this)" class="tab-btn btn px-4 py-2.5 rounded-lg font-semibold text-gray-700 hover:bg-gray-100">📊 الرئيسية</button>
-        <button onclick="showAdminTab('phones', this)" class="tab-btn btn px-4 py-2.5 rounded-lg font-semibold text-gray-700 hover:bg-gray-100">📱 الأرقام المصرح لها</button>
-        <button onclick="showAdminTab('whatsapp', this)" class="tab-btn btn px-4 py-2.5 rounded-lg font-semibold text-gray-700 hover:bg-gray-100">💬 بوت الواتساب</button>
-        <button onclick="showAdminTab('reports', this)" class="tab-btn btn px-4 py-2.5 rounded-lg font-semibold text-gray-700 hover:bg-gray-100">📋 التقارير</button>
-        <button onclick="showAdminTab('compiled', this)" class="tab-btn btn px-4 py-2.5 rounded-lg font-semibold text-gray-700 hover:bg-gray-100">📚 تقارير مجمعة</button>
-        <button onclick="showAdminTab('template', this)" class="tab-btn btn px-4 py-2.5 rounded-lg font-semibold text-gray-700 hover:bg-gray-100">📝 نموذج التقرير</button>
-        <button onclick="showAdminTab('users', this)" class="tab-btn btn px-4 py-2.5 rounded-lg font-semibold text-gray-700 hover:bg-gray-100">👥 المستخدمون</button>
-      </div>
-
-      <!-- تبويب الرئيسية -->
-      <div id="dashboardTab" class="tab-content">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div class="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl shadow-lg p-5 text-white">
-            <p class="text-purple-100 text-sm">إجمالي التقارير</p>
-            <p class="text-3xl font-bold mt-2" id="statTotal">0</p>
-          </div>
-          <div class="bg-gradient-to-r from-green-500 to-teal-600 rounded-xl shadow-lg p-5 text-white">
-            <p class="text-green-100 text-sm">مكتملة</p>
-            <p class="text-3xl font-bold mt-2" id="statComplete">0</p>
-          </div>
-          <div class="bg-gradient-to-r from-orange-500 to-red-600 rounded-xl shadow-lg p-5 text-white">
-            <p class="text-orange-100 text-sm">عملاء مميزون</p>
-            <p class="text-3xl font-bold mt-2" id="statCompiled">0</p>
-          </div>
-          <div class="bg-gradient-to-r from-blue-500 to-cyan-600 rounded-xl shadow-lg p-5 text-white">
-            <p class="text-blue-100 text-sm">المستخدمون</p>
-            <p class="text-3xl font-bold mt-2" id="statUsers">0</p>
-          </div>
-        </div>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div class="bg-white rounded-xl shadow-lg p-6">
-            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2"><span class="pulse-dot"></span> آخر النشاطات</h3>
-            <div id="recentActivity" class="space-y-3 max-h-96 overflow-y-auto"></div>
-          </div>
-          <div class="bg-white rounded-xl shadow-lg p-6">
-            <h3 class="text-lg font-bold text-gray-800 mb-4">🏆 أكثر العملاء جلسات</h3>
-            <div id="topClients" class="space-y-3 max-h-96 overflow-y-auto"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- تبويب الأرقام المصرح لها -->
-      <div id="phonesTab" class="tab-content hidden">
-        <div class="bg-white rounded-xl shadow-lg p-6">
-          <div class="flex justify-between items-center mb-6 flex-wrap gap-3">
-            <div>
-              <h2 class="text-2xl font-bold text-gray-800">📱 الأرقام المصرح لها</h2>
-              <p class="text-gray-600 text-sm mt-1">الأرقام اللي تقدر تبعت تقارير على النظام من الواتساب</p>
-            </div>
-            <button onclick="showAddPhoneModal()" class="btn bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-lg hover:shadow-lg">+ إضافة رقم جديد</button>
-          </div>
-
-          <!-- شرح كيفية الاستخدام -->
-          <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-5 mb-6">
-            <h3 class="font-bold text-blue-800 mb-3 flex items-center gap-2">💡 كيف يعمل النظام؟</h3>
-            <ol class="text-sm text-gray-700 space-y-2 list-decimal list-inside">
-              <li><b>أضف رقم المختص</b> في القائمة أدناه (مثال: 201XXXXXXXXX)</li>
-              <li><b>المختص يبعث رسالة</b> على رقم النظام من رقمه المسجل</li>
-              <li><b>النظام يستقبل الرسالة</b> ويحللها بالذكاء الاصطناعي</li>
-              <li><b>البوت يسأل</b> عن البيانات الناقصة تلقائياً</li>
-              <li><b>بعد الاعتماد</b> يظهر التقرير في لوحة التحكم</li>
-            </ol>
-            <div class="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-xs">
-              <p class="font-bold text-yellow-800 mb-1">⚠️ ملاحظة مهمة:</p>
-              <p class="text-yellow-700">هذه نسخة تجريبية تعمل في المتصفح. في النسخة الحقيقية، النظام بيتصل برقم واتساب فعلي عبر خادم Node.js.</p>
-            </div>
-          </div>
-
-          <!-- قائمة الأرقام -->
-          <div id="phonesList" class="space-y-3"></div>
-        </div>
-      </div>
-
-      <!-- تبويب بوت الواتساب -->
-      <div id="whatsappTab" class="tab-content hidden">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div class="lg:col-span-2 bg-white rounded-xl shadow-lg overflow-hidden">
-            <div class="bg-gradient-to-r from-green-600 to-green-700 p-4 text-white flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                  <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                </div>
-                <div>
-                  <div class="font-bold">بوت الواتساب الذكي</div>
-                  <div class="text-xs text-green-100 flex items-center gap-1"><span class="pulse-dot" style="width:8px;height:8px;"></span> متصل • جاهز لاستقبال الرسائل</div>
-                </div>
-              </div>
-              <button onclick="resetWhatsAppChat()" class="btn bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg text-sm">🔄 محادثة جديدة</button>
-            </div>
-            <div id="whatsappChat" class="wa-chat-container p-4 h-96 overflow-y-auto flex flex-col gap-1">
-              <div class="wa-bubble-bot">
-                <div class="font-bold text-green-700 mb-1">🤖 المساعد الذكي</div>
-                أهلاً! أرسل لي بيانات جلسة العميل بصيغة حرة، وسأستخرج منها المعلومات وأجهز لك التقرير.
-                <div class="text-xs text-gray-500 mt-2">💡 مثال: "جلسة أحمد عمره 5 سنين اشتغلنا على نطق الراء وكان فيه تحسن"</div>
-                <span class="wa-time">الآن</span>
-              </div>
-            </div>
-            <div class="bg-white p-3 border-t flex gap-2">
-              <input type="text" id="whatsappInput" placeholder="اكتب رسالة... (أو 'مساعدة' للأوامر)" class="flex-1 px-4 py-2.5 border border-gray-300 rounded-full focus:ring-2 focus:ring-green-500 outline-none">
-              <button onclick="sendWhatsAppMessage()" class="btn bg-green-500 hover:bg-green-600 text-white w-12 h-12 rounded-full flex items-center justify-center shadow">
-                <svg class="w-5 h-5 transform rotate-180" fill="currentColor" viewBox="0 0 24 24"><path d="M1.101 21.757 23.8 12.028 1.101 2.3l.011 7.912 13.623 1.816-13.623 1.817-.011 7.912z"/></svg>
-              </button>
-            </div>
-          </div>
-          <div class="space-y-4">
-            <div class="bg-white rounded-xl shadow-lg p-5">
-              <h3 class="font-bold text-gray-800 mb-3 flex items-center gap-2">⚡ أوامر سريعة</h3>
-              <div class="space-y-2">
-                <button onclick="quickSend('جلسة أحمد عمره 5 سنين اشتغلنا النهارده على نطق الراء وكان فيه تحسن')" class="btn w-full text-right bg-gray-50 hover:bg-purple-50 border border-gray-200 p-3 rounded-lg text-sm">📝 تجربة تقرير تجريبي</button>
-                <button onclick="quickSend('المساعدة')" class="btn w-full text-right bg-gray-50 hover:bg-blue-50 border border-gray-200 p-3 rounded-lg text-sm">❓ عرض المساعدة</button>
-                <button onclick="quickSend('التقارير')" class="btn w-full text-right bg-gray-50 hover:bg-green-50 border border-gray-200 p-3 rounded-lg text-sm">📋 عرض آخر التقارير</button>
-                <button onclick="quickSend('إحصائيات')" class="btn w-full text-right bg-gray-50 hover:bg-orange-50 border border-gray-200 p-3 rounded-lg text-sm">📊 إحصائيات النظام</button>
-              </div>
-            </div>
-            <div class="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl shadow-lg p-5 border border-purple-200">
-              <h3 class="font-bold text-purple-800 mb-3 flex items-center gap-2">🤖 ميزات الذكاء الاصطناعي</h3>
-              <ul class="text-sm text-gray-700 space-y-2">
-                <li class="flex items-start gap-2"><span class="text-green-500">✓</span> استخراج البيانات من النص الحر</li>
-                <li class="flex items-start gap-2"><span class="text-green-500">✓</span> فهم اللهجة المصرية</li>
-                <li class="flex items-start gap-2"><span class="text-green-500">✓</span> طلب البيانات الناقصة تلقائياً</li>
-                <li class="flex items-start gap-2"><span class="text-green-500">✓</span> قبول التصحيحات أثناء المحادثة</li>
-                <li class="flex items-start gap-2"><span class="text-green-500">✓</span> مسودة للمراجعة قبل الحفظ</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- تبويب التقارير -->
-      <div id="reportsTab" class="tab-content hidden">
-        <div class="bg-white rounded-xl shadow-lg p-6">
-          <div class="flex flex-wrap justify-between items-center mb-6 gap-3">
-            <h2 class="text-2xl font-bold text-gray-800">📋 جميع التقارير</h2>
-            <div class="flex gap-2 flex-wrap">
-              <input type="text" id="reportSearch" oninput="loadAllReports()" placeholder="🔍 بحث..." class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none">
-              <select id="reportFilter" onchange="loadAllReports()" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none">
-                <option value="all">كل الحالات</option>
-                <option value="complete">مكتملة</option>
-                <option value="draft">مسودات</option>
-              </select>
-              <button onclick="showAddReportModal()" class="btn bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2 rounded-lg hover:shadow-lg">+ تقرير جديد</button>
-            </div>
-          </div>
-          <div id="allReportsList" class="space-y-3"></div>
-        </div>
-      </div>
-
-      <!-- تبويب التقارير المجمّعة -->
-      <div id="compiledTab" class="tab-content hidden">
-        <div class="bg-white rounded-xl shadow-lg p-6">
-          <div class="flex flex-wrap justify-between items-center mb-6 gap-3">
-            <div>
-              <h2 class="text-2xl font-bold text-gray-800">📚 التقارير المجمّعة</h2>
-              <p class="text-gray-600 text-sm mt-1">تقارير شاملة تجمع كل جلسات العميل الواحد</p>
-            </div>
-            <button onclick="showCompiledReportModal()" class="btn bg-gradient-to-r from-purple-600 to-pink-600 text-white px-5 py-3 rounded-lg hover:shadow-lg font-semibold">📚 إنشاء تقرير مجمع جديد</button>
-          </div>
-          <div id="compiledReportsList" class="space-y-4"></div>
-        </div>
-      </div>
-
-      <!-- تبويب نموذج التقرير -->
-      <div id="templateTab" class="tab-content hidden">
-        <div class="bg-white rounded-xl shadow-lg p-6">
-          <div class="flex justify-between items-center mb-6">
-            <div>
-              <h2 class="text-2xl font-bold text-gray-800">📝 نموذج التقرير الموحد</h2>
-              <p class="text-gray-600 text-sm mt-1">هذا النموذج يُستخدم لاستخراج البيانات تلقائياً من رسائل الواتساب</p>
-            </div>
-          </div>
-          <div id="templateForm" class="space-y-3"></div>
-          <div class="mt-6 flex gap-3 flex-wrap">
-            <button onclick="addField()" class="btn bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600">+ إضافة حقل جديد</button>
-            <button onclick="saveTemplate()" class="btn bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-lg hover:shadow-lg">💾 حفظ النموذج</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- تبويب المستخدمون -->
-      <div id="usersTab" class="tab-content hidden">
-        <div class="bg-white rounded-xl shadow-lg p-6">
-          <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold text-gray-800">👥 إدارة المستخدمين</h2>
-            <button onclick="showAddUserModal()" class="btn bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-lg hover:shadow-lg">+ مستخدم جديد</button>
-          </div>
-          <div id="usersList" class="space-y-3"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- واجهة الموظف -->
-    <div id="employeeView" class="hidden">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div class="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl shadow-lg p-5 text-white">
-          <p class="text-purple-100 text-sm">تقاريري</p>
-          <p class="text-3xl font-bold mt-2" id="myReportsCount">0</p>
-        </div>
-        <div class="bg-gradient-to-r from-green-500 to-teal-600 rounded-xl shadow-lg p-5 text-white">
-          <p class="text-green-100 text-sm">هذا الشهر</p>
-          <p class="text-3xl font-bold mt-2" id="monthReportsCount">0</p>
-        </div>
-        <div class="bg-gradient-to-r from-orange-500 to-red-600 rounded-xl shadow-lg p-5 text-white">
-          <p class="text-orange-100 text-sm">العملاء</p>
-          <p class="text-3xl font-bold mt-2" id="clientsCount">0</p>
-        </div>
-      </div>
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="bg-white rounded-xl shadow-lg p-6">
-          <h2 class="text-xl font-bold text-gray-800 mb-4">➕ إضافة تقرير يدوي</h2>
-          <div class="space-y-3">
-            <div><label class="block text-gray-700 mb-1 text-sm font-semibold">اسم العميل</label><input type="text" id="clientName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"></div>
-            <div><label class="block text-gray-700 mb-1 text-sm font-semibold">عمر العميل</label><input type="number" id="clientAge" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"></div>
-            <div><label class="block text-gray-700 mb-1 text-sm font-semibold">محتوى التقرير</label><textarea id="reportContent" rows="5" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none" placeholder="اكتب التقرير..."></textarea></div>
-            <button onclick="submitReport()" class="btn w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-2.5 rounded-lg font-semibold hover:shadow-lg">💾 حفظ التقرير</button>
-          </div>
-        </div>
-        <div class="bg-white rounded-xl shadow-lg p-6">
-          <h2 class="text-xl font-bold text-gray-800 mb-4">📋 تقاريري الأخيرة</h2>
-          <div id="myReportsList" class="space-y-3 max-h-96 overflow-y-auto"></div>
-        </div>
-      </div>
+  <!-- منطقة المحادثة -->
+  <div id="chatContainer" class="wa-chat">
+    <div class="wa-bubble wa-bubble-bot">
+      أهلاً بك! 👋<br>
+      اكتب بيانات جلسة العميل بصيغة حرة، وسأساعدك في تنظيمها.<br>
+      <span class="text-xs text-gray-500 mt-2 block">مثال: "جلسة أحمد عمره 5 سنين اشتغلنا على نطق الراء وكان فيه تحسن"</span>
+      <span class="wa-time">الآن</span>
     </div>
   </div>
-</div>
+  <div id="typingIndicator" class="typing">يكتب...</div>
 
-<!-- Modal إضافة رقم -->
-<div id="addPhoneModal" class="modal">
-  <div class="modal-content">
-    <h3 class="text-2xl font-bold text-gray-800 mb-5">➕ إضافة رقم واتساب مصرح له</h3>
-    <div class="space-y-3">
-      <div>
-        <label class="block text-gray-700 mb-1 text-sm font-semibold">رقم الواتساب (بالصيغة الدولية)</label>
-        <input type="tel" id="newPhoneNumber" placeholder="201XXXXXXXXX" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none">
-        <p class="text-xs text-gray-500 mt-1">مثال: 201001234567 (بدون + أو 00)</p>
-      </div>
-      <div>
-        <label class="block text-gray-700 mb-1 text-sm font-semibold">اسم المختص / الموظف</label>
-        <input type="text" id="newPhoneOwner" placeholder="د. أحمد محمد" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none">
-      </div>
-      <div>
-        <label class="block text-gray-700 mb-1 text-sm font-semibold">ملاحظات (اختياري)</label>
-        <input type="text" id="newPhoneNotes" placeholder="مختص تخاطب - فرع القاهرة" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none">
-      </div>
-      <div class="flex gap-3 pt-3">
-        <button onclick="submitAddPhone()" class="btn flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-2.5 rounded-lg font-semibold">إضافة</button>
-        <button onclick="closeModal('addPhoneModal')" class="btn flex-1 bg-gray-200 text-gray-700 py-2.5 rounded-lg font-semibold">إلغاء</button>
-      </div>
-    </div>
+  <!-- منطقة الإدخال -->
+  <div class="wa-input-area">
+    <input type="text" id="messageInput" class="wa-input" placeholder="اكتب رسالة..." autocomplete="off">
+    <button onclick="sendMessage()" class="wa-btn">
+      <svg class="w-6 h-6 transform rotate-180" fill="currentColor" viewBox="0 0 24 24"><path d="M1.101 21.757 23.8 12.028 1.101 2.3l.011 7.912 13.623 1.816-13.623 1.817-.011 7.912z"/></svg>
+    </button>
   </div>
-</div>
-
-<!-- Modal إضافة مستخدم -->
-<div id="addUserModal" class="modal">
-  <div class="modal-content">
-    <h3 class="text-2xl font-bold text-gray-800 mb-5">➕ إضافة مستخدم جديد</h3>
-    <div class="space-y-3">
-      <div><label class="block text-gray-700 mb-1 text-sm font-semibold">الاسم الكامل</label><input type="text" id="newFullName" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
-      <div><label class="block text-gray-700 mb-1 text-sm font-semibold">اسم المستخدم</label><input type="text" id="newUsername" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
-      <div><label class="block text-gray-700 mb-1 text-sm font-semibold">كلمة المرور</label><input type="text" id="newPassword" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
-      <div><label class="block text-gray-700 mb-1 text-sm font-semibold">رقم الواتساب</label><input type="tel" id="newUserPhone" placeholder="201XXXXXXXXX" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
-      <div><label class="block text-gray-700 mb-1 text-sm font-semibold">الدور</label>
-        <select id="newRole" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg">
-          <option value="employee">موظف / مختص</option>
-          <option value="admin">مدير</option>
-        </select>
-      </div>
-      <div class="flex gap-3 pt-3">
-        <button onclick="submitAddUser()" class="btn flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-2.5 rounded-lg font-semibold">إضافة</button>
-        <button onclick="closeModal('addUserModal')" class="btn flex-1 bg-gray-200 text-gray-700 py-2.5 rounded-lg font-semibold">إلغاء</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal إضافة تقرير -->
-<div id="addReportModal" class="modal">
-  <div class="modal-content">
-    <h3 class="text-2xl font-bold text-gray-800 mb-5">➕ إضافة تقرير جديد</h3>
-    <div id="addReportForm" class="space-y-3"></div>
-    <div class="flex gap-3 pt-4" id="addReportActions">
-      <button onclick="submitNewReport()" class="btn flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-2.5 rounded-lg font-semibold">💾 حفظ</button>
-      <button onclick="closeModal('addReportModal')" class="btn flex-1 bg-gray-200 text-gray-700 py-2.5 rounded-lg font-semibold">إلغاء</button>
-    </div>
-  </div>
-</div>
-
-<!-- Modal عرض التقرير -->
-<div id="viewReportModal" class="modal">
-  <div class="modal-content" style="max-width: 900px;">
-    <div class="flex justify-between items-center mb-4 border-b pb-3">
-      <h3 class="text-2xl font-bold text-gray-800">📄 تفاصيل التقرير</h3>
-      <button onclick="closeModal('viewReportModal')" class="btn bg-gray-100 hover:bg-gray-200 w-10 h-10 rounded-full">✕</button>
-    </div>
-    <div id="reportDetails"></div>
-  </div>
-</div>
-
-<!-- Modal التقرير المجمع -->
-<div id="compiledModal" class="modal">
-  <div class="modal-content" style="max-width: 1000px;">
-    <div class="flex justify-between items-center mb-5 border-b pb-3">
-      <h3 class="text-2xl font-bold text-gray-800 flex items-center gap-2">📚 إنشاء تقرير مجمع</h3>
-      <div class="flex gap-2">
-        <button onclick="saveCompiledReport()" class="btn bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm">💾 حفظ</button>
-        <button onclick="closeModal('compiledModal')" class="btn bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg text-sm">✕</button>
-      </div>
-    </div>
-    <div class="mb-5">
-      <label class="block text-gray-700 mb-2 font-semibold">👤 اختر العميل:</label>
-      <select id="compiledClientSelect" onchange="generateCompiledReport()" class="w-full px-4 py-3 border-2 border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none">
-        <option value="">-- اختر عميل --</option>
-      </select>
-    </div>
-    <div id="compiledReportContent"></div>
-  </div>
-</div>
 
 <script>
 // ═══════════════════════════════════════════════════════════════
-// 🔧 نظام التخزين
+// ⚙️ إعدادات الربط - الرابط تم وضعه تلقائياً ✅
 // ═══════════════════════════════════════════════════════════════
-const DB = {
-  get(key) { try { const r = localStorage.getItem('takhatab_' + key); return r ? JSON.parse(r) : null; } catch(e) { return null; } },
-  set(key, value) { try { localStorage.setItem('takhatab_' + key, JSON.stringify(value)); return true; } catch(e) { return false; } }
-};
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwLkWFgdm_xlEO6YqWphO87XAS4XJCL-7YGb-JO_a4z5rg51z9SUIkvsqAkwvU3Qg6z/exec";
 
 // ═══════════════════════════════════════════════════════════════
-// 📦 البيانات الافتراضية
-// ═══════════════════════════════════════════════════════════════
-const DEFAULT_USERS = [
-  { id: 1, username: 'admin', password: 'admin123', fullName: 'المدير العام', phone: '201000000000', role: 'admin', active: true },
-  { id: 2, username: 'employee', password: '1234', fullName: 'أحمد المختص', phone: '201011111111', role: 'employee', active: true }
-];
-
-const DEFAULT_PHONES = [
-  { id: 1, phone: '201011111111', owner: 'أحمد المختص', notes: 'مختص تخاطب', active: true, createdAt: new Date().toISOString() },
-  { id: 2, phone: '201022222222', owner: 'سارة علي', notes: 'مختص نطق', active: true, createdAt: new Date().toISOString() }
-];
-
-const DEFAULT_TEMPLATE = {
-  fields: [
-    { id: 1, label: 'اسم العميل', type: 'text', required: true, botQuestion: 'اسم العميل إيه؟', aliases: ['العميل','الطفل','الابن','البنت'] },
-    { id: 2, label: 'عمر العميل', type: 'text', required: true, botQuestion: 'عمره كام؟', aliases: ['عمر','سن','سنة','سنين'] },
-    { id: 3, label: 'التشخيص', type: 'text', required: false, botQuestion: 'إيه التشخيص المسجل؟', aliases: ['تشخيص','حالة','مشكلة'] },
-    { id: 4, label: 'ملاحظات الجلسة', type: 'textarea', required: true, botQuestion: 'اكتب ملاحظات الجلسة', aliases: ['ملاحظات','جلسة','اشتغلنا','عملنا'] },
-    { id: 5, label: 'الخطة العلاجية', type: 'textarea', required: false, botQuestion: 'إيه الخطة العلاجية؟', aliases: ['خطة','علاج'] },
-    { id: 6, label: 'تقييم التقدم', type: 'select', required: false, options: ['ممتاز','جيد جداً','جيد','يحتاج تحسين'], botQuestion: 'تقييم التقدم إيه؟', aliases: ['تقييم','تقدم','تحسن'] }
-  ]
-};
-
-// ═══════════════════════════════════════════════════════════════
-// 🚀 التهيئة
-// ═══════════════════════════════════════════════════════════════
-function initializeData() {
-  if (!DB.get('users')) DB.set('users', DEFAULT_USERS);
-  if (!DB.get('reports')) DB.set('reports', []);
-  if (!DB.get('template')) DB.set('template', DEFAULT_TEMPLATE);
-  if (!DB.get('phones')) DB.set('phones', DEFAULT_PHONES);
-  if (!DB.get('compiledReports')) DB.set('compiledReports', []);
-}
-initializeData();
-
-// ═══════════════════════════════════════════════════════════════
-// 🎨 Toast
-// ═══════════════════════════════════════════════════════════════
-function showToast(message, type = 'info') {
-  const toast = document.createElement('div');
-  toast.className = `toast toast-${type}`;
-  toast.textContent = message;
-  document.body.appendChild(toast);
-  setTimeout(() => toast.remove(), 3000);
-}
-
-// ═══════════════════════════════════════════════════════════════
-// 🔐 تسجيل الدخول + حفظ الجلسة
-// ═══════════════════════════════════════════════════════════════
-let currentUser = null;
-
-function handleLogin() {
-  const username = document.getElementById('username').value.trim();
-  const password = document.getElementById('password').value;
-  const errorEl = document.getElementById('loginError');
-
-  if (!username || !password) {
-    errorEl.classList.remove('hidden');
-    errorEl.innerHTML = '❌ يرجى ملء جميع الحقول';
-    return;
-  }
-
-  const users = DB.get('users') || [];
-  const user = users.find(u => u.username === username && u.password === password && u.active !== false);
-
-  if (user) {
-    currentUser = user;
-    // حفظ الجلسة في localStorage
-    DB.set('currentSession', { userId: user.id, loginTime: new Date().toISOString() });
-    showDashboard();
-    showToast('✅ مرحباً ' + user.fullName, 'success');
-  } else {
-    errorEl.classList.remove('hidden');
-    errorEl.innerHTML = '❌ بيانات الدخول غير صحيحة';
-  }
-}
-
-function logout() {
-  currentUser = null;
-  DB.set('currentSession', null);
-  document.getElementById('loginPage').classList.remove('hidden');
-  document.getElementById('dashboard').classList.add('hidden');
-  document.getElementById('username').value = '';
-  document.getElementById('password').value = '';
-  showToast('تم تسجيل الخروج', 'info');
-}
-
-// استعادة الجلسة عند التحميل
-function restoreSession() {
-  const session = DB.get('currentSession');
-  if (!session || !session.userId) return false;
-  
-  const users = DB.get('users') || [];
-  const user = users.find(u => u.id === session.userId && u.active !== false);
-  
-  if (user) {
-    currentUser = user;
-    showDashboard();
-    return true;
-  }
-  return false;
-}
-
-function showDashboard() {
-  document.getElementById('loginPage').classList.add('hidden');
-  document.getElementById('dashboard').classList.remove('hidden');
-  document.getElementById('currentUser').textContent = currentUser.fullName;
-  document.getElementById('userRole').textContent = currentUser.role === 'admin' ? '👑 مدير' : '👤 موظف';
-  
-  if (currentUser.role === 'admin') {
-    document.getElementById('adminTabs').classList.remove('hidden');
-    document.getElementById('employeeView').classList.add('hidden');
-    showAdminTab('dashboard', document.querySelectorAll('.tab-btn')[0]);
-  } else {
-    document.getElementById('adminTabs').classList.add('hidden');
-    document.getElementById('employeeView').classList.remove('hidden');
-    loadEmployeeData();
-  }
-}
-
-document.getElementById('password').addEventListener('keypress', e => { if (e.key === 'Enter') handleLogin(); });
-document.getElementById('username').addEventListener('keypress', e => { if (e.key === 'Enter') handleLogin(); });
-
-// ═══════════════════════════════════════════════════════════════
-// 📑 التبويبات
-// ═══════════════════════════════════════════════════════════════
-function showAdminTab(tabName, btn) {
-  document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('tab-active'));
-  document.getElementById(tabName + 'Tab').classList.remove('hidden');
-  if (btn) btn.classList.add('tab-active');
-
-  if (tabName === 'dashboard') loadDashboardStats();
-  if (tabName === 'users') loadUsers();
-  if (tabName === 'template') loadTemplate();
-  if (tabName === 'reports') loadAllReports();
-  if (tabName === 'compiled') loadCompiledTab();
-  if (tabName === 'phones') loadPhones();
-}
-
-// ═══════════════════════════════════════════════════════════════
-// 📱 إدارة الأرقام المصرح لها
-// ═══════════════════════════════════════════════════════════════
-function loadPhones() {
-  const phones = DB.get('phones') || [];
-  const list = document.getElementById('phonesList');
-  
-  if (!phones.length) {
-    list.innerHTML = `
-      <div class="text-center py-12 bg-gray-50 rounded-lg">
-        <div class="text-6xl mb-4">📱</div>
-        <p class="text-gray-500 text-lg mb-2">لا توجد أرقام مصرح لها بعد</p>
-        <p class="text-gray-400 text-sm">أضف رقم واتساب المختصين لبدء استخدام النظام</p>
-      </div>
-    `;
-    return;
-  }
-
-  list.innerHTML = phones.map(p => `
-    <div class="phone-tag flex items-center justify-between">
-      <div class="flex items-center gap-4">
-        <div class="w-14 h-14 bg-gradient-to-r from-green-500 to-teal-600 rounded-full flex items-center justify-center text-white text-2xl">
-          📱
-        </div>
-        <div>
-          <h3 class="font-bold text-gray-800 text-lg">${p.owner}</h3>
-          <p class="text-blue-700 font-mono font-semibold">+${p.phone}</p>
-          ${p.notes ? `<p class="text-xs text-gray-500 mt-1">📝 ${p.notes}</p>` : ''}
-          <p class="text-xs text-gray-400 mt-1">أُضيف في: ${new Date(p.createdAt).toLocaleDateString('ar-EG')}</p>
-        </div>
-      </div>
-      <div class="flex gap-2">
-        <button onclick="testPhone('${p.phone}')" class="btn bg-blue-500 text-white px-3 py-2 rounded-lg text-sm hover:bg-blue-600">🧪 اختبار</button>
-        <button onclick="deletePhone(${p.id})" class="btn bg-red-500 text-white px-3 py-2 rounded-lg text-sm hover:bg-red-600">🗑️ حذف</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-function showAddPhoneModal() {
-  document.getElementById('addPhoneModal').classList.add('active');
-}
-
-function submitAddPhone() {
-  const phones = DB.get('phones') || [];
-  const phone = document.getElementById('newPhoneNumber').value.trim().replace(/[^0-9]/g, '');
-  const owner = document.getElementById('newPhoneOwner').value.trim();
-  const notes = document.getElementById('newPhoneNotes').value.trim();
-
-  if (!phone || !owner) {
-    showToast('❌ يرجى ملء الحقول المطلوبة', 'error');
-    return;
-  }
-
-  if (phone.length < 10) {
-    showToast('❌ رقم الهاتف غير صحيح', 'error');
-    return;
-  }
-
-  if (phones.some(p => p.phone === phone)) {
-    showToast('❌ هذا الرقم موجود بالفعل', 'error');
-    return;
-  }
-
-  phones.push({
-    id: Date.now(),
-    phone,
-    owner,
-    notes,
-    active: true,
-    createdAt: new Date().toISOString()
-  });
-
-  DB.set('phones', phones);
-  closeModal('addPhoneModal');
-  document.getElementById('newPhoneNumber').value = '';
-  document.getElementById('newPhoneOwner').value = '';
-  document.getElementById('newPhoneNotes').value = '';
-  loadPhones();
-  showToast('✅ تم إضافة الرقم بنجاح', 'success');
-}
-
-function deletePhone(id) {
-  if (!confirm('⚠️ هل أنت متأكد من حذف هذا الرقم؟')) return;
-  let phones = DB.get('phones') || [];
-  phones = phones.filter(p => p.id !== id);
-  DB.set('phones', phones);
-  loadPhones();
-  showToast('✅ تم الحذف', 'success');
-}
-
-function testPhone(phone) {
-  showToast(`🧪 تم إرسال رسالة اختبار إلى +${phone}`, 'info');
-  setTimeout(() => {
-    showToast(`✅ تم استلام الرسالة من +${phone} بنجاح`, 'success');
-  }, 1500);
-}
-
-// ═══════════════════════════════════════════════════════════════
-// 📊 إحصائيات الرئيسية
-// ═══════════════════════════════════════════════════════════════
-function loadDashboardStats() {
-  const reports = DB.get('reports') || [];
-  const users = DB.get('users') || [];
-  const compiled = DB.get('compiledReports') || [];
-  document.getElementById('statTotal').textContent = reports.filter(r => r.type !== 'compiled').length;
-  document.getElementById('statComplete').textContent = reports.filter(r => r.status === 'complete').length;
-  document.getElementById('statCompiled').textContent = compiled.length;
-  document.getElementById('statUsers').textContent = users.filter(u => u.active !== false).length;
-
-  const recent = reports.slice(-5).reverse();
-  document.getElementById('recentActivity').innerHTML = recent.length ? recent.map(r => `
-    <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-      <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold">${(r.clientName||'?').charAt(0)}</div>
-      <div class="flex-1">
-        <div class="font-semibold text-gray-800 text-sm">${r.clientName}</div>
-        <div class="text-xs text-gray-500">بواسطة ${r.employeeName} • ${new Date(r.date).toLocaleString('ar-EG')}</div>
-      </div>
-      <span class="status-badge ${r.type === 'compiled' ? 'status-compiled' : 'status-' + (r.status === 'complete' ? 'complete' : 'draft')}">${r.type === 'compiled' ? '📚 مجمع' : r.status === 'complete' ? '✓ مكتمل' : '⏳ مسودة'}</span>
-    </div>
-  `).join('') : '<p class="text-gray-500 text-center py-4">لا توجد نشاطات بعد</p>';
-
-  const clientCounts = {};
-  reports.filter(r => r.type !== 'compiled').forEach(r => {
-    const name = r.clientName;
-    if (name) clientCounts[name] = (clientCounts[name] || 0) + 1;
-  });
-  const sorted = Object.entries(clientCounts).sort((a,b) => b[1]-a[1]).slice(0, 5);
-  document.getElementById('topClients').innerHTML = sorted.length ? sorted.map(([name, count]) => `
-    <div class="bg-gray-50 rounded-lg p-3">
-      <div class="flex justify-between items-center mb-2">
-        <span class="font-semibold text-gray-800">${name}</span>
-        <span class="text-sm text-purple-600 font-bold">${count} جلسة</span>
-      </div>
-      <button onclick="openCompiledForClient('${name.replace(/'/g,"\\'")}')" class="btn text-xs text-purple-600 hover:text-purple-800">📚 عرض التقرير المجمع ←</button>
-    </div>
-  `).join('') : '<p class="text-gray-500 text-center py-4">لا توجد بيانات</p>';
-}
-
-// ═══════════════════════════════════════════════════════════════
-// 👥 إدارة المستخدمين
-// ═══════════════════════════════════════════════════════════════
-function loadUsers() {
-  const users = DB.get('users') || [];
-  const list = document.getElementById('usersList');
-  if (!users.length) { list.innerHTML = '<p class="text-gray-500 text-center py-8">لا يوجد مستخدمين</p>'; return; }
-
-  list.innerHTML = users.map(u => `
-    <div class="bg-gray-50 rounded-lg p-4 flex items-center justify-between card-hover ${u.active === false ? 'opacity-50' : ''}">
-      <div class="flex items-center">
-        <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold ml-3">${u.fullName.charAt(0)}</div>
-        <div>
-          <h3 class="font-semibold text-gray-800">${u.fullName} ${u.active === false ? '<span class="text-xs text-red-500">(معطل)</span>' : ''}</h3>
-          <p class="text-sm text-gray-600">@${u.username} • ${u.role === 'admin' ? '👑 مدير' : '👤 موظف'}</p>
-          ${u.phone ? `<p class="text-xs text-gray-500">📱 +${u.phone}</p>` : ''}
-        </div>
-      </div>
-      <div class="flex gap-2">
-        <button onclick="toggleUser(${u.id})" class="btn ${u.active === false ? 'bg-green-500' : 'bg-yellow-500'} text-white px-3 py-1.5 rounded-lg text-sm">${u.active === false ? '✓ تفعيل' : '⏸ تعطيل'}</button>
-        ${u.username !== 'admin' ? `
-          <button onclick="editUser(${u.id})" class="btn bg-blue-500 text-white px-3 py-1.5 rounded-lg text-sm">تعديل</button>
-          <button onclick="deleteUser(${u.id})" class="btn bg-red-500 text-white px-3 py-1.5 rounded-lg text-sm">حذف</button>
-        ` : '<span class="text-gray-400 text-xs">رئيسي</span>'}
-      </div>
-    </div>
-  `).join('');
-}
-
-function showAddUserModal() { document.getElementById('addUserModal').classList.add('active'); }
-function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-
-function submitAddUser() {
-  const users = DB.get('users') || [];
-  const username = document.getElementById('newUsername').value.trim();
-  const password = document.getElementById('newPassword').value;
-  const fullName = document.getElementById('newFullName').value.trim();
-  const phone = document.getElementById('newUserPhone').value.trim().replace(/[^0-9]/g, '');
-  const role = document.getElementById('newRole').value;
-
-  if (!username || !password || !fullName) { showToast('❌ يرجى ملء الحقول المطلوبة', 'error'); return; }
-  if (users.some(u => u.username === username)) { showToast('❌ اسم المستخدم موجود', 'error'); return; }
-
-  users.push({ id: Date.now(), username, password, fullName, phone, role, active: true });
-  DB.set('users', users);
-  closeModal('addUserModal');
-  ['newUsername','newPassword','newFullName','newUserPhone'].forEach(id => document.getElementById(id).value = '');
-  loadUsers();
-  showToast('✅ تم إضافة المستخدم', 'success');
-}
-
-function editUser(id) {
-  const users = DB.get('users') || [];
-  const user = users.find(u => u.id === id);
-  if (!user) return;
-  const newFullName = prompt('الاسم الكامل:', user.fullName); if (newFullName === null) return;
-  const newPhone = prompt('رقم الواتساب:', user.phone || ''); if (newPhone === null) return;
-  user.fullName = newFullName || user.fullName;
-  user.phone = newPhone.replace(/[^0-9]/g, '');
-  DB.set('users', users);
-  loadUsers();
-  showToast('✅ تم التعديل', 'success');
-}
-
-function deleteUser(id) {
-  if (!confirm('⚠️ هل أنت متأكد من حذف هذا المستخدم؟')) return;
-  let users = DB.get('users') || [];
-  users = users.filter(u => u.id !== id);
-  DB.set('users', users);
-  loadUsers();
-  showToast('✅ تم الحذف', 'success');
-}
-
-function toggleUser(id) {
-  const users = DB.get('users') || [];
-  const user = users.find(u => u.id === id);
-  if (!user) return;
-  if (user.username === 'admin') { showToast('❌ لا يمكن تعطيل الحساب الرئيسي', 'error'); return; }
-  user.active = user.active === false ? true : false;
-  DB.set('users', users);
-  loadUsers();
-  showToast(user.active ? '✅ تم التفعيل' : '⏸ تم التعطيل', 'info');
-}
-
-// ═══════════════════════════════════════════════════════════════
-// 📝 نموذج التقرير
-// ═══════════════════════════════════════════════════════════════
-function loadTemplate() {
-  const template = DB.get('template') || DEFAULT_TEMPLATE;
-  const form = document.getElementById('templateForm');
-  if (!template.fields || !template.fields.length) { form.innerHTML = '<p class="text-gray-500 text-center py-8">لا توجد حقول</p>'; return; }
-  form.innerHTML = template.fields.map((f, i) => `
-    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
-      <div class="flex items-center justify-between mb-3">
-        <div class="flex items-center gap-2">
-          <h4 class="font-semibold text-gray-800">حقل ${i+1}</h4>
-          ${f.required ? '<span class="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded">مطلوب</span>' : ''}
-        </div>
-        <button onclick="removeField(${i})" class="btn text-red-500 hover:text-red-700">🗑️</button>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div><label class="block text-xs text-gray-600 mb-1">اسم الحقل</label><input type="text" value="${f.label}" onchange="updateField(${i}, 'label', this.value)" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"></div>
-        <div><label class="block text-xs text-gray-600 mb-1">النوع</label>
-          <select onchange="updateField(${i}, 'type', this.value)" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
-            <option value="text" ${f.type==='text'?'selected':''}>نص</option>
-            <option value="number" ${f.type==='number'?'selected':''}>رقم</option>
-            <option value="textarea" ${f.type==='textarea'?'selected':''}>نص طويل</option>
-            <option value="select" ${f.type==='select'?'selected':''}>قائمة</option>
-          </select>
-        </div>
-        <div><label class="block text-xs text-gray-600 mb-1">سؤال البوت</label><input type="text" value="${f.botQuestion || ''}" onchange="updateField(${i}, 'botQuestion', this.value)" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"></div>
-        <div><label class="block text-xs text-gray-600 mb-1">كلمات بديلة (مفصولة بفاصلة)</label><input type="text" value="${(f.aliases||[]).join(',')}" onchange="updateField(${i}, 'aliases', this.value.split(',').map(s=>s.trim()).filter(Boolean))" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"></div>
-        <div class="flex items-center"><label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" ${f.required?'checked':''} onchange="updateField(${i}, 'required', this.checked)" class="w-4 h-4"><span class="text-sm text-gray-700">حقل مطلوب</span></label></div>
-        ${f.type === 'select' ? `<div><label class="block text-xs text-gray-600 mb-1">الخيارات (مفصولة بفاصلة)</label><input type="text" value="${(f.options||[]).join(',')}" onchange="updateField(${i}, 'options', this.value.split(',').map(s=>s.trim()))" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"></div>` : ''}
-      </div>
-    </div>
-  `).join('');
-}
-
-function addField() {
-  const template = DB.get('template') || DEFAULT_TEMPLATE;
-  template.fields.push({ id: Date.now(), label: 'حقل جديد', type: 'text', required: false, botQuestion: '', aliases: [] });
-  DB.set('template', template);
-  loadTemplate();
-  showToast('✅ تم إضافة الحقل', 'success');
-}
-
-function updateField(i, prop, val) {
-  const template = DB.get('template') || DEFAULT_TEMPLATE;
-  template.fields[i][prop] = val;
-  DB.set('template', template);
-}
-
-function removeField(i) {
-  if (!confirm('حذف هذا الحقل؟')) return;
-  const template = DB.get('template') || DEFAULT_TEMPLATE;
-  template.fields.splice(i, 1);
-  DB.set('template', template);
-  loadTemplate();
-  showToast('✅ تم الحذف', 'success');
-}
-
-function saveTemplate() { showToast('✅ تم حفظ النموذج بنجاح', 'success'); }
-
-// ═══════════════════════════════════════════════════════════════
-// 📋 التقارير
-// ═══════════════════════════════════════════════════════════════
-function loadAllReports() {
-  const reports = DB.get('reports') || [];
-  const search = (document.getElementById('reportSearch')?.value || '').toLowerCase();
-  const filter = document.getElementById('reportFilter')?.value || 'all';
-  const list = document.getElementById('allReportsList');
-
-  let filtered = reports.filter(r => {
-    const matchSearch = !search || (r.clientName||'').toLowerCase().includes(search) || (r.employeeName||'').toLowerCase().includes(search) || (r.reportNumber||'').toLowerCase().includes(search);
-    const matchFilter = filter === 'all' || r.status === filter || (filter === 'compiled' && r.type === 'compiled');
-    return matchSearch && matchFilter;
-  });
-
-  if (!filtered.length) { list.innerHTML = '<p class="text-gray-500 text-center py-8">لا توجد تقارير</p>'; return; }
-
-  list.innerHTML = filtered.slice().reverse().map(r => `
-    <div class="report-card bg-white rounded-lg p-4 shadow-sm">
-      <div class="flex justify-between items-start gap-3 flex-wrap">
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center gap-2 mb-1 flex-wrap">
-            <h3 class="font-bold text-gray-800">${r.type === 'compiled' ? '📚 ' : ''}${r.clientName}</h3>
-            <span class="status-badge ${r.type === 'compiled' ? 'status-compiled' : 'status-' + (r.status === 'complete' ? 'complete' : 'draft')}">${r.type === 'compiled' ? '📚 مجمع' : r.status === 'complete' ? '✓ مكتمل' : '⏳ مسودة'}</span>
-            <span class="text-xs text-gray-500">#${r.reportNumber}</span>
-          </div>
-          <p class="text-sm text-gray-600">بواسطة: ${r.employeeName} • ${new Date(r.date).toLocaleString('ar-EG')}</p>
-          ${r.clientAge && r.type !== 'compiled' ? `<p class="text-xs text-gray-500 mt-1">العمر: ${r.clientAge}</p>` : ''}
-        </div>
-        <div class="flex gap-2">
-          <button onclick="viewReport(${r.id})" class="btn bg-purple-500 text-white px-3 py-1.5 rounded-lg text-sm">👁️ عرض</button>
-          <button onclick="deleteReport(${r.id})" class="btn bg-red-500 text-white px-3 py-1.5 rounded-lg text-sm">🗑️</button>
-        </div>
-      </div>
-    </div>
-  `).join('');
-}
-
-function viewReport(id) {
-  const reports = DB.get('reports') || [];
-  const r = reports.find(x => x.id === id);
-  if (!r) return;
-
-  const content = document.getElementById('reportDetails');
-  content.innerHTML = `
-    <div class="space-y-4">
-      <div class="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg p-4 border border-purple-200">
-        <div class="flex items-center justify-between mb-2">
-          <h4 class="font-bold text-gray-800">📋 معلومات أساسية</h4>
-          <span class="status-badge status-${r.status === 'complete' ? 'complete' : 'draft'}">#${r.reportNumber}</span>
-        </div>
-        <div class="grid grid-cols-2 gap-2 text-sm">
-          <div><span class="text-gray-500">العميل:</span> <b>${r.clientName||'-'}</b></div>
-          <div><span class="text-gray-500">العمر:</span> <b>${r.clientAge||'-'}</b></div>
-          <div><span class="text-gray-500">الموظف:</span> <b>${r.employeeName}</b></div>
-          <div><span class="text-gray-500">التاريخ:</span> <b>${new Date(r.date).toLocaleString('ar-EG')}</b></div>
-        </div>
-      </div>
-      <div class="bg-white rounded-lg p-4 border">
-        <h4 class="font-bold text-gray-800 mb-3">📝 البيانات المنظمة</h4>
-        ${r.formattedData ? Object.entries(r.formattedData).map(([k,v]) => v ? `<div class="mb-2 pb-2 border-b border-gray-100"><div class="text-xs text-gray-500">${k}</div><div class="text-gray-800">${v}</div></div>` : '').join('') : '<p class="text-gray-500 text-sm">لا توجد بيانات</p>'}
-      </div>
-      ${r.originalContent ? `<div class="bg-yellow-50 rounded-lg p-4 border border-yellow-200"><h4 class="font-bold text-gray-800 mb-2">💬 الرسالة الأصلية</h4><p class="text-gray-700 whitespace-pre-wrap text-sm">${r.originalContent}</p></div>` : ''}
-    </div>
-  `;
-  document.getElementById('viewReportModal').classList.add('active');
-}
-
-function deleteReport(id) {
-  if (!confirm('⚠️ هل أنت متأكد من حذف هذا التقرير؟')) return;
-  let reports = DB.get('reports') || [];
-  reports = reports.filter(x => x.id !== id);
-  DB.set('reports', reports);
-  loadAllReports();
-  closeModal('viewReportModal');
-  showToast('✅ تم الحذف', 'success');
-}
-
-function showAddReportModal() {
-  const template = DB.get('template') || DEFAULT_TEMPLATE;
-  const form = document.getElementById('addReportForm');
-  form.innerHTML = `
-    <div><label class="block text-gray-700 mb-1 text-sm font-semibold">اسم العميل *</label><input type="text" id="editClientName" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
-    <div><label class="block text-gray-700 mb-1 text-sm font-semibold">العمر</label><input type="text" id="editClientAge" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></div>
-    ${template.fields.filter(f => !['اسم العميل','عمر العميل'].includes(f.label)).map(f => `
-      <div><label class="block text-gray-700 mb-1 text-sm font-semibold">${f.label}</label>
-        ${f.type === 'textarea' ? `<textarea id="editField_${f.id}" rows="3" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"></textarea>` :
-          f.type === 'select' ? `<select id="editField_${f.id}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg"><option value="">-- اختر --</option>${(f.options||[]).map(o => `<option value="${o}">${o}</option>`).join('')}</select>` :
-          `<input type="text" id="editField_${f.id}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg">`}
-      </div>
-    `).join('')}
-  `;
-  document.getElementById('addReportModal').classList.add('active');
-}
-
-function submitNewReport() {
-  const template = DB.get('template') || DEFAULT_TEMPLATE;
-  const clientName = document.getElementById('editClientName').value.trim();
-  if (!clientName) { showToast('❌ اسم العميل مطلوب', 'error'); return; }
-
-  const formattedData = {};
-  template.fields.forEach(f => {
-    const el = document.getElementById('editField_' + f.id);
-    if (el) formattedData[f.label] = el.value.trim();
-  });
-
-  const reports = DB.get('reports') || [];
-  const reportNumber = 'R-' + Date.now().toString().slice(-6);
-  reports.push({
-    id: Date.now(), reportNumber,
-    employeeId: currentUser.id, employeeName: currentUser.fullName,
-    clientName, clientAge: document.getElementById('editClientAge').value.trim(),
-    formattedData, originalContent: '',
-    date: new Date().toISOString(), status: 'complete', source: 'manual', type: 'regular'
-  });
-  DB.set('reports', reports);
-  closeModal('addReportModal');
-  loadAllReports();
-  showToast(`✅ تم حفظ التقرير #${reportNumber}`, 'success');
-}
-
-// ═══════════════════════════════════════════════════════════════
-// 📚 التقارير المجمّعة
-// ═══════════════════════════════════════════════════════════════
-function getUniqueClients() {
-  const reports = DB.get('reports') || [];
-  const clientMap = {};
-  reports.filter(r => r.type !== 'compiled' && r.clientName).forEach(r => {
-    const name = r.clientName;
-    if (!clientMap[name]) {
-      clientMap[name] = { name, sessions: [], firstDate: r.date, lastDate: r.date };
-    }
-    clientMap[name].sessions.push(r);
-    if (new Date(r.date) < new Date(clientMap[name].firstDate)) clientMap[name].firstDate = r.date;
-    if (new Date(r.date) > new Date(clientMap[name].lastDate)) clientMap[name].lastDate = r.date;
-  });
-  return Object.values(clientMap).map(c => ({
-    ...c,
-    sessionCount: c.sessions.length,
-    sessions: c.sessions.sort((a,b) => new Date(a.date) - new Date(b.date))
-  })).sort((a,b) => b.sessionCount - a.sessionCount);
-}
-
-function loadCompiledTab() {
-  const compiled = DB.get('compiledReports') || [];
-  const list = document.getElementById('compiledReportsList');
-  const clients = getUniqueClients();
-
-  let html = '';
-
-  if (compiled.length) {
-    html += `<div class="mb-6">
-      <h3 class="text-lg font-bold text-gray-800 mb-3">💾 التقارير المجمّعة المحفوظة (${compiled.length})</h3>
-      <div class="space-y-3">
-        ${compiled.slice().reverse().map(r => `
-          <div class="bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-lg p-4">
-            <div class="flex justify-between items-start flex-wrap gap-3">
-              <div class="flex-1">
-                <div class="flex items-center gap-2 mb-2">
-                  <h4 class="font-bold text-gray-800 text-lg">📚 ${r.clientName}</h4>
-                  <span class="status-badge status-compiled">مجمع</span>
-                  <span class="text-xs text-gray-500">#${r.reportNumber}</span>
-                </div>
-                <p class="text-sm text-gray-600">📊 ${r.sessionCount || 0} جلسة • من ${r.dateRange?.from || '-'} إلى ${r.dateRange?.to || '-'}</p>
-              </div>
-              <button onclick="viewCompiledSaved(${r.id})" class="btn bg-purple-500 text-white px-3 py-1.5 rounded-lg text-sm">👁️ عرض</button>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-    </div>`;
-  }
-
-  html += `<div>
-    <h3 class="text-lg font-bold text-gray-800 mb-3">👥 العملاء (لإنشاء تقرير مجمع جديد)</h3>`;
-  
-  if (!clients.length) {
-    html += '<p class="text-gray-500 text-center py-8 bg-gray-50 rounded-lg">لا يوجد عملاء بعد</p>';
-  } else {
-    html += `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-      ${clients.map(c => `
-        <div class="bg-white border-2 border-gray-200 hover:border-purple-400 rounded-lg p-4 card-hover cursor-pointer" onclick="openCompiledForClient('${c.name.replace(/'/g,"\\'")}')">
-          <div class="flex items-center gap-3 mb-3">
-            <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-xl">${c.name.charAt(0)}</div>
-            <div class="flex-1 min-w-0">
-              <h4 class="font-bold text-gray-800 truncate">${c.name}</h4>
-              <p class="text-xs text-gray-500">${c.sessionCount} جلسة</p>
-            </div>
-          </div>
-          <button class="btn w-full mt-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white py-2 rounded-lg text-sm font-semibold">📚 إنشاء تقرير مجمع</button>
-        </div>
-      `).join('')}
-    </div>`;
-  }
-  html += '</div>';
-
-  list.innerHTML = html;
-}
-
-function openCompiledForClient(clientName) {
-  showCompiledReportModal();
-  setTimeout(() => {
-    const select = document.getElementById('compiledClientSelect');
-    select.value = clientName;
-    generateCompiledReport();
-  }, 100);
-}
-
-function showCompiledReportModal() {
-  const clients = getUniqueClients();
-  const select = document.getElementById('compiledClientSelect');
-  select.innerHTML = '<option value="">-- اختر عميل --</option>' + 
-    clients.map(c => `<option value="${c.name.replace(/"/g,'&quot;')}">${c.name} (${c.sessionCount} جلسة)</option>`).join('');
-  document.getElementById('compiledReportContent').innerHTML = '<p class="text-gray-500 text-center py-8">اختر عميلاً لعرض تقريره المجمع</p>';
-  document.getElementById('compiledModal').classList.add('active');
-}
-
-function generateCompiledReport() {
-  const clientName = document.getElementById('compiledClientSelect').value;
-  const container = document.getElementById('compiledReportContent');
-  if (!clientName) { container.innerHTML = '<p class="text-gray-500 text-center py-8">اختر عميلاً</p>'; return; }
-
-  const clients = getUniqueClients();
-  const client = clients.find(c => c.name === clientName);
-  if (!client) return;
-
-  const sessions = client.sessions;
-  const firstDate = new Date(client.firstDate);
-  const lastDate = new Date(client.lastDate);
-  const daysDiff = Math.ceil((lastDate - firstDate) / (1000 * 60 * 60 * 24)) + 1;
-
-  container.innerHTML = `
-    <div class="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl p-6 mb-6">
-      <h2 class="text-3xl font-bold mb-2">📚 ${client.name}</h2>
-      <p class="opacity-90">${sessions.length} جلسة • ${daysDiff} يوم متابعة</p>
-    </div>
-    <div class="space-y-3">
-      ${sessions.map((s, i) => `
-        <div class="bg-white border rounded-lg p-4">
-          <div class="flex justify-between mb-2">
-            <h4 class="font-bold">الجلسة ${i+1}</h4>
-            <span class="text-xs text-gray-500">${new Date(s.date).toLocaleString('ar-EG')}</span>
-          </div>
-          ${s.formattedData ? Object.entries(s.formattedData).map(([k,v]) => v ? `<div class="text-sm mb-1"><b>${k}:</b> ${v}</div>` : '').join('') : '<p class="text-gray-500 text-sm">لا توجد بيانات</p>'}
-        </div>
-      `).join('')}
-    </div>
-  `;
-}
-
-function saveCompiledReport() {
-  const clientName = document.getElementById('compiledClientSelect').value;
-  if (!clientName) { showToast('❌ اختر عميلاً أولاً', 'error'); return; }
-  
-  const clients = getUniqueClients();
-  const client = clients.find(c => c.name === clientName);
-  if (!client) return;
-
-  const compiled = DB.get('compiledReports') || [];
-  const reportNumber = 'C-' + Date.now().toString().slice(-6);
-
-  compiled.push({
-    id: Date.now(),
-    reportNumber,
-    clientName,
-    sessionCount: client.sessionCount,
-    dateRange: {
-      from: new Date(client.firstDate).toLocaleDateString('ar-EG'),
-      to: new Date(client.lastDate).toLocaleDateString('ar-EG')
-    },
-    content: document.getElementById('compiledReportContent').innerHTML,
-    date: new Date().toISOString()
-  });
-
-  DB.set('compiledReports', compiled);
-  showToast(`✅ تم حفظ التقرير المجمع #${reportNumber}`, 'success');
-  closeModal('compiledModal');
-  loadCompiledTab();
-}
-
-function viewCompiledSaved(id) {
-  const compiled = DB.get('compiledReports') || [];
-  const report = compiled.find(r => r.id === id);
-  if (!report) return;
-  document.getElementById('reportDetails').innerHTML = report.content;
-  document.getElementById('viewReportModal').classList.add('active');
-}
-
-// ═══════════════════════════════════════════════════════════════
-// 👤 واجهة الموظف
-// ═══════════════════════════════════════════════════════════════
-function loadEmployeeData() {
-  const reports = DB.get('reports') || [];
-  const myReports = reports.filter(r => r.employeeId === currentUser.id && r.type !== 'compiled');
-  document.getElementById('myReportsCount').textContent = myReports.length;
-  document.getElementById('monthReportsCount').textContent = myReports.filter(r => {
-    const d = new Date(r.date), n = new Date();
-    return d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear();
-  }).length;
-  document.getElementById('clientsCount').textContent = new Set(myReports.map(r => r.clientName)).size;
-
-  const list = document.getElementById('myReportsList');
-  if (!myReports.length) { list.innerHTML = '<p class="text-gray-500 text-center py-8">لا توجد تقارير</p>'; return; }
-  list.innerHTML = myReports.slice(-5).reverse().map(r => `
-    <div class="bg-gray-50 rounded-lg p-3 report-card">
-      <div class="flex justify-between items-start">
-        <div>
-          <h3 class="font-semibold text-gray-800 text-sm">${r.clientName}</h3>
-          <p class="text-xs text-gray-500">#${r.reportNumber} • ${new Date(r.date).toLocaleDateString('ar-EG')}</p>
-        </div>
-        <span class="status-badge status-${r.status === 'complete' ? 'complete' : 'draft'} text-xs">${r.status === 'complete' ? '✓' : '⏳'}</span>
-      </div>
-    </div>
-  `).join('');
-}
-
-function submitReport() {
-  const clientName = document.getElementById('clientName').value.trim();
-  const content = document.getElementById('reportContent').value.trim();
-  if (!clientName || !content) { showToast('❌ يرجى ملء الحقول', 'error'); return; }
-
-  const reports = DB.get('reports') || [];
-  const reportNumber = 'R-' + Date.now().toString().slice(-6);
-  reports.push({
-    id: Date.now(), reportNumber,
-    employeeId: currentUser.id, employeeName: currentUser.fullName,
-    clientName, clientAge: document.getElementById('clientAge').value,
-    originalContent: content, formattedData: {},
-    date: new Date().toISOString(), status: 'complete', source: 'manual', type: 'regular'
-  });
-  DB.set('reports', reports);
-  ['clientName','clientAge','reportContent'].forEach(id => document.getElementById(id).value = '');
-  loadEmployeeData();
-  showToast(`✅ تم حفظ التقرير #${reportNumber}`, 'success');
-}
-
-// ═══════════════════════════════════════════════════════════════
-// 🤖 محرك الذكاء الاصطناعي
+// 🧠 محرك الذكاء الاصطناعي
 // ═══════════════════════════════════════════════════════════════
 const AIEngine = {
   normalizeArabicNumbers(text) {
@@ -1222,9 +91,16 @@ const AIEngine = {
     if (/ضعف|مش\s*كويس/i.test(text)) return 'يحتاج تحسين';
     return null;
   },
-  extractAll(text, template) {
+  extractAll(text) {
     const data = {};
-    template.fields.forEach(f => {
+    const fields = [
+      { label: 'اسم العميل' }, { label: 'عمر العميل' },
+      { label: 'التشخيص', aliases: ['تشخيص','حالة','مشكلة'] },
+      { label: 'ملاحظات الجلسة', aliases: ['ملاحظات','جلسة','اشتغلنا','عملنا'] },
+      { label: 'تقييم التقدم', aliases: ['تقييم','تقدم','تحسن'] }
+    ];
+    
+    fields.forEach(f => {
       if (f.label === 'اسم العميل') data[f.label] = this.extractClientName(text);
       else if (f.label === 'عمر العميل') data[f.label] = this.extractAge(text);
       else if (f.label === 'ملاحظات الجلسة') data[f.label] = this.extractSessionNotes(text);
@@ -1240,177 +116,167 @@ const AIEngine = {
     });
     return data;
   },
-  checkCompleteness(data, template) {
-    const missing = template.fields.filter(f => f.required && !data[f.label]);
+  checkCompleteness(data) {
+    const missing = [];
+    if (!data['اسم العميل']) missing.push('اسم العميل');
+    if (!data['عمر العميل']) missing.push('عمر العميل');
+    if (!data['ملاحظات الجلسة']) missing.push('ملاحظات الجلسة');
     return { complete: missing.length === 0, missing };
   }
 };
 
 // ═══════════════════════════════════════════════════════════════
-// 💬 بوت الواتساب
+// 💬 إدارة المحادثة
 // ═══════════════════════════════════════════════════════════════
-let waSession = { state: 'idle', extractedData: {}, currentQuestion: null };
+let session = { state: 'idle', extractedData: {}, currentQuestion: null };
 
-function resetWhatsAppChat() {
-  waSession = { state: 'idle', extractedData: {}, currentQuestion: null };
-  const chat = document.getElementById('whatsappChat');
-  chat.innerHTML = `
-    <div class="wa-bubble-bot">
-      <div class="font-bold text-green-700 mb-1">🤖 المساعد الذكي</div>
-      أهلاً! أرسل لي بيانات جلسة العميل بصيغة حرة.
-      <span class="wa-time">الآن</span>
-    </div>
-  `;
+function getTime() {
+  return new Date().toLocaleTimeString('ar-EG', {hour: '2-digit', minute: '2-digit'});
 }
 
-function quickSend(text) { document.getElementById('whatsappInput').value = text; sendWhatsAppMessage(); }
-function getTime() { return new Date().toLocaleTimeString('ar-EG', {hour: '2-digit', minute: '2-digit'}); }
-
-function addWABubble(type, content, isHTML = false) {
-  const chat = document.getElementById('whatsappChat');
+function addBubble(type, content, isHTML = false) {
+  const chat = document.getElementById('chatContainer');
   const bubble = document.createElement('div');
-  bubble.className = type === 'user' ? 'wa-bubble-user' : type === 'bot' ? 'wa-bubble-bot' : 'wa-bubble-draft';
+  bubble.className = `wa-bubble wa-bubble-${type}`;
   bubble.innerHTML = (isHTML ? content : content.replace(/\n/g, '<br>')) + `<span class="wa-time">${getTime()}</span>`;
   chat.appendChild(bubble);
   chat.scrollTop = chat.scrollHeight;
 }
 
-function sendWhatsAppMessage() {
-  const input = document.getElementById('whatsappInput');
-  const text = input.value.trim();
-  if (!text) return;
-  addWABubble('user', text);
-  input.value = '';
-  setTimeout(() => processWhatsAppInput(text), 500);
+function showTyping(show) {
+  document.getElementById('typingIndicator').style.display = show ? 'block' : 'none';
 }
 
-function processWhatsAppInput(text) {
-  const template = DB.get('template') || DEFAULT_TEMPLATE;
+function sendMessage() {
+  const input = document.getElementById('messageInput');
+  const text = input.value.trim();
+  if (!text) return;
+  
+  addBubble('user', text);
+  input.value = '';
+  
+  showTyping(true);
+  setTimeout(() => {
+    processInput(text);
+    showTyping(false);
+  }, 800);
+}
 
-  if (/^(مساعدة|المساعدة)$/i.test(text.trim())) {
-    addWABubble('bot', '📖 الأوامر المتاحة:\n• إرسال بيانات جلسة\n• التقارير\n• إحصائيات\n• إلغاء');
-    return;
-  }
-
-  if (/^(التقارير|تقارير)$/i.test(text.trim())) {
-    const reports = DB.get('reports') || [];
-    if (!reports.length) { addWABubble('bot', '📋 لا توجد تقارير بعد'); return; }
-    const last = reports.slice(-5).reverse();
-    let msg = '📋 آخر التقارير:\n\n';
-    last.forEach(r => { msg += `• ${r.clientName} - #${r.reportNumber}\n`; });
-    addWABubble('bot', msg);
-    return;
-  }
-
-  if (/^(إحصائيات|احصائيات)$/i.test(text.trim())) {
-    const reports = DB.get('reports') || [];
-    addWABubble('bot', `📊 إحصائيات:\n• إجمالي: ${reports.length}\n• مكتملة: ${reports.filter(r=>r.status==='complete').length}`);
-    return;
-  }
-
+function processInput(text) {
   if (/^(إلغاء|الغاء)$/i.test(text.trim())) {
-    if (waSession.state !== 'idle') {
-      waSession = { state: 'idle', extractedData: {}, currentQuestion: null };
-      addWABubble('bot', '✅ تم إلغاء التقرير الحالي.');
-    } else {
-      addWABubble('bot', '💡 لا يوجد تقرير قيد الإنشاء.');
-    }
+    session = { state: 'idle', extractedData: {}, currentQuestion: null };
+    addBubble('bot', '✅ تم إلغاء التقرير الحالي.');
     return;
   }
 
-  if (waSession.state === 'collecting' && waSession.currentQuestion) {
-    const field = waSession.currentQuestion;
+  if (session.state === 'collecting' && session.currentQuestion) {
+    const field = session.currentQuestion;
     let value = text.trim();
     
-    if (field.label === 'عمر العميل') {
+    if (field === 'عمر العميل') {
       const age = AIEngine.extractAge(text) || AIEngine.normalizeArabicNumbers(text).match(/(\d+)/)?.[1];
       if (age) value = age + ' سنة';
     }
 
-    waSession.extractedData[field.label] = value;
-    waSession.currentQuestion = null;
-    addWABubble('bot', `✅ تم: ${field.label} = ${value}`);
+    session.extractedData[field] = value;
+    session.currentQuestion = null;
+    addBubble('bot', `✅ تم تسجيل: ${field} = ${value}`);
 
-    const { complete, missing } = AIEngine.checkCompleteness(waSession.extractedData, template);
-    if (complete) showDraftPreview(); else askNextMissing(missing);
+    const { complete, missing } = AIEngine.checkCompleteness(session.extractedData);
+    if (complete) setTimeout(() => showDraftPreview(), 500); 
+    else setTimeout(() => askNextMissing(missing), 500);
     return;
   }
 
-  const extracted = AIEngine.extractAll(text, template);
-  Object.keys(extracted).forEach(k => { if (extracted[k]) waSession.extractedData[k] = extracted[k]; });
+  const extracted = AIEngine.extractAll(text);
+  Object.keys(extracted).forEach(k => { if (extracted[k]) session.extractedData[k] = extracted[k]; });
 
   const extractedCount = Object.values(extracted).filter(v => v).length;
   
   if (extractedCount > 0) {
-    waSession.state = 'collecting';
-    let msg = '🤖 تم استخراج:\n\n';
+    session.state = 'collecting';
+    let msg = '🤖 فهمت منك:\n\n';
     Object.entries(extracted).forEach(([k,v]) => { if (v) msg += `✓ ${k}: ${v}\n`; });
-    addWABubble('bot', msg);
+    addBubble('bot', msg);
 
-    const { complete, missing } = AIEngine.checkCompleteness(waSession.extractedData, template);
-    if (complete) setTimeout(() => showDraftPreview(), 800); else setTimeout(() => askNextMissing(missing), 800);
+    const { complete, missing } = AIEngine.checkCompleteness(session.extractedData);
+    if (complete) setTimeout(() => showDraftPreview(), 800); 
+    else setTimeout(() => askNextMissing(missing), 800);
   } else {
-    addWABubble('bot', '🤔 لم أتمكن من استخراج بيانات. حاول إرسال معلومات أكثر.');
+    addBubble('bot', '🤔 لم أتمكن من استخراج بيانات واضحة. اكتب مثلاً: "جلسة أحمد عمره 5 سنين اشتغلنا على الراء"');
   }
 }
 
 function askNextMissing(missing) {
   if (!missing.length) { showDraftPreview(); return; }
   const field = missing[0];
-  waSession.currentQuestion = field;
-  
-  let question = field.botQuestion || `ما هو ${field.label}؟`;
-  if (field.type === 'select' && field.options) question += `\nالخيارات: ${field.options.join('، ')}`;
-  addWABubble('bot', `❓ ${question}`);
+  session.currentQuestion = field;
+  addBubble('bot', `❓ ينقصني: ما هو ${field}؟`);
 }
 
 function showDraftPreview() {
-  waSession.state = 'reviewing';
-  const template = DB.get('template') || DEFAULT_TEMPLATE;
+  session.state = 'reviewing';
   const reportNum = 'R-' + Date.now().toString().slice(-6);
+  const fields = ['اسم العميل', 'عمر العميل', 'التشخيص', 'ملاحظات الجلسة', 'تقييم التقدم'];
 
-  let html = `📋 مسودة التقرير<br>#${reportNum}<br><br><table class="w-full text-sm">`;
-  template.fields.forEach(f => {
-    const val = waSession.extractedData[f.label] || '-';
-    html += `<tr style="border-bottom: 1px solid #e5e7eb;"><td style="padding: 6px; font-weight: bold;">${f.label}</td><td style="padding: 6px;">${val}</td></tr>`;
+  let html = `<b>📋 مسودة التقرير #${reportNum}</b><br><br>`;
+  fields.forEach(f => {
+    const val = session.extractedData[f] || '<span style="color:#999">-</span>';
+    html += `<div style="border-bottom:1px solid #ddd; padding:5px 0;"><b>${f}:</b> ${val}</div>`;
   });
-  html += `</table><div class="flex gap-2 mt-2">
-    <button onclick="confirmReport('${reportNum}')" class="btn flex-1 bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg font-bold">✓ اعتماد</button>
-    <button onclick="cancelDraft()" class="btn flex-1 bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg font-bold">✕ إلغاء</button>
+  
+  html += `<div style="margin-top:15px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+    <button onclick="confirmAndSend('${reportNum}')" class="btn-action btn-confirm">✅ اعتماد وإرسال</button>
+    <button onclick="cancelDraft()" class="btn-action btn-cancel">❌ إلغاء</button>
   </div>`;
 
-  addWABubble('draft', html, true);
-}
-
-function confirmReport(reportNum) {
-  const reports = DB.get('reports') || [];
-  reports.push({
-    id: Date.now(), reportNumber: reportNum,
-    employeeId: currentUser.id, employeeName: currentUser.fullName,
-    clientName: waSession.extractedData['اسم العميل'] || 'غير محدد',
-    clientAge: waSession.extractedData['عمر العميل'] || '',
-    formattedData: { ...waSession.extractedData },
-    originalContent: '',
-    date: new Date().toISOString(), status: 'complete', source: 'whatsapp', type: 'regular'
-  });
-  DB.set('reports', reports);
-  addWABubble('bot', `✅ تم الحفظ!\n#${reportNum}\nالعميل: ${waSession.extractedData['اسم العميل']}`);
-  waSession = { state: 'idle', extractedData: {}, currentQuestion: null };
+  addBubble('draft', html, true);
 }
 
 function cancelDraft() {
-  waSession = { state: 'idle', extractedData: {}, currentQuestion: null };
-  addWABubble('bot', '❌ تم الإلغاء.');
+  session = { state: 'idle', extractedData: {}, currentQuestion: null };
+  addBubble('bot', '❌ تم إلغاء المسودة.');
 }
 
-document.getElementById('whatsappInput').addEventListener('keypress', e => { if (e.key === 'Enter') sendWhatsAppMessage(); });
+// ═══════════════════════════════════════════════════════════════
+// 🚀 إرسال البيانات إلى Google Sheet (مع الإصلاح التقني)
+// ═══════════════════════════════════════════════════════════════
+async function confirmAndSend(reportNum) {
+  addBubble('bot', '⏳ جاري حفظ التقرير في النظام...');
 
-// ═══════════════════════════════════════════════════════════════
-// 🚀 بدء التشغيل - مع استعادة الجلسة
-// ═══════════════════════════════════════════════════════════════
-if (!restoreSession()) {
-  console.log('🏥 نظام مركز التخاطب - جاهز');
+  const payload = {
+    reportNumber: reportNum,
+    clientName: session.extractedData['اسم العميل'] || 'غير محدد',
+    clientAge: session.extractedData['عمر العميل'] || '',
+    formattedData: session.extractedData,
+    employeeName: 'مختص (من الرابط)'
+  };
+
+  try {
+    const response = await fetch(GOOGLE_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload),
+      redirect: 'follow'
+    });
+    
+    const data = await response.json();
+    
+    if (data.status === 'success') {
+      addBubble('bot', `✅ تم الحفظ بنجاح في النظام!\nرقم التقرير: ${reportNum}\nشكراً لك 🌟`);
+      session = { state: 'idle', extractedData: {}, currentQuestion: null };
+    } else {
+      addBubble('bot', `❌ حدث خطأ: ${data.message || 'غير معروف'}`);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    addBubble('bot', '❌ فشل الاتصال. تأكد من اتصال الإنترنت وحاول مرة أخرى.');
+  }
 }
+
+document.getElementById('messageInput').addEventListener('keypress', function (e) {
+  if (e.key === 'Enter') sendMessage();
+});
 </script>
 </body>
 </html>
