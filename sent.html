@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>مركز التخاطب - إرسال تقرير</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.cdnfonts.com/css/cairo" rel="stylesheet">
+<style>
+  * { font-family: 'Cairo', sans-serif; box-sizing: border-box; }
+  body { background-color: #e5ddd5; height: 100vh; display: flex; flex-direction: column; margin: 0; }
+  .wa-header { background: #075e54; color: white; padding: 15px; display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+  .wa-chat { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 8px; }
+  .wa-bubble { max-width: 85%; padding: 10px 14px; border-radius: 10px; position: relative; font-size: 15px; line-height: 1.5; word-wrap: break-word; }
+  .wa-bubble-bot { background: white; align-self: flex-start; border-top-right-radius: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+  .wa-bubble-user { background: #dcf8c6; align-self: flex-end; border-top-left-radius: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+  .wa-bubble-draft { background: #f3e5f5; border: 2px solid #8e24aa; align-self: center; max-width: 95%; border-radius: 12px; }
+  .wa-time { font-size: 11px; color: #999; text-align: left; margin-top: 4px; display: block; }
+  .wa-input-area { background: #f0f0f0; padding: 10px; display: flex; gap: 8px; align-items: center; }
+  .wa-input { flex: 1; padding: 12px; border-radius: 25px; border: none; outline: none; font-size: 16px; }
+  .wa-btn { background: #075e54; color: white; border: none; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; flex-shrink: 0; }
+  .wa-btn:active { transform: scale(0.9); }
+  .btn-action { padding: 10px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; font-size: 14px; margin: 5px; }
+  .btn-confirm { background: #25d366; color: white; }
+  .btn-cancel { background: #ef4444; color: white; }
+  .typing { font-style: italic; color: #075e54; font-size: 13px; padding: 0 15px; display: none; }
+</style>
+</head>
+<body>
+
+  <!-- رأس الصفحة -->
+  <div class="wa-header">
+    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-2xl">🏥</div>
+    <div>
+      <div class="font-bold text-lg">مركز التخاطب</div>
+      <div class="text-xs opacity-80">مساعد التقارير الذكي</div>
+    </div>
+  </div>
+
+  <!-- منطقة المحادثة -->
+  <div id="chatContainer" class="wa-chat">
+    <div class="wa-bubble wa-bubble-bot">
+      أهلاً بك! 👋<br>
+      اكتب بيانات جلسة العميل بصيغة حرة، وسأساعدك في تنظيمها.<br>
+      <span class="text-xs text-gray-500 mt-2 block">مثال: "جلسة أحمد عمره 5 سنين اشتغلنا على نطق الراء وكان فيه تحسن"</span>
+      <span class="wa-time">الآن</span>
+    </div>
+  </div>
+  <div id="typingIndicator" class="typing">يكتب...</div>
+
+  <!-- منطقة الإدخال -->
+  <div class="wa-input-area">
+    <input type="text" id="messageInput" class="wa-input" placeholder="اكتب رسالة..." autocomplete="off">
+    <button onclick="sendMessage()" class="wa-btn">
+      <svg class="w-6 h-6 transform rotate-180" fill="currentColor" viewBox="0 0 24 24"><path d="M1.101 21.757 23.8 12.028 1.101 2.3l.011 7.912 13.623 1.816-13.623 1.817-.011 7.912z"/></svg>
+    </button>
+  </div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// ⚙️ إعدادات الربط - الرابط تم وضعه تلقائياً ✅
+// ═══════════════════════════════════════════════════════════════
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwLkWFgdm_xlEO6YqWphO87XAS4XJCL-7YGb-JO_a4z5rg51z9SUIkvsqAkwvU3Qg6z/exec";
+
+// ═══════════════════════════════════════════════════════════════
+// 🧠 محرك الذكاء الاصطناعي
+// ═══════════════════════════════════════════════════════════════
+const AIEngine = {
+  normalizeArabicNumbers(text) {
+    const map = {'٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9'};
+    return text.replace(/[٠-٩]/g, d => map[d]);
+  },
+  extractAge(text) {
+    const n = this.normalizeArabicNumbers(text);
+    const patterns = [/(?:عمر[هُه]?|عمره|سنّه)\s*[:：]?\s*(\d+)\s*(سن[ةه]|سنين|سنة|شهر)?/i, /(\d+)\s*(سن[ةه]|سنين|سنة|شهر)/i];
+    for (const p of patterns) { const m = n.match(p); if (m) return `${m[1]} ${m[2] || 'سنة'}`; }
+    return null;
+  },
+  extractClientName(text) {
+    const m = text.match(/(?:جلسة|العميل|الطفل)\s+(?:الطفل\s+)?([^\s،,.،]{2,}(?:\s+[^\s،,.،]{2,})?)/i);
+    return m && m[1] && !/^(جلسة|العميل|الطفل)/.test(m[1]) ? m[1].trim() : null;
+  },
+  extractSessionNotes(text) {
+    const m = text.match(/(?:اشتغلنا|عملنا|ركزنا|كان فيه|كان في|ملاحظات)\s+(.+?)(?:\.|$)/i);
+    return m && m[1] ? m[1].trim() : null;
+  },
+  extractProgress(text) {
+    if (/تحسن\s*(كبير|جدا|جيد|ملحوظ)/i.test(text)) return 'جيد جداً';
+    if (/تحسن|حسن|أحسن/i.test(text)) return 'جيد';
+    if (/ممتاز|رائع/i.test(text)) return 'ممتاز';
+    if (/ضعف|مش\s*كويس/i.test(text)) return 'يحتاج تحسين';
+    return null;
+  },
+  extractAll(text) {
+    const data = {};
+    const fields = [
+      { label: 'اسم العميل' }, { label: 'عمر العميل' },
+      { label: 'التشخيص', aliases: ['تشخيص','حالة','مشكلة'] },
+      { label: 'ملاحظات الجلسة', aliases: ['ملاحظات','جلسة','اشتغلنا','عملنا'] },
+      { label: 'تقييم التقدم', aliases: ['تقييم','تقدم','تحسن'] }
+    ];
+    
+    fields.forEach(f => {
+      if (f.label === 'اسم العميل') data[f.label] = this.extractClientName(text);
+      else if (f.label === 'عمر العميل') data[f.label] = this.extractAge(text);
+      else if (f.label === 'ملاحظات الجلسة') data[f.label] = this.extractSessionNotes(text);
+      else if (f.label === 'تقييم التقدم') data[f.label] = this.extractProgress(text);
+      else {
+        const keywords = [f.label, ...(f.aliases || [])];
+        for (const kw of keywords) {
+          const p = new RegExp(`(?:${kw})\\s*[:：]?\\s*([^،.\\n]{3,})`, 'i');
+          const m = text.match(p);
+          if (m && m[1]) { data[f.label] = m[1].trim(); break; }
+        }
+      }
+    });
+    return data;
+  },
+  checkCompleteness(data) {
+    const missing = [];
+    if (!data['اسم العميل']) missing.push('اسم العميل');
+    if (!data['عمر العميل']) missing.push('عمر العميل');
+    if (!data['ملاحظات الجلسة']) missing.push('ملاحظات الجلسة');
+    return { complete: missing.length === 0, missing };
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════
+// 💬 إدارة المحادثة
+// ═══════════════════════════════════════════════════════════════
+let session = { state: 'idle', extractedData: {}, currentQuestion: null };
+
+function getTime() {
+  return new Date().toLocaleTimeString('ar-EG', {hour: '2-digit', minute: '2-digit'});
+}
+
+function addBubble(type, content, isHTML = false) {
+  const chat = document.getElementById('chatContainer');
+  const bubble = document.createElement('div');
+  bubble.className = `wa-bubble wa-bubble-${type}`;
+  bubble.innerHTML = (isHTML ? content : content.replace(/\n/g, '<br>')) + `<span class="wa-time">${getTime()}</span>`;
+  chat.appendChild(bubble);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function showTyping(show) {
+  document.getElementById('typingIndicator').style.display = show ? 'block' : 'none';
+}
+
+function sendMessage() {
+  const input = document.getElementById('messageInput');
+  const text = input.value.trim();
+  if (!text) return;
+  
+  addBubble('user', text);
+  input.value = '';
+  
+  showTyping(true);
+  setTimeout(() => {
+    processInput(text);
+    showTyping(false);
+  }, 800);
+}
+
+function processInput(text) {
+  if (/^(إلغاء|الغاء)$/i.test(text.trim())) {
+    session = { state: 'idle', extractedData: {}, currentQuestion: null };
+    addBubble('bot', '✅ تم إلغاء التقرير الحالي.');
+    return;
+  }
+
+  if (session.state === 'collecting' && session.currentQuestion) {
+    const field = session.currentQuestion;
+    let value = text.trim();
+    
+    if (field === 'عمر العميل') {
+      const age = AIEngine.extractAge(text) || AIEngine.normalizeArabicNumbers(text).match(/(\d+)/)?.[1];
+      if (age) value = age + ' سنة';
+    }
+
+    session.extractedData[field] = value;
+    session.currentQuestion = null;
+    addBubble('bot', `✅ تم تسجيل: ${field} = ${value}`);
+
+    const { complete, missing } = AIEngine.checkCompleteness(session.extractedData);
+    if (complete) setTimeout(() => showDraftPreview(), 500); 
+    else setTimeout(() => askNextMissing(missing), 500);
+    return;
+  }
+
+  const extracted = AIEngine.extractAll(text);
+  Object.keys(extracted).forEach(k => { if (extracted[k]) session.extractedData[k] = extracted[k]; });
+
+  const extractedCount = Object.values(extracted).filter(v => v).length;
+  
+  if (extractedCount > 0) {
+    session.state = 'collecting';
+    let msg = '🤖 فهمت منك:\n\n';
+    Object.entries(extracted).forEach(([k,v]) => { if (v) msg += `✓ ${k}: ${v}\n`; });
+    addBubble('bot', msg);
+
+    const { complete, missing } = AIEngine.checkCompleteness(session.extractedData);
+    if (complete) setTimeout(() => showDraftPreview(), 800); 
+    else setTimeout(() => askNextMissing(missing), 800);
+  } else {
+    addBubble('bot', '🤔 لم أتمكن من استخراج بيانات واضحة. اكتب مثلاً: "جلسة أحمد عمره 5 سنين اشتغلنا على الراء"');
+  }
+}
+
+function askNextMissing(missing) {
+  if (!missing.length) { showDraftPreview(); return; }
+  const field = missing[0];
+  session.currentQuestion = field;
+  addBubble('bot', `❓ ينقصني: ما هو ${field}؟`);
+}
+
+function showDraftPreview() {
+  session.state = 'reviewing';
+  const reportNum = 'R-' + Date.now().toString().slice(-6);
+  const fields = ['اسم العميل', 'عمر العميل', 'التشخيص', 'ملاحظات الجلسة', 'تقييم التقدم'];
+
+  let html = `<b>📋 مسودة التقرير #${reportNum}</b><br><br>`;
+  fields.forEach(f => {
+    const val = session.extractedData[f] || '<span style="color:#999">-</span>';
+    html += `<div style="border-bottom:1px solid #ddd; padding:5px 0;"><b>${f}:</b> ${val}</div>`;
+  });
+  
+  html += `<div style="margin-top:15px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+    <button onclick="confirmAndSend('${reportNum}')" class="btn-action btn-confirm">✅ اعتماد وإرسال</button>
+    <button onclick="cancelDraft()" class="btn-action btn-cancel">❌ إلغاء</button>
+  </div>`;
+
+  addBubble('draft', html, true);
+}
+
+function cancelDraft() {
+  session = { state: 'idle', extractedData: {}, currentQuestion: null };
+  addBubble('bot', '❌ تم إلغاء المسودة.');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// 🚀 إرسال البيانات إلى Google Sheet (مع الإصلاح التقني)
+// ═══════════════════════════════════════════════════════════════
+async function confirmAndSend(reportNum) {
+  addBubble('bot', '⏳ جاري حفظ التقرير في النظام...');
+
+  const payload = {
+    reportNumber: reportNum,
+    clientName: session.extractedData['اسم العميل'] || 'غير محدد',
+    clientAge: session.extractedData['عمر العميل'] || '',
+    formattedData: session.extractedData,
+    employeeName: 'مختص (من الرابط)'
+  };
+
+  try {
+    const response = await fetch(GOOGLE_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload),
+      redirect: 'follow'
+    });
+    
+    const data = await response.json();
+    
+    if (data.status === 'success') {
+      addBubble('bot', `✅ تم الحفظ بنجاح في النظام!\nرقم التقرير: ${reportNum}\nشكراً لك 🌟`);
+      session = { state: 'idle', extractedData: {}, currentQuestion: null };
+    } else {
+      addBubble('bot', `❌ حدث خطأ: ${data.message || 'غير معروف'}`);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    addBubble('bot', '❌ فشل الاتصال. تأكد من اتصال الإنترنت وحاول مرة أخرى.');
+  }
+}
+
+document.getElementById('messageInput').addEventListener('keypress', function (e) {
+  if (e.key === 'Enter') sendMessage();
+});
+</script>
+</body>
+</html>
