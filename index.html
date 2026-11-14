@@ -1,19 +1,4 @@
-
-                        <!DOCTYPE html>
-                        <html lang="en">
-                        <head>
-                            <meta charset="UTF-8">
-                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <style>
-                body {
-                  background-color: white; /* Ensure the iframe has a white background */
-                }
-
-                
-              </style>
-                        </head>
-                        <body>
-                            <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -74,7 +59,7 @@ a{color:inherit;text-decoration:none}
 .badge-admin{background:#f3e8ff;color:#6d28d9}.badge-employee{background:#dbeafe;color:#1e40af}
 .badge-reviewer{background:#fef3c7;color:#92400e}.badge-manager{background:#dcfce7;color:#166534}
 .badge-draft{background:#e5e7eb;color:#374151}.badge-pending{background:#fef3c7;color:#92400e}.badge-approved{background:#dcfce7;color:#166534}
-.badge-cloud{background:#dbeafe;color:#1e40af}
+.badge-bot{background:#dcfce7;color:#166534}
 .card{background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.1)}
 .card-hover{transition:transform .2s,box-shadow .2s}.card-hover:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(0,0,0,.12)}
 .tab-btn{padding:10px 18px;border-radius:8px;font-weight:600;color:#4b5563;background:transparent;transition:background .15s,color .15s}
@@ -141,7 +126,7 @@ a{color:inherit;text-decoration:none}
       <div class="logo-circle" style="width:72px;height:72px;font-size:28px;margin:0 auto 12px">👥</div>
       <h1 class="text-3xl font-bold text-gray-800">مركز التخاطب</h1>
       <p class="text-gray-600 mt-2">نظام إدارة التقارير</p>
-      <div id="cloudStatus" class="mt-3"></div>
+      <div id="botStatus" class="mt-3"></div>
     </div>
     <div id="loginError" class="banner banner-error hidden"></div>
     <div class="mb-4">
@@ -174,7 +159,7 @@ a{color:inherit;text-decoration:none}
       <div class="flex items-center">
         <div class="logo-circle">📄</div>
         <span class="text-xl font-bold text-gray-800">مركز التخاطب</span>
-        <span id="navCloudStatus" class="sync-status sync-pending mr-2" style="margin-right:8px">☁️ غير مزامن</span>
+        <span id="navBotStatus" class="sync-status sync-ok" style="margin-right:8px">🤖 البوت متصل</span>
       </div>
       <div class="flex items-center gap-3">
         <span id="currentUser" class="text-gray-700 font-semibold"></span>
@@ -191,8 +176,8 @@ a{color:inherit;text-decoration:none}
         <button type="button" data-tab="users" class="tab-btn">👥 الحسابات</button>
         <button type="button" data-tab="template" class="tab-btn">📋 نموذج التقرير</button>
         <button type="button" data-tab="reports" class="tab-btn">📄 التقارير</button>
-        <button type="button" data-tab="whatsapp" class="tab-btn">💬 ربط واتساب</button>
-        <button type="button" data-tab="ai" class="tab-btn">🤖 إعدادات الذكاء</button>
+        <button type="button" data-tab="bot" class="tab-btn">🤖 إعدادات البوت</button>
+        <button type="button" data-tab="ai" class="tab-btn">🧠 الذكاء الاصطناعي</button>
         <button type="button" data-tab="audit" class="tab-btn">📜 سجل التدقيق</button>
       </div>
 
@@ -200,13 +185,13 @@ a{color:inherit;text-decoration:none}
         <div class="grid grid-4 gap-4 mb-6">
           <div class="stat-card gradient-purple"><p class="stat-label">التقارير المكتملة</p><p class="stat-value" id="statCompleted">0</p></div>
           <div class="stat-card" style="background:linear-gradient(to right,#f59e0b,#ea580c)"><p class="stat-label">المسودات</p><p class="stat-value" id="statDrafts">0</p></div>
-          <div class="stat-card gradient-green"><p class="stat-label">☁️ من السحابة</p><p class="stat-value" id="statCloud">0</p></div>
+          <div class="stat-card gradient-green"><p class="stat-label">🤖 من البوت</p><p class="stat-value" id="statBot">0</p></div>
           <div class="stat-card" style="background:linear-gradient(to right,#3b82f6,#1d4ed8)"><p class="stat-label">الموظفين</p><p class="stat-value" id="statUsers">0</p></div>
         </div>
         <div class="card p-6">
           <div class="flex justify-between items-center mb-4">
             <h3 class="text-xl font-bold text-gray-800">آخر النشاطات</h3>
-            <button type="button" data-action="sync-cloud" class="btn btn-info btn-sm">🔄 مزامنة السحابة الآن</button>
+            <button type="button" data-action="sync-bot" class="btn btn-info btn-sm">🔄 مزامنة مع البوت</button>
           </div>
           <div id="recentActivities" class="space-y-2"></div>
         </div>
@@ -225,7 +210,7 @@ a{color:inherit;text-decoration:none}
       <div id="tab-template" class="tab-panel hidden">
         <div class="card p-6">
           <h2 class="text-2xl font-bold text-gray-800 mb-2">منشئ نموذج التقرير</h2>
-          <p class="text-gray-600 mb-4 text-sm">اسحب الحقول لإعادة ترتيبها.</p>
+          <p class="text-gray-600 mb-4 text-sm">اسحب الحقول لإعادة ترتيبها. البوت يستخدم هذا النموذج لاستخراج البيانات.</p>
           <div id="templateForm"></div>
           <div class="mt-6 flex gap-3" style="flex-wrap:wrap">
             <button type="button" data-action="add-field" class="btn btn-success">+ إضافة حقل</button>
@@ -248,10 +233,10 @@ a{color:inherit;text-decoration:none}
               </select>
               <select id="filterSource" class="select" style="width:auto">
                 <option value="">كل المصادر</option>
-                <option value="cloud">☁️ من السحابة</option>
+                <option value="bot">🤖 من البوت</option>
                 <option value="local">💻 محلي</option>
               </select>
-              <button type="button" data-action="sync-cloud" class="btn btn-info btn-sm">🔄 مزامنة</button>
+              <button type="button" data-action="sync-bot" class="btn btn-info btn-sm">🔄 مزامنة</button>
               <button type="button" data-action="export-csv" class="btn btn-success btn-sm">📥 CSV</button>
             </div>
           </div>
@@ -259,30 +244,49 @@ a{color:inherit;text-decoration:none}
         </div>
       </div>
 
-      <div id="tab-whatsapp" class="tab-panel hidden">
+      <div id="tab-bot" class="tab-panel hidden">
         <div class="card p-6">
-          <h2 class="text-2xl font-bold text-gray-800 mb-4">ربط واتساب</h2>
-          <div class="banner banner-info">
-            <p class="font-bold">ℹ️ النظام متصل بـ Google Sheet</p>
-            <p class="text-sm mt-1">البوت يرسل البيانات للشيت، والنظام يسحبها تلقائياً كل 30 ثانية.</p>
+          <h2 class="text-2xl font-bold text-gray-800 mb-4">🤖 إعدادات البوت</h2>
+          <div class="banner banner-success">
+            <p class="font-bold">✅ البوت متصل مباشرة بالنظام</p>
+            <p class="text-sm mt-1">البوت يخزن التقارير في النظام فوراً عبر localStorage المشترك. المزامنة تلقائية كل 10 ثوانٍ.</p>
           </div>
+          
           <div class="bg-gray-50 p-4 rounded-lg mb-4">
-            <h3 class="font-bold text-gray-800 mb-3">🔗 رابط Google Apps Script</h3>
-            <input type="text" id="cloudUrl" class="input" placeholder="https://script.google.com/macros/s/.../exec">
-            <p class="text-xs text-gray-500 mt-2">⚠️ تأكد أن الـ Script منتشر بصلاحيات "Anyone"</p>
+            <h3 class="font-bold text-gray-800 mb-3">📊 حالة الاتصال</h3>
+            <div id="botConnectionStatus">
+              <p class="text-sm"><span class="status-dot status-ok"></span> <b>الحالة:</b> متصل (localStorage مشترك)</p>
+              <p class="text-xs text-gray-500 mt-2">آخر مزامنة: <span id="lastSyncTime">لم يتم بعد</span></p>
+              <p class="text-xs text-gray-500">عدد تقارير البوت: <span id="botReportsCount">0</span></p>
+            </div>
           </div>
+          
           <div class="flex gap-3 mb-4" style="flex-wrap:wrap">
-            <button type="button" data-action="save-cloud-url" class="btn btn-primary">💾 حفظ الرابط</button>
-            <button type="button" data-action="test-cloud" class="btn btn-info">🔌 اختبار الاتصال</button>
-            <button type="button" data-action="sync-cloud" class="btn btn-success">🔄 مزامنة فورية</button>
+            <button type="button" data-action="sync-bot" class="btn btn-success">🔄 مزامنة فورية</button>
+            <button type="button" data-action="clear-bot-data" class="btn btn-danger">🗑️ مسح تقارير البوت</button>
           </div>
-          <div id="cloudConnectionStatus" class="bg-gray-50 p-4 rounded-lg"></div>
+          
+          <div class="bg-blue-50 p-4 rounded-lg">
+            <h4 class="font-bold text-blue-800 mb-2">ℹ️ كيف يعمل البوت؟</h4>
+            <ul class="text-sm text-blue-700 list-disc pr-5" style="line-height:1.8">
+              <li>البوت والنظام على نفس الدومين (<code class="font-mono">yel-eng.github.io</code>)</li>
+              <li>البيانات تُحفظ في localStorage المشترك</li>
+              <li>المزامنة تلقائية كل 10 ثوانٍ</li>
+              <li>يمكنك فتح البوت والنظام في نفس المتصفح</li>
+              <li>التقارير الجديدة تظهر فوراً في لوحة التحكم</li>
+            </ul>
+          </div>
+          
+          <div class="bg-yellow-50 p-4 rounded-lg mt-4">
+            <h4 class="font-bold text-yellow-800 mb-2">⚠️ ملاحظة مهمة</h4>
+            <p class="text-sm text-yellow-700">البوت يعمل فقط على نفس المتصفح/الجهاز. لو عايز مزامنة بين أجهزة مختلفة، نحتاج نضيف Firebase كقاعدة بيانات سحابية.</p>
+          </div>
         </div>
       </div>
 
       <div id="tab-ai" class="tab-panel hidden">
         <div class="card p-6">
-          <h2 class="text-2xl font-bold text-gray-800 mb-4">إعدادات الذكاء الاصطناعي</h2>
+          <h2 class="text-2xl font-bold text-gray-800 mb-4">🧠 إعدادات الذكاء الاصطناعي</h2>
           <div class="banner banner-info">
             <p class="font-bold">🤖 محرك الاستخراج المحلي</p>
             <p class="text-sm mt-1">النظام يستخدم محرك محلي لاستخراج البيانات من النصوص العربية. يعمل بدون إنترنت.</p>
@@ -348,7 +352,7 @@ a{color:inherit;text-decoration:none}
     <div class="mb-3"><label class="label">الاسم الكامل</label><input type="text" id="newFullName" class="input"></div>
     <div class="mb-3"><label class="label">اسم المستخدم</label><input type="text" id="newUsername" class="input"></div>
     <div class="mb-3"><label class="label">كلمة المرور</label><input type="password" id="newPassword" class="input"></div>
-    <div class="mb-3"><label class="label">رقم واتساب</label><input type="tel" id="newPhone" class="input" placeholder="+201xxxxxxxxx"></div>
+    <div class="mb-3"><label class="label">رقم الهاتف</label><input type="tel" id="newPhone" class="input" placeholder="+201xxxxxxxxx"></div>
     <div class="mb-4"><label class="label">الدور</label>
       <select id="newRole" class="select">
         <option value="employee">موظف / مختص</option>
@@ -385,11 +389,12 @@ a{color:inherit;text-decoration:none}
 
 <script>
 /* ═══════════════════════════════════════════════════════════════
-   ⚙️ إعدادات السحابة
+   ⚙️ إعدادات البوت - التخزين المشترك
    ═══════════════════════════════════════════════════════════════ */
-var CLOUD_URL = ""; // سيتم تحميله من Storage
-var SYNC_INTERVAL = null; // المؤقت للمزامنة التلقائية
-var LAST_SYNC_TIME = null;
+var BOT_SYNC_INTERVAL = null;
+var LAST_BOT_SYNC = null;
+var BOT_STORAGE_KEY = 'takhatab_bot_reports';
+var BOT_NEW_REPORT_KEY = 'takhatab_new_report';
 
 (function setupErrorHandler() {
   'use strict';
@@ -479,7 +484,7 @@ function canViewReport(report) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   🤖 محرك استخراج البيانات (محسّن للسحابة)
+   🤖 محرك استخراج البيانات
    ═══════════════════════════════════════════════════════════════ */
 var AIExtractor = {
   normalizeArabicNumbers: function(text) {
@@ -513,13 +518,11 @@ var AIExtractor = {
         }
       }
       
-      // استخراج ذكي لأسماء العملاء من صيغ حرة
       if (!value && field.label === 'اسم العميل') {
         var nameMatch = normalizedText.match(/(?:جلسة|العميل|الطفل)\s+([^\s،,.،]{2,}(?:\s+[^\s،,.،]{2,})?)/i);
         if (nameMatch) value = nameMatch[1].trim();
       }
       
-      // استخراج العمر
       if (!value && field.label === 'عمر العميل') {
         var ageMatch = normalizedText.match(/(\d+)\s*(سن[ةه]|سنين|سنة|شهر)/i);
         if (ageMatch) value = ageMatch[1] + ' ' + (ageMatch[2] || 'سنة');
@@ -533,26 +536,23 @@ var AIExtractor = {
   getMissingFields: function (extracted, template) {
     return template.fields.filter(function (f) { return f.required && (!extracted[f.label] || String(extracted[f.label]).trim() === ''); });
   },
-  // ⭐ دالة جديدة: تحويل البيانات السحابية للنموذج
-  enrichCloudReport: function(cloudReport, template) {
+  enrichBotReport: function(botReport, template) {
     var result = {
-      id: cloudReport.id,
-      reportNumber: cloudReport.reportNumber,
-      employeeName: cloudReport.employeeName || 'مختص',
-      clientName: cloudReport.clientName || '',
-      date: cloudReport.date || new Date().toISOString(),
+      id: botReport.id,
+      reportNumber: botReport.reportNumber,
+      employeeName: botReport.employeeName || 'مختص (من البوت)',
+      clientName: botReport.clientName || '',
+      date: botReport.date || new Date().toISOString(),
       status: 'approved',
-      source: 'cloud',
-      originalContent: cloudReport.originalContent || '',
-      formattedData: cloudReport.formattedData || {}
+      source: 'bot',
+      originalContent: botReport.originalContent || '',
+      formattedData: botReport.formattedData || {}
     };
     
-    // لو البيانات المنظمة فاضية، حاول استخراجها من النص الأصلي
     if ((!result.formattedData || Object.keys(result.formattedData).length === 0) && result.originalContent) {
       result.formattedData = this.extract(result.originalContent, template);
     }
     
-    // تأكد من وجود اسم العميل
     if (!result.clientName && result.formattedData['اسم العميل']) {
       result.clientName = result.formattedData['اسم العميل'];
     }
@@ -572,14 +572,7 @@ function initializeData() {
   if (!Storage.get('template')) Storage.set('template', DEFAULT_TEMPLATE);
   if (!Storage.get('audit_log')) Storage.set('audit_log', []);
   if (!Storage.get('conversations')) Storage.set('conversations', []);
-  if (!Storage.get('wa_settings')) Storage.set('wa_settings', { connected: false });
   if (!Storage.get('ai_settings')) Storage.set('ai_settings', { provider: 'local', model: 'gpt-4o-mini' });
-  
-  // ⭐ تحميل رابط السحابة
-  var cloudSettings = Storage.get('cloud_settings');
-  if (cloudSettings && cloudSettings.url) {
-    CLOUD_URL = cloudSettings.url;
-  }
 }
 
 function saveSession() {
@@ -678,15 +671,14 @@ function showDashboard() {
     loadEmployeeData();
   }
   
-  // ⭐ بدء المزامنة التلقائية
-  startAutoSync();
+  startBotAutoSync();
 }
 
 function logout() {
   if (state.currentUser) addAuditLog('logout', 'تسجيل خروج: ' + state.currentUser.username);
   state.currentUser = null;
   Storage.remove('session');
-  stopAutoSync();
+  stopBotAutoSync();
   document.getElementById('loginPage').classList.remove('hidden');
   document.getElementById('dashboard').classList.add('hidden');
   document.getElementById('username').value = '';
@@ -709,17 +701,17 @@ function switchTab(tabName) {
   else if (tabName === 'template') loadTemplate();
   else if (tabName === 'reports') loadAllReports();
   else if (tabName === 'audit') loadAuditLog();
-  else if (tabName === 'whatsapp') loadCloudSettings();
+  else if (tabName === 'bot') loadBotSettings();
 }
 
 function loadOverview() {
   var reports = Storage.get('reports') || [];
   var users = Storage.get('users') || [];
-  var cloudReports = reports.filter(function(r) { return r.source === 'cloud'; });
+  var botReports = reports.filter(function(r) { return r.source === 'bot'; });
 
   document.getElementById('statCompleted').textContent = reports.filter(function (r) { return r.status === 'approved'; }).length;
   document.getElementById('statDrafts').textContent = reports.filter(function (r) { return r.status === 'draft'; }).length;
-  document.getElementById('statCloud').textContent = cloudReports.length;
+  document.getElementById('statBot').textContent = botReports.length;
   document.getElementById('statUsers').textContent = users.filter(function (u) { return u.active; }).length;
 
   var logs = (Storage.get('audit_log') || []).slice(-8).reverse();
@@ -860,88 +852,68 @@ function saveTemplate() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   ⭐⭐ دالة المزامنة المحسّنة - القلب الجديد للنظام
+   ⭐⭐⭐ مزامنة البوت - القراءة من localStorage المشترك
    ═══════════════════════════════════════════════════════════════ */
-function syncCloudReports(silent) {
-  if (!CLOUD_URL) {
-    if (!silent) showToast('❌ لم يتم ضبط رابط Google Apps Script', 'error');
-    updateCloudStatusUI('error', 'غير مُعدّ');
-    return Promise.resolve(0);
-  }
+function syncBotReports(silent) {
+  if (!silent) showToast('⏳ جاري المزامنة مع البوت...', 'info');
+  updateBotStatusUI('pending', 'جاري المزامنة...');
   
-  if (!silent) showToast('⏳ جاري المزامنة من السحابة...', 'info');
-  updateCloudStatusUI('pending', 'جاري المزامنة...');
-  
-  return fetch(CLOUD_URL, { method: 'GET', redirect: 'follow' })
-    .then(function (r) { 
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      return r.text(); 
-    })
-    .then(function (text) {
-      // Apps Script يرجع JSON أحياناً مع HTML wrapper
-      var jsonMatch = text.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) throw new Error('استجابة غير صالحة');
-      
-      var response = JSON.parse(jsonMatch[0]);
-      
-      if (response.status !== 'success') {
-        throw new Error(response.message || 'خطأ في السحابة');
-      }
-      
-      var cloudReports = response.reports || [];
-      if (!Array.isArray(cloudReports)) cloudReports = [];
-      
-      var localReports = Storage.get('reports') || [];
-      var template = Storage.get('template') || DEFAULT_TEMPLATE;
-      
-      // بناء خريطة للأرقام الموجودة محلياً
-      var existingNumbers = {};
-      localReports.forEach(function(r) { 
-        if (r.reportNumber) existingNumbers[r.reportNumber] = true; 
-      });
-      
-      var newCount = 0;
-      cloudReports.forEach(function(cr) {
-        if (!cr.reportNumber || existingNumbers[cr.reportNumber]) return;
-        
-        // ⭐ تحويل البيانات السحابية باستخدام AI
-        var enriched = AIExtractor.enrichCloudReport(cr, template);
-        enriched.id = Date.now() + Math.random() + newCount;
-        
-        localReports.push(enriched);
-        existingNumbers[cr.reportNumber] = true;
-        newCount++;
-      });
-      
-      if (newCount > 0) {
-        Storage.set('reports', localReports);
-        addAuditLog('sync_cloud', 'مزامنة ' + newCount + ' تقرير من السحابة');
-      }
-      
-      LAST_SYNC_TIME = new Date();
-      Storage.set('last_sync', { time: LAST_SYNC_TIME.toISOString(), count: newCount });
-      
-      updateCloudStatusUI('ok', 'متزامن (' + cloudReports.length + ' تقرير)');
-      
-      if (!silent) {
-        if (newCount > 0) {
-          showToast('✅ تم استيراد ' + newCount + ' تقرير جديد من السحابة', 'success');
-        } else {
-          showToast('✅ النظام محدّث - لا توجد تقارير جديدة', 'success');
-        }
-      }
-      
-      // تحديث الواجهات
-      refreshCurrentView();
-      
-      return newCount;
-    })
-    .catch(function(e) {
-      console.error('Sync error:', e);
-      updateCloudStatusUI('error', 'خطأ في الاتصال');
-      if (!silent) showToast('❌ فشل المزامنة: ' + e.message, 'error');
-      return 0;
+  try {
+    // قراءة تقارير البوت من localStorage المشترك
+    var botReportsRaw = localStorage.getItem(BOT_STORAGE_KEY);
+    var botReports = [];
+    if (botReportsRaw) {
+      try { botReports = JSON.parse(botReportsRaw); } catch(e) { botReports = []; }
+    }
+    if (!Array.isArray(botReports)) botReports = [];
+    
+    var localReports = Storage.get('reports') || [];
+    var template = Storage.get('template') || DEFAULT_TEMPLATE;
+    
+    var existingNumbers = {};
+    localReports.forEach(function(r) { 
+      if (r.reportNumber) existingNumbers[r.reportNumber] = true; 
     });
+    
+    var newCount = 0;
+    botReports.forEach(function(br) {
+      if (!br.reportNumber || existingNumbers[br.reportNumber]) return;
+      
+      var enriched = AIExtractor.enrichBotReport(br, template);
+      enriched.id = Date.now() + Math.random() + newCount;
+      
+      localReports.push(enriched);
+      existingNumbers[br.reportNumber] = true;
+      newCount++;
+    });
+    
+    if (newCount > 0) {
+      Storage.set('reports', localReports);
+      addAuditLog('sync_bot', 'استيراد ' + newCount + ' تقرير من البوت');
+    }
+    
+    LAST_BOT_SYNC = new Date();
+    Storage.set('last_bot_sync', { time: LAST_BOT_SYNC.toISOString(), count: newCount });
+    
+    updateBotStatusUI('ok', 'متصل (' + botReports.length + ' تقرير)');
+    
+    if (!silent) {
+      if (newCount > 0) {
+        showToast('✅ تم استيراد ' + newCount + ' تقرير جديد من البوت', 'success');
+      } else {
+        showToast('✅ النظام محدّث - لا توجد تقارير جديدة', 'success');
+      }
+    }
+    
+    refreshCurrentView();
+    return newCount;
+    
+  } catch(e) {
+    console.error('Bot sync error:', e);
+    updateBotStatusUI('error', 'خطأ في المزامنة');
+    if (!silent) showToast('❌ فشل المزامنة: ' + e.message, 'error');
+    return 0;
+  }
 }
 
 function refreshCurrentView() {
@@ -950,116 +922,85 @@ function refreshCurrentView() {
   if (!document.getElementById('employeeView').classList.contains('hidden')) loadEmployeeData();
 }
 
-function updateCloudStatusUI(status, text) {
+function updateBotStatusUI(status, text) {
   var classes = { ok: 'sync-ok', error: 'sync-error', pending: 'sync-pending' };
-  var navStatus = document.getElementById('navCloudStatus');
+  var navStatus = document.getElementById('navBotStatus');
   if (navStatus) {
     navStatus.className = 'sync-status ' + (classes[status] || 'sync-pending');
-    navStatus.textContent = '☁️ ' + text;
+    navStatus.textContent = '🤖 ' + text;
   }
   
-  var loginStatus = document.getElementById('cloudStatus');
+  var loginStatus = document.getElementById('botStatus');
   if (loginStatus) {
     if (status === 'ok') {
-      loginStatus.innerHTML = '<span class="sync-status sync-ok">☁️ متصل بالسحابة</span>';
+      loginStatus.innerHTML = '<span class="sync-status sync-ok">🤖 البوت متصل</span>';
     } else if (status === 'error') {
-      loginStatus.innerHTML = '<span class="sync-status sync-error">⚠️ غير متصل</span>';
+      loginStatus.innerHTML = '<span class="sync-status sync-error">⚠️ خطأ</span>';
     } else {
       loginStatus.innerHTML = '<span class="sync-status sync-pending">⏳ جاري الاتصال...</span>';
     }
   }
   
-  var connStatus = document.getElementById('cloudConnectionStatus');
+  var connStatus = document.getElementById('botConnectionStatus');
   if (connStatus) {
-    var lastSync = Storage.get('last_sync');
+    var lastSync = Storage.get('last_bot_sync');
     var lastSyncText = lastSync ? new Date(lastSync.time).toLocaleString('ar-EG') : 'لم يتم بعد';
+    var botReportsRaw = localStorage.getItem(BOT_STORAGE_KEY);
+    var botCount = 0;
+    if (botReportsRaw) {
+      try { botCount = JSON.parse(botReportsRaw).length || 0; } catch(e) {}
+    }
     connStatus.innerHTML = '<p class="text-sm"><span class="status-dot status-' + (status === 'ok' ? 'ok' : status === 'error' ? 'error' : 'warn') + '"></span> <b>الحالة:</b> ' + text + '</p>' +
-      '<p class="text-xs text-gray-500 mt-2">آخر مزامنة: ' + lastSyncText + '</p>';
+      '<p class="text-xs text-gray-500 mt-2">آخر مزامنة: ' + lastSyncText + '</p>' +
+      '<p class="text-xs text-gray-500">عدد تقارير البوت: ' + botCount + '</p>';
+  }
+  
+  var lastSyncTimeEl = document.getElementById('lastSyncTime');
+  if (lastSyncTimeEl) {
+    var lastSync = Storage.get('last_bot_sync');
+    lastSyncTimeEl.textContent = lastSync ? new Date(lastSync.time).toLocaleString('ar-EG') : 'لم يتم بعد';
+  }
+  
+  var botCountEl = document.getElementById('botReportsCount');
+  if (botCountEl) {
+    var botReportsRaw = localStorage.getItem(BOT_STORAGE_KEY);
+    var botCount = 0;
+    if (botReportsRaw) {
+      try { botCount = JSON.parse(botReportsRaw).length || 0; } catch(e) {}
+    }
+    botCountEl.textContent = botCount;
   }
 }
 
-function startAutoSync() {
-  stopAutoSync();
-  if (!CLOUD_URL) return;
+function startBotAutoSync() {
+  stopBotAutoSync();
   
   // مزامنة فورية عند فتح النظام
-  setTimeout(function() { syncCloudReports(true); }, 1500);
+  setTimeout(function() { syncBotReports(true); }, 1000);
   
-  // مزامنة كل 30 ثانية
-  SYNC_INTERVAL = setInterval(function() {
-    syncCloudReports(true);
-  }, 30000);
+  // مزامنة كل 10 ثوانٍ
+  BOT_SYNC_INTERVAL = setInterval(function() {
+    syncBotReports(true);
+  }, 10000);
 }
 
-function stopAutoSync() {
-  if (SYNC_INTERVAL) {
-    clearInterval(SYNC_INTERVAL);
-    SYNC_INTERVAL = null;
-  }
-}
-
-function loadCloudSettings() {
-  var cloudSettings = Storage.get('cloud_settings') || {};
-  document.getElementById('cloudUrl').value = cloudSettings.url || CLOUD_URL || '';
-  
-  var lastSync = Storage.get('last_sync');
-  var connStatus = document.getElementById('cloudConnectionStatus');
-  if (connStatus) {
-    if (CLOUD_URL) {
-      var lastSyncText = lastSync ? new Date(lastSync.time).toLocaleString('ar-EG') : 'لم يتم بعد';
-      connStatus.innerHTML = '<p class="text-sm"><span class="status-dot status-warn"></span> <b>الحالة:</b> مُعدّ (في انتظار المزامنة)</p>' +
-        '<p class="text-xs text-gray-500 mt-2">آخر مزامنة: ' + lastSyncText + '</p>';
-    } else {
-      connStatus.innerHTML = '<p class="text-sm"><span class="status-dot status-error"></span> <b>الحالة:</b> غير مُعدّ</p>';
-    }
+function stopBotAutoSync() {
+  if (BOT_SYNC_INTERVAL) {
+    clearInterval(BOT_SYNC_INTERVAL);
+    BOT_SYNC_INTERVAL = null;
   }
 }
 
-function saveCloudUrl() {
-  var url = (document.getElementById('cloudUrl').value || '').trim();
-  if (!url) {
-    showToast('❌ أدخل رابط Google Apps Script', 'error');
-    return;
-  }
-  if (url.indexOf('script.google.com') === -1) {
-    showToast('❌ الرابط يجب أن يكون من Google Apps Script', 'error');
-    return;
-  }
-  
-  CLOUD_URL = url;
-  Storage.set('cloud_settings', { url: url });
-  addAuditLog('save_cloud_url', 'حفظ رابط السحابة');
-  showToast('✅ تم حفظ الرابط', 'success');
-  
-  // اختبار الاتصال
-  syncCloudReports(false);
+function loadBotSettings() {
+  updateBotStatusUI('ok', 'متصل (localStorage مشترك)');
 }
 
-function testCloudConnection() {
-  if (!CLOUD_URL) {
-    showToast('❌ احفظ الرابط أولاً', 'error');
-    return;
-  }
-  updateCloudStatusUI('pending', 'جاري الاختبار...');
-  
-  fetch(CLOUD_URL, { method: 'GET', redirect: 'follow' })
-    .then(function(r) { return r.text(); })
-    .then(function(text) {
-      var jsonMatch = text.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) throw new Error('استجابة غير صالحة');
-      var response = JSON.parse(jsonMatch[0]);
-      
-      if (response.status === 'success') {
-        updateCloudStatusUI('ok', 'الاتصال ناجح ✓');
-        showToast('✅ الاتصال ناجح! عدد التقارير: ' + (response.reports || []).length, 'success');
-      } else {
-        throw new Error(response.message || 'خطأ');
-      }
-    })
-    .catch(function(e) {
-      updateCloudStatusUI('error', 'فشل الاتصال');
-      showToast('❌ فشل الاختبار: ' + e.message, 'error');
-    });
+function clearBotData() {
+  if (!confirm('هل أنت متأكد من مسح جميع تقارير البوت؟\n\nسيتم مسح البيانات من localStorage فقط، وليس من النظام.')) return;
+  localStorage.removeItem(BOT_STORAGE_KEY);
+  localStorage.removeItem(BOT_NEW_REPORT_KEY);
+  showToast('✅ تم مسح بيانات البوت', 'success');
+  syncBotReports(true);
 }
 
 function loadAllReports() {
@@ -1082,7 +1023,7 @@ function loadAllReports() {
 
   if (filtered.length === 0) { 
     var emptyMsg = reports.length === 0 
-      ? 'لا توجد تقارير بعد. جرّب <b>مزامنة السحابة</b> لجلب التقارير من البوت.'
+      ? 'لا توجد تقارير بعد. جرّب <b>مزامنة مع البوت</b> لجلب التقارير.'
       : 'لا توجد تقارير مطابقة للفلتر';
     container.innerHTML = '<p class="text-gray-500 text-center py-8">' + emptyMsg + '</p>'; 
     return; 
@@ -1091,8 +1032,8 @@ function loadAllReports() {
   container.innerHTML = filtered.slice().reverse().map(function (report) {
     var statusBadge = { draft: 'badge-draft', pending: 'badge-pending', approved: 'badge-approved' };
     var statusName = { draft: 'مسودة', pending: 'بانتظار الاعتماد', approved: 'معتمد' };
-    var sourceTag = report.source === 'cloud' 
-      ? '<span class="badge badge-cloud" style="font-size:10px;margin-right:5px">☁️ سحابي</span>' 
+    var sourceTag = report.source === 'bot' 
+      ? '<span class="badge badge-bot" style="font-size:10px;margin-right:5px">🤖 بوت</span>' 
       : '<span class="badge badge-draft" style="font-size:10px;margin-right:5px">💻 محلي</span>';
     return '<div class="bg-gray-50 rounded-lg p-4 report-card mb-3"><div class="flex justify-between items-start" style="flex-wrap:wrap;gap:8px"><div style="flex:1;min-width:200px"><h3 class="font-semibold text-gray-800">' + escapeHtml(report.clientName || 'عميل') + ' <span class="text-xs text-gray-500">#' + escapeHtml(report.reportNumber || report.id) + '</span> ' + sourceTag + '</h3><p class="text-sm text-gray-600">بواسطة: ' + escapeHtml(report.employeeName) + ' • ' + new Date(report.date).toLocaleDateString('ar-EG') + '</p><span class="badge ' + (statusBadge[report.status] || '') + '">' + (statusName[report.status] || report.status) + '</span></div><button type="button" data-action="view-report" data-id="' + report.id + '" class="btn btn-primary btn-sm">عرض</button></div></div>';
   }).join('');
@@ -1106,7 +1047,7 @@ function viewReport(reportId) {
   if (!canViewReport(report)) { showToast('❌ غير مصرح لك بعرض هذا التقرير', 'error'); return; }
 
   var statusName = { draft: 'مسودة', pending: 'بانتظار الاعتماد', approved: 'معتمد' };
-  var sourceLabel = report.source === 'cloud' ? '☁️ من السحابة (واتساب)' : '💻 محلي';
+  var sourceLabel = report.source === 'bot' ? '🤖 من البوت' : '💻 محلي';
   
   var content = '<div class="mb-4 bg-gray-50 p-4 rounded-lg"><h4 class="font-semibold mb-2">ℹ️ معلومات أساسية</h4>' +
     '<p class="text-sm text-gray-700">رقم التقرير: <b>#' + escapeHtml(report.reportNumber || report.id) + '</b></p>' +
@@ -1204,7 +1145,7 @@ function loadEmployeeData() {
   list.innerHTML = myReports.slice(-10).reverse().map(function (r) {
     var statusBadge = { draft: 'badge-draft', pending: 'badge-pending', approved: 'badge-approved' };
     var statusName = { draft: 'مسودة', pending: 'بانتظار', approved: 'معتمد' };
-    var sourceIcon = r.source === 'cloud' ? '☁️' : '💻';
+    var sourceIcon = r.source === 'bot' ? '🤖' : '💻';
     return '<div class="bg-gray-50 rounded-lg p-3 report-card mb-2"><div class="flex justify-between items-start"><div><h3 class="font-semibold text-gray-800 text-sm">' + sourceIcon + ' ' + escapeHtml(r.clientName || 'عميل') + '</h3><p class="text-xs text-gray-500">' + new Date(r.date).toLocaleDateString('ar-EG') + '</p><span class="badge ' + (statusBadge[r.status] || '') + '" style="font-size:10px">' + (statusName[r.status] || r.status) + '</span></div><button type="button" data-action="view-report" data-id="' + r.id + '" class="btn btn-ghost btn-sm">عرض</button></div></div>';
   }).join('');
 }
@@ -1405,9 +1346,8 @@ document.addEventListener('click', function (e) {
     case 'approve-report': approveReport(parseInt(id)); break;
     case 'delete-report': deleteReport(parseInt(id)); break;
     case 'export-csv': exportCSV(); break;
-    case 'sync-cloud': syncCloudReports(false); break;
-    case 'save-cloud-url': saveCloudUrl(); break;
-    case 'test-cloud': testCloudConnection(); break;
+    case 'sync-bot': syncBotReports(false); break;
+    case 'clear-bot-data': clearBotData(); break;
     case 'start-report': startReportConversation(); break;
     case 'send-conv': sendConversationMessage(); break;
     case 'conv-help': showConversationHelp(); break;
@@ -1455,143 +1395,25 @@ document.getElementById('filterSource').addEventListener('change', loadAllReport
 document.addEventListener('click', function (e) { if (e.target.classList.contains('modal')) { e.target.classList.remove('active'); } });
 document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { var modals = document.querySelectorAll('.modal.active'); for (var i = 0; i < modals.length; i++) modals[i].classList.remove('active'); } });
 
-// ⭐ إغلاق المزامنة عند الخروج
-window.addEventListener('beforeunload', function() { stopAutoSync(); });
+// ⭐ الاستماع للتقارير الجديدة من البوت في الوقت الحقيقي
+window.addEventListener('storage', function(e) {
+  if (e.key === BOT_NEW_REPORT_KEY) {
+    setTimeout(function() {
+      syncBotReports(false);
+    }, 500);
+  }
+});
+
+// إغلاق المزامنة عند الخروج
+window.addEventListener('beforeunload', function() { stopBotAutoSync(); });
 
 /* ═══════════════════════════════════════════════════════════════
    🚀 بدء التشغيل
    ═══════════════════════════════════════════════════════════════ */
 initializeData();
 if (!restoreSession()) {
-  // عرض حالة السحابة في شاشة الدخول
-  if (CLOUD_URL) {
-    updateCloudStatusUI('pending', 'جاري الاتصال...');
-    setTimeout(function() { syncCloudReports(true); }, 500);
-  }
+  updateBotStatusUI('ok', 'البوت متصل');
 }
 </script>
 </body>
 </html>
-
-
-              <script>
-                              // ═══════════════════════════════════════════════════════════════
-// 📋 سكرتير مركز التخاطب - نسخة محسّنة (قراءة + كتابة)
-// ═══════════════════════════════════════════════════════════════
-
-const SHEET_NAME = 'Sheet1'; // غيّرها لو اسم الشيت مختلف
-
-function getSheet() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sheet = ss.getSheetByName(SHEET_NAME);
-  if (!sheet) {
-    sheet = ss.insertSheet(SHEET_NAME);
-    // إنشاء الأعمدة تلقائياً لو الشيت فاضي
-    sheet.appendRow([
-      'التاريخ والوقت', 'رقم التقرير', 'اسم العميل',
-      'العمر', 'البيانات المنظمة (JSON)', 'اسم المختص',
-      'التقرير الأصلي', 'المصدر'
-    ]);
-  }
-  return sheet;
-}
-
-// ═══════════════════════════════════════════════════════════════
-// 📥 GET - يستقبل طلبات القراءة من النظام
-// ═══════════════════════════════════════════════════════════════
-function doGet(e) {
-  try {
-    const sheet = getSheet();
-    const data = sheet.getDataRange().getValues();
-    
-    if (data.length <= 1) {
-      return ContentService
-        .createTextOutput(JSON.stringify({ status: 'success', reports: [] }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-    
-    // تحويل الصفوف لكائنات (تجاهل صف العناوين)
-    const reports = [];
-    for (let i = 1; i < data.length; i++) {
-      const row = data[i];
-      if (!row[1]) continue; // تخطي الصفوف الفاضية
-      
-      reports.push({
-        date: row[0] ? new Date(row[0]).toISOString() : new Date().toISOString(),
-        reportNumber: String(row[1] || ''),
-        clientName: String(row[2] || ''),
-        clientAge: String(row[3] || ''),
-        formattedData: String(row[4] || '{}'),
-        employeeName: String(row[5] || 'مختص'),
-        originalContent: String(row[6] || ''),
-        source: String(row[7] || 'whatsapp')
-      });
-    }
-    
-    return ContentService
-      .createTextOutput(JSON.stringify({ status: 'success', reports: reports, count: reports.length }))
-      .setMimeType(ContentService.MimeType.JSON);
-      
-  } catch (error) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ status: 'error', message: error.toString(), reports: [] }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════
-// 📤 POST - يستقبل البيانات من صفحة المختص ويحفظها
-// ═══════════════════════════════════════════════════════════════
-function doPost(e) {
-  try {
-    const data = JSON.parse(e.postData.contents);
-    const sheet = getSheet();
-    
-    // منع التكرار: التحقق من رقم التقرير
-    const existingData = sheet.getDataRange().getValues();
-    for (let i = 1; i < existingData.length; i++) {
-      if (String(existingData[i][1]) === String(data.reportNumber)) {
-        return ContentService
-          .createTextOutput(JSON.stringify({ 
-            status: 'duplicate', 
-            message: 'رقم التقرير موجود مسبقاً' 
-          }))
-          .setMimeType(ContentService.MimeType.JSON);
-      }
-    }
-    
-    // إضافة الصف الجديد
-    sheet.appendRow([
-      new Date(),                                    // التاريخ والوقت
-      data.reportNumber || 'R-' + Date.now(),       // رقم التقرير
-      data.clientName || 'غير محدد',                 // اسم العميل
-      data.clientAge || '',                          // العمر
-      JSON.stringify(data.formattedData || {}),      // البيانات المنظمة
-      data.employeeName || 'مختص',                   // اسم المختص
-      data.originalContent || '',                    // التقرير الأصلي
-      data.source || 'whatsapp'                      // المصدر
-    ]);
-    
-    return ContentService
-      .createTextOutput(JSON.stringify({ 
-        status: 'success', 
-        message: 'تم الحفظ بنجاح',
-        reportNumber: data.reportNumber
-      }))
-      .setMimeType(ContentService.MimeType.JSON);
-      
-  } catch (error) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ 
-        status: 'error', 
-        message: error.toString() 
-      }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}
-
-
-              </script>
-                        </body>
-                        </html>
-                    
