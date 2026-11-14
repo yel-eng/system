@@ -2,281 +2,1786 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>مركز التخاطب - إرسال تقرير</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.cdnfonts.com/css/cairo" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>مركز التخاطب — نظام إدارة التقارير</title>
 <style>
-  * { font-family: 'Cairo', sans-serif; box-sizing: border-box; }
-  body { background-color: #e5ddd5; height: 100vh; display: flex; flex-direction: column; margin: 0; }
-  .wa-header { background: #075e54; color: white; padding: 15px; display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-  .wa-chat { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 8px; }
-  .wa-bubble { max-width: 85%; padding: 10px 14px; border-radius: 10px; position: relative; font-size: 15px; line-height: 1.5; word-wrap: break-word; }
-  .wa-bubble-bot { background: white; align-self: flex-start; border-top-right-radius: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-  .wa-bubble-user { background: #dcf8c6; align-self: flex-end; border-top-left-radius: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-  .wa-bubble-draft { background: #f3e5f5; border: 2px solid #8e24aa; align-self: center; max-width: 95%; border-radius: 12px; }
-  .wa-time { font-size: 11px; color: #999; text-align: left; margin-top: 4px; display: block; }
-  .wa-input-area { background: #f0f0f0; padding: 10px; display: flex; gap: 8px; align-items: center; }
-  .wa-input { flex: 1; padding: 12px; border-radius: 25px; border: none; outline: none; font-size: 16px; }
-  .wa-btn { background: #075e54; color: white; border: none; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; flex-shrink: 0; }
-  .wa-btn:active { transform: scale(0.9); }
-  .btn-action { padding: 10px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; font-size: 14px; margin: 5px; }
-  .btn-confirm { background: #25d366; color: white; }
-  .btn-cancel { background: #ef4444; color: white; }
-  .typing { font-style: italic; color: #075e54; font-size: 13px; padding: 0 15px; display: none; }
+/* ═══════════════════════════════════════════════════════════════
+   CSS محلي مضغوط — بديل Tailwind CDN
+   ═══════════════════════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{
+  font-family:system-ui,-apple-system,"Segoe UI",Tahoma,"Noto Sans Arabic","Cairo",Arial,sans-serif;
+  font-display:swap;
+  background:#f3f4f6;color:#1f2937;line-height:1.5;min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+button,input,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}
+button{cursor:pointer;border:0;background:none}
+a{color:inherit;text-decoration:none}
+.hidden{display:none!important}
+
+/* Layout */
+.container{max-width:1200px;margin:0 auto;padding:0 16px}
+.flex{display:flex}.grid{display:grid}.items-center{align-items:center}
+.justify-between{justify-content:space-between}.gap-2{gap:8px}.gap-3{gap:12px}.gap-4{gap:16px}.gap-6{gap:24px}
+.flex-1{flex:1}.flex-wrap{flex-wrap:wrap}
+.grid-2{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:repeat(3,1fr)}.grid-4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:768px){.grid-3,.grid-4{grid-template-columns:1fr}.grid-2{grid-template-columns:1fr}}
+
+/* Spacing */
+.p-2{padding:8px}.p-3{padding:12px}.p-4{padding:16px}.p-6{padding:24px}.p-8{padding:32px}
+.px-3{padding-left:12px;padding-right:12px}.px-4{padding-left:16px;padding-right:16px}.px-6{padding-left:24px;padding-right:24px}
+.py-2{padding-top:8px;padding-bottom:8px}.py-3{padding-top:12px;padding-bottom:12px}.py-8{padding-top:32px;padding-bottom:32px}
+.mb-2{margin-bottom:8px}.mb-3{margin-bottom:12px}.mb-4{margin-bottom:16px}.mb-6{margin-bottom:24px}.mb-8{margin-bottom:32px}
+.mt-2{margin-top:8px}.mt-3{margin-top:12px}.mt-4{margin-top:16px}.mt-6{margin-top:24px}
+.ml-2{margin-left:8px}.ml-3{margin-left:12px}.mr-2{margin-right:8px}
+
+/* Typography */
+.text-xs{font-size:12px}.text-sm{font-size:14px}.text-base{font-size:16px}.text-lg{font-size:18px}.text-xl{font-size:20px}.text-2xl{font-size:24px}.text-3xl{font-size:30px}
+.font-semibold{font-weight:600}.font-bold{font-weight:700}.font-mono{font-family:ui-monospace,monospace}
+.text-center{text-align:center}.whitespace-pre{white-space:pre-wrap}
+.text-gray-500{color:#6b7280}.text-gray-600{color:#4b5563}.text-gray-700{color:#374151}.text-gray-800{color:#1f2937}
+.text-white{color:#fff}.text-red-700{color:#b91c1c}.text-green-700{color:#15803d}.text-blue-700{color:#1d4ed8}.text-purple-700{color:#7e22ce}
+
+/* Colors & Backgrounds */
+.bg-white{background:#fff}.bg-gray-50{background:#f9fafb}.bg-gray-100{background:#f3f4f6}
+.bg-red-50{background:#fef2f2}.bg-green-50{background:#f0fdf4}.bg-blue-50{background:#eff6ff}.bg-yellow-50{background:#fefce8}.bg-purple-50{background:#faf5ff}
+.bg-red-500{background:#ef4444}.bg-green-500{background:#22c55e}.bg-blue-500{background:#3b82f6}.bg-yellow-500{background:#eab308}.bg-purple-500{background:#a855f7}
+.bg-red-600{background:#dc2626}.bg-green-600{background:#16a34a}.bg-blue-600{background:#2563eb}.bg-purple-600{background:#9333ea}
+
+/* Borders & Radius */
+.border{border:1px solid #e5e7eb}.border-2{border:2px solid #e5e7eb}.border-red-300{border-color:#fca5a5}.border-green-500{border-color:#22c55e}.border-blue-300{border-color:#93c5fd}.border-gray-300{border-color:#d1d5db}
+.rounded{border-radius:4px}.rounded-lg{border-radius:8px}.rounded-xl{border-radius:12px}.rounded-2xl{border-radius:16px}.rounded-full{border-radius:9999px}
+
+/* Shadows */
+.shadow{box-shadow:0 1px 3px rgba(0,0,0,.1)}.shadow-lg{box-shadow:0 10px 25px rgba(0,0,0,.1)}.shadow-2xl{box-shadow:0 25px 50px rgba(0,0,0,.2)}
+
+/* Gradient */
+.gradient-bg{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)}
+.gradient-purple{background:linear-gradient(to right,#9333ea,#4f46e5)}
+.gradient-green{background:linear-gradient(to right,#10b981,#0d9488)}
+.gradient-orange{background:linear-gradient(to right,#f97316,#ef4444)}
+
+/* Components */
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 20px;border-radius:8px;font-weight:600;transition:background .15s,transform .1s;user-select:none}
+.btn:active{transform:scale(.97)}.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-primary{background:linear-gradient(to right,#9333ea,#4f46e5);color:#fff}
+.btn-primary:hover:not(:disabled){background:linear-gradient(to right,#7e22ce,#4338ca)}
+.btn-danger{background:#ef4444;color:#fff}.btn-danger:hover:not(:disabled){background:#dc2626}
+.btn-success{background:#22c55e;color:#fff}.btn-success:hover:not(:disabled){background:#16a34a}
+.btn-info{background:#3b82f6;color:#fff}.btn-info:hover:not(:disabled){background:#2563eb}
+.btn-secondary{background:#e5e7eb;color:#374151}.btn-secondary:hover:not(:disabled){background:#d1d5db}
+.btn-warning{background:#f59e0b;color:#fff}.btn-warning:hover:not(:disabled){background:#d97706}
+.btn-ghost{background:transparent;color:#374151}.btn-ghost:hover{background:#f3f4f6}
+.btn-block{width:100%}
+.btn-sm{padding:6px 12px;font-size:13px}
+
+.input{width:100%;padding:10px 14px;border:2px solid #d1d5db;border-radius:8px;background:#fff;transition:border-color .15s}
+.input:focus{outline:0;border-color:#9333ea;box-shadow:0 0 0 3px rgba(147,51,234,.15)}
+.input-error{border-color:#ef4444!important;background:#fef2f2!important}
+.label{display:block;margin-bottom:6px;font-weight:600;color:#374151;font-size:14px}
+.select{width:100%;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;background:#fff}
+.textarea{width:100%;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;background:#fff;resize:vertical;min-height:80px}
+
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.badge-admin{background:#f3e8ff;color:#6d28d9}.badge-employee{background:#dbeafe;color:#1e40af}
+.badge-reviewer{background:#fef3c7;color:#92400e}.badge-manager{background:#dcfce7;color:#166534}
+.badge-draft{background:#e5e7eb;color:#374151}.badge-pending{background:#fef3c7;color:#92400e}.badge-approved{background:#dcfce7;color:#166534}
+
+.card{background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.card-hover{transition:transform .2s,box-shadow .2s}
+.card-hover:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(0,0,0,.12)}
+
+/* Reduced motion */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .card-hover:hover{transform:none}
+}
+
+/* Tabs */
+.tab-btn{padding:10px 18px;border-radius:8px;font-weight:600;color:#4b5563;background:transparent;transition:background .15s,color .15s}
+.tab-btn:hover{background:#f3f4f6}
+.tab-btn.active{background:#667eea;color:#fff}
+
+/* Report card */
+.report-card{border-right:4px solid #667eea}
+
+/* Modal */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;padding:16px}
+.modal.active{display:flex}
+.modal-content{background:#fff;padding:24px;border-radius:16px;max-width:600px;width:100%;max-height:85vh;overflow-y:auto}
+
+/* Toast */
+.toast-container{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;width:90%;max-width:400px}
+.toast{padding:12px 20px;border-radius:8px;color:#fff;font-weight:600;animation:toastIn .3s ease;pointer-events:auto;box-shadow:0 4px 12px rgba(0,0,0,.15)}
+.toast-success{background:#10b981}.toast-error{background:#ef4444}.toast-info{background:#3b82f6}.toast-warn{background:#f59e0b}
+@keyframes toastIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+
+/* Bubbles */
+.bubble{padding:10px 14px;border-radius:12px;margin:6px 0;max-width:85%;white-space:pre-wrap;word-wrap:break-word}
+.bubble-user{background:#dcf8c6;margin-left:auto;border-bottom-left-radius:4px}
+.bubble-bot{background:#fff;border-bottom-right-radius:4px;border:1px solid #e5e7eb}
+
+/* Status dot */
+.status-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-left:6px}
+.status-ok{background:#10b981}.status-error{background:#ef4444}.status-warn{background:#f59e0b}
+
+/* Banner */
+.banner{padding:12px;border-radius:8px;margin-bottom:12px;border-right:4px solid}
+.banner-error{background:#fee2e2;border-color:#ef4444;color:#991b1b}
+.banner-success{background:#dcfce7;border-color:#22c55e;color:#166534}
+.banner-info{background:#dbeafe;border-color:#3b82f6;color:#1e40af}
+.banner-warn{background:#fef3c7;border-color:#f59e0b;color:#92400e}
+
+/* Nav */
+.nav{background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.1);height:60px;display:flex;align-items:center}
+.nav-inner{display:flex;justify-content:space-between;align-items:center;width:100%;max-width:1200px;margin:0 auto;padding:0 16px}
+.logo-circle{width:40px;height:40px;border-radius:50%;background:linear-gradient(to right,#9333ea,#4f46e5);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;margin-left:10px}
+
+/* Avatar */
+.avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(to right,#9333ea,#4f46e5);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;margin-left:12px;flex-shrink:0;font-size:18px}
+
+/* Field card */
+.field-card{background:#f9fafb;border-radius:8px;padding:12px;margin-bottom:10px}
+
+/* Global error screen */
+.error-screen{display:none;position:fixed;inset:0;background:#fef2f2;z-index:10000;padding:40px;overflow-y:auto}
+.error-screen.active{display:block}
+.error-screen h1{color:#991b1b;margin-bottom:16px;font-size:24px}
+.error-screen pre{background:#fff;padding:16px;border-radius:8px;overflow-x:auto;border:1px solid #fca5a5;font-family:ui-monospace,monospace;font-size:13px;color:#7f1d1d;direction:ltr;text-align:left}
+
+/* Stat card */
+.stat-card{border-radius:12px;padding:18px;color:#fff}
+.stat-label{font-size:13px;opacity:.9;margin-bottom:6px}
+.stat-value{font-size:28px;font-weight:700}
+
+/* User row */
+.user-row{background:#f9fafb;border-radius:8px;padding:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.user-row:hover{background:#f3f4f6}
+
+/* Focus visible */
+:focus-visible{outline:2px solid #9333ea;outline-offset:2px}
+
+/* Print */
+@media print{.no-print{display:none!important}}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:#f3f4f6}
+::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:#9ca3af}
 </style>
 </head>
 <body>
 
-  <!-- رأس الصفحة -->
-  <div class="wa-header">
-    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-2xl">🏥</div>
-    <div>
-      <div class="font-bold text-lg">مركز التخاطب</div>
-      <div class="text-xs opacity-80">مساعد التقارير الذكي</div>
+<!-- ═══════════════════════════════════════════════════════════════
+     شاشة الخطأ العامة (تظهر لو حصل أي خطأ JS)
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="errorScreen" class="error-screen" role="alert">
+  <div class="container">
+    <h1>⚠️ حصل خطأ في النظام</h1>
+    <p class="mb-4">النظام واجه مشكلة. جرب إعادة تحميل الصفحة. لو المشكلة مستمرة، ابعت التفاصيل للدعم الفني.</p>
+    <pre id="errorDetails">لا توجد تفاصيل</pre>
+    <div class="mt-4 flex gap-3">
+      <button class="btn btn-primary" onclick="location.reload()">🔄 إعادة تحميل الصفحة</button>
+      <button class="btn btn-secondary" onclick="clearAppData()">🗑️ مسح بيانات التطبيق</button>
     </div>
   </div>
+</div>
 
-  <!-- منطقة المحادثة -->
-  <div id="chatContainer" class="wa-chat">
-    <div class="wa-bubble wa-bubble-bot">
-      أهلاً بك! 👋<br>
-      اكتب بيانات جلسة العميل بصيغة حرة، وسأساعدك في تنظيمها.<br>
-      <span class="text-xs text-gray-500 mt-2 block">مثال: "جلسة أحمد عمره 5 سنين اشتغلنا على نطق الراء وكان فيه تحسن"</span>
-      <span class="wa-time">الآن</span>
+<!-- ═══════════════════════════════════════════════════════════════
+     حاوية Toast
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     صفحة تسجيل الدخول
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="loginPage" class="min-h-screen flex items-center justify-center gradient-bg p-4" style="min-height:100vh">
+  <div class="bg-white p-8 rounded-2xl shadow-2xl" style="width:100%;max-width:420px">
+    <div class="text-center mb-6">
+      <div class="logo-circle" style="width:72px;height:72px;font-size:28px;margin:0 auto 12px">👥</div>
+      <h1 class="text-3xl font-bold text-gray-800">مركز التخاطب</h1>
+      <p class="text-gray-600 mt-2">نظام إدارة التقارير</p>
     </div>
-  </div>
-  <div id="typingIndicator" class="typing">يكتب...</div>
 
-  <!-- منطقة الإدخال -->
-  <div class="wa-input-area">
-    <input type="text" id="messageInput" class="wa-input" placeholder="اكتب رسالة..." autocomplete="off">
-    <button onclick="sendMessage()" class="wa-btn">
-      <svg class="w-6 h-6 transform rotate-180" fill="currentColor" viewBox="0 0 24 24"><path d="M1.101 21.757 23.8 12.028 1.101 2.3l.011 7.912 13.623 1.816-13.623 1.817-.011 7.912z"/></svg>
+    <div id="loginError" class="banner banner-error hidden"></div>
+
+    <div class="mb-4">
+      <label class="label" for="username">📧 اسم المستخدم</label>
+      <input type="text" id="username" class="input" autocomplete="username" placeholder="اكتب اسم المستخدم">
+    </div>
+    <div class="mb-4">
+      <label class="label" for="password">🔑 كلمة المرور</label>
+      <input type="password" id="password" class="input" autocomplete="current-password" placeholder="••••••••">
+    </div>
+
+    <button type="button" id="loginBtn" class="btn btn-primary btn-block" style="padding:14px;font-size:16px">
+      🔐 تسجيل الدخول
     </button>
+
+    <div class="banner banner-info mt-4">
+      <p class="font-bold mb-2 text-center">💡 حسابات تجريبية</p>
+      <div class="text-sm">
+        <p><b>مدير:</b> <code class="font-mono">admin</code></p>
+        <p><b>موظف:</b> <code class="font-mono">employee1</code></p>
+        <p><b>مراجع:</b> <code class="font-mono">reviewer1</code></p>
+        <p class="mt-2 text-xs">كلمة المرور الافتراضية: <code class="font-mono">123456</code></p>
+      </div>
+    </div>
+
+    <div class="mt-4 flex gap-2" style="flex-wrap:wrap">
+      <button type="button" data-action="fix-login" class="btn btn-warning btn-sm flex-1" style="flex:1 1 45%">
+        🔧 إصلاح الدخول
+      </button>
+      <button type="button" data-action="reset-data" class="btn btn-danger btn-sm flex-1" style="flex:1 1 45%">
+        🔄 إعادة تعيين
+      </button>
+    </div>
   </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     لوحة التحكم
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="dashboard" class="hidden">
+  <nav class="nav no-print">
+    <div class="nav-inner">
+      <div class="flex items-center">
+        <div class="logo-circle">📄</div>
+        <span class="text-xl font-bold text-gray-800">مركز التخاطب</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span id="currentUser" class="text-gray-700 font-semibold"></span>
+        <span id="userRole" class="badge"></span>
+        <button type="button" data-action="logout" class="btn btn-danger btn-sm">خروج</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container py-8">
+    <!-- ═══ تبويبات الأدمن ═══ -->
+    <div id="adminTabs" class="hidden">
+      <div class="flex flex-wrap gap-2 mb-6 bg-white p-2 rounded-lg shadow" id="tabsBar">
+        <button type="button" data-tab="overview" class="tab-btn active">📊 نظرة عامة</button>
+        <button type="button" data-tab="users" class="tab-btn">👥 الحسابات</button>
+        <button type="button" data-tab="template" class="tab-btn">📋 نموذج التقرير</button>
+        <button type="button" data-tab="reports" class="tab-btn">📄 التقارير</button>
+        <button type="button" data-tab="whatsapp" class="tab-btn">💬 ربط واتساب</button>
+        <button type="button" data-tab="ai" class="tab-btn">🤖 إعدادات الذكاء</button>
+        <button type="button" data-tab="audit" class="tab-btn">📜 سجل التدقيق</button>
+      </div>
+
+      <!-- نظرة عامة -->
+      <div id="tab-overview" class="tab-panel">
+        <div class="grid grid-4 gap-4 mb-6">
+          <div class="stat-card gradient-purple">
+            <p class="stat-label">التقارير المكتملة</p>
+            <p class="stat-value" id="statCompleted">0</p>
+          </div>
+          <div class="stat-card" style="background:linear-gradient(to right,#f59e0b,#ea580c)">
+            <p class="stat-label">المسودات</p>
+            <p class="stat-value" id="statDrafts">0</p>
+          </div>
+          <div class="stat-card gradient-green">
+            <p class="stat-label">محادثات نشطة</p>
+            <p class="stat-value" id="statConversations">0</p>
+          </div>
+          <div class="stat-card" style="background:linear-gradient(to right,#3b82f6,#1d4ed8)">
+            <p class="stat-label">الموظفين</p>
+            <p class="stat-value" id="statUsers">0</p>
+          </div>
+        </div>
+        <div class="card p-6">
+          <h3 class="text-xl font-bold text-gray-800 mb-4">آخر النشاطات</h3>
+          <div id="recentActivities" class="space-y-2"></div>
+        </div>
+      </div>
+
+      <!-- الحسابات -->
+      <div id="tab-users" class="tab-panel hidden">
+        <div class="card p-6">
+          <div class="flex justify-between items-center mb-6" style="flex-wrap:wrap;gap:12px">
+            <h2 class="text-2xl font-bold text-gray-800">إدارة الحسابات</h2>
+            <button type="button" data-action="add-user" class="btn btn-primary">+ إضافة حساب جديد</button>
+          </div>
+          <div id="usersList"></div>
+        </div>
+      </div>
+
+      <!-- نموذج التقرير -->
+      <div id="tab-template" class="tab-panel hidden">
+        <div class="card p-6">
+          <h2 class="text-2xl font-bold text-gray-800 mb-2">منشئ نموذج التقرير</h2>
+          <p class="text-gray-600 mb-4 text-sm">اسحب الحقول لإعادة ترتيبها. النموذج يطبّق على التقارير الجديدة فقط.</p>
+          <div id="templateForm"></div>
+          <div class="mt-6 flex gap-3" style="flex-wrap:wrap">
+            <button type="button" data-action="add-field" class="btn btn-success">+ إضافة حقل</button>
+            <button type="button" data-action="save-template" class="btn btn-primary">💾 حفظ ونشر</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- التقارير -->
+      <div id="tab-reports" class="tab-panel hidden">
+        <div class="card p-6">
+          <div class="flex justify-between items-center mb-6" style="flex-wrap:wrap;gap:12px">
+            <h2 class="text-2xl font-bold text-gray-800">جميع التقارير</h2>
+            <div class="flex gap-2" style="flex-wrap:wrap">
+              <input type="text" id="searchReports" placeholder="🔍 بحث..." class="input" style="width:200px">
+              <select id="filterStatus" class="select" style="width:auto">
+                <option value="">كل الحالات</option>
+                <option value="draft">مسودة</option>
+                <option value="pending">بانتظار الاعتماد</option>
+                <option value="approved">معتمد</option>
+              </select>
+              <button type="button" data-action="export-csv" class="btn btn-success btn-sm">📥 CSV</button>
+            </div>
+          </div>
+          <div id="allReportsList"></div>
+        </div>
+      </div>
+
+      <!-- ربط واتساب -->
+      <div id="tab-whatsapp" class="tab-panel hidden">
+        <div class="card p-6">
+          <h2 class="text-2xl font-bold text-gray-800 mb-4">ربط واتساب</h2>
+          <div class="banner banner-warn">
+            <p class="font-bold">⚠️ وضع الاختبار</p>
+            <p class="text-sm mt-1">الربط الفعلي يتطلب حساب WhatsApp Business API من Meta. هذا القسم يعرض الإعدادات المطلوبة فقط.</p>
+          </div>
+          <div class="bg-gray-50 p-4 rounded-lg mb-4">
+            <h3 class="font-bold text-gray-800 mb-3">🔧 إعدادات الاتصال</h3>
+            <div class="mb-3">
+              <label class="label">Phone Number ID</label>
+              <input type="text" id="waPhoneId" class="input" placeholder="من Meta Developer Portal">
+            </div>
+            <div class="mb-3">
+              <label class="label">WhatsApp Business Account ID</label>
+              <input type="text" id="waBusinessId" class="input" placeholder="من Meta Developer Portal">
+            </div>
+            <div class="mb-3">
+              <label class="label">Access Token</label>
+              <input type="password" id="waToken" class="input" placeholder="••••••••••••">
+            </div>
+            <div class="mb-3">
+              <label class="label">Webhook Verify Token</label>
+              <input type="text" id="waVerifyToken" class="input" placeholder="رمز التحقق للـ Webhook">
+            </div>
+          </div>
+          <div class="flex gap-3 mb-4" style="flex-wrap:wrap">
+            <button type="button" data-action="test-wa" class="btn btn-info">🔌 اختبار الاتصال</button>
+            <button type="button" data-action="save-wa" class="btn btn-primary">💾 حفظ الإعدادات</button>
+          </div>
+          <div id="waStatus" class="bg-gray-50 p-4 rounded-lg">
+            <p class="text-sm text-gray-600">الحالة: <span class="status-dot status-warn"></span> غير متصل</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- إعدادات الذكاء -->
+      <div id="tab-ai" class="tab-panel hidden">
+        <div class="card p-6">
+          <h2 class="text-2xl font-bold text-gray-800 mb-4">إعدادات الذكاء الاصطناعي</h2>
+          <div class="banner banner-warn">
+            <p class="font-bold">⚠️ وضع الاختبار</p>
+            <p class="text-sm mt-1">النظام يستخدم محرك استخراج محلي حالياً. للربط مع OpenAI أو مزود آخر، أضف المفاتيح أدناه.</p>
+          </div>
+          <div class="bg-gray-50 p-4 rounded-lg mb-4">
+            <h3 class="font-bold text-gray-800 mb-3">🤖 مزود الذكاء الاصطناعي</h3>
+            <div class="mb-3">
+              <label class="label">المزود</label>
+              <select id="aiProvider" class="select">
+                <option value="local">محرك محلي (افتراضي)</option>
+                <option value="openai">OpenAI</option>
+                <option value="anthropic">Anthropic</option>
+                <option value="azure">Azure OpenAI</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="label">API Key</label>
+              <input type="password" id="aiApiKey" class="input" placeholder="••••••••••••">
+            </div>
+            <div class="mb-3">
+              <label class="label">Model</label>
+              <input type="text" id="aiModel" class="input" value="gpt-4o-mini">
+            </div>
+          </div>
+          <button type="button" data-action="save-ai" class="btn btn-primary">💾 حفظ الإعدادات</button>
+        </div>
+      </div>
+
+      <!-- سجل التدقيق -->
+      <div id="tab-audit" class="tab-panel hidden">
+        <div class="card p-6">
+          <h2 class="text-2xl font-bold text-gray-800 mb-4">سجل التدقيق</h2>
+          <div id="auditLogList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ واجهة الموظف ═══ -->
+    <div id="employeeView" class="hidden">
+      <div class="grid grid-3 gap-6 mb-8">
+        <div class="stat-card gradient-purple card-hover">
+          <p class="stat-label">📊 تقاريري</p>
+          <p class="stat-value" id="myReportsCount">0</p>
+        </div>
+        <div class="stat-card gradient-green card-hover">
+          <p class="stat-label">📅 هذا الشهر</p>
+          <p class="stat-value" id="monthReportsCount">0</p>
+        </div>
+        <div class="stat-card gradient-orange card-hover">
+          <p class="stat-label">👥 العملاء</p>
+          <p class="stat-value" id="clientsCount">0</p>
+        </div>
+      </div>
+
+      <div class="grid grid-2 gap-6">
+        <div class="card p-6">
+          <h2 class="text-2xl font-bold text-gray-800 mb-6">إضافة تقرير جديد</h2>
+          <div class="mb-4">
+            <label class="label">التقرير (اكتب بأي شكل)</label>
+            <textarea id="reportContent" class="textarea" rows="6" placeholder="مثال: جلسة أحمد، عنده خمس سنين، اشتغلنا على نطق الراء..."></textarea>
+          </div>
+          <button type="button" data-action="start-report" class="btn btn-primary btn-block" style="padding:14px">
+            🚀 بدء إنشاء التقرير
+          </button>
+        </div>
+
+        <div class="card p-6">
+          <h2 class="text-2xl font-bold text-gray-800 mb-6">تقاريري الأخيرة</h2>
+          <div id="myReportsList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     Drawer لعرض التقرير
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="reportDrawer" class="modal">
+  <div class="modal-content" style="max-width:700px">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-2xl font-bold text-gray-800">تفاصيل التقرير</h3>
+      <button type="button" data-action="close-drawer" class="btn btn-ghost" style="font-size:24px;padding:4px 12px">×</button>
+    </div>
+    <div id="drawerContent"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     Modal إضافة مستخدم
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="addUserModal" class="modal">
+  <div class="modal-content">
+    <h3 class="text-2xl font-bold text-gray-800 mb-6">إضافة حساب جديد</h3>
+    <div class="mb-3">
+      <label class="label">الاسم الكامل</label>
+      <input type="text" id="newFullName" class="input">
+    </div>
+    <div class="mb-3">
+      <label class="label">اسم المستخدم</label>
+      <input type="text" id="newUsername" class="input">
+    </div>
+    <div class="mb-3">
+      <label class="label">كلمة المرور</label>
+      <input type="password" id="newPassword" class="input">
+    </div>
+    <div class="mb-3">
+      <label class="label">رقم واتساب</label>
+      <input type="tel" id="newPhone" class="input" placeholder="+201xxxxxxxxx">
+    </div>
+    <div class="mb-4">
+      <label class="label">الدور</label>
+      <select id="newRole" class="select">
+        <option value="employee">موظف / مختص</option>
+        <option value="admin">مدير</option>
+        <option value="reviewer">مراجع</option>
+        <option value="report_manager">مدير تقارير</option>
+      </select>
+    </div>
+    <div class="flex gap-3">
+      <button type="button" data-action="submit-add-user" class="btn btn-primary flex-1">إضافة</button>
+      <button type="button" data-action="close-modal" data-modal="addUserModal" class="btn btn-secondary flex-1">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     Modal محادثة التقرير (البوت الداخلي)
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="conversationModal" class="modal">
+  <div class="modal-content" style="max-width:600px">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-xl font-bold text-gray-800">💬 محادثة إنشاء التقرير</h3>
+      <button type="button" data-action="close-modal" data-modal="conversationModal" class="btn btn-ghost" style="font-size:20px">×</button>
+    </div>
+    <div id="conversationChat" style="background:#e5ddd5;padding:12px;border-radius:8px;min-height:250px;max-height:400px;overflow-y:auto;margin-bottom:12px"></div>
+    <div class="flex gap-2">
+      <input type="text" id="conversationInput" class="input flex-1" placeholder="اكتب ردك...">
+      <button type="button" data-action="send-conv" class="btn btn-success">إرسال</button>
+    </div>
+    <div class="flex gap-2 mt-3" style="flex-wrap:wrap">
+      <button type="button" data-action="conv-help" class="btn btn-info btn-sm">❓ مساعدة</button>
+      <button type="button" data-action="conv-cancel" class="btn btn-danger btn-sm">❌ إلغاء</button>
+      <button type="button" data-action="conv-approve" class="btn btn-success btn-sm hidden" id="convApproveBtn">✅ اعتماد</button>
+      <button type="button" data-action="conv-edit" class="btn btn-warning btn-sm hidden" id="convEditBtn">✏️ طلب تعديل</button>
+    </div>
+  </div>
+</div>
 
 <script>
-// ═══════════════════════════════════════════════════════════════
-// ⚙️ إعدادات الربط - الرابط تم وضعه تلقائياً ✅
-// ═══════════════════════════════════════════════════════════════
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwLkWFgdm_xlEO6YqWphO87XAS4XJCL-7YGb-JO_a4z5rg51z9SUIkvsqAkwvU3Qg6z/exec";
+/* ═══════════════════════════════════════════════════════════════
+   معالج الأخطاء العام
+   ═══════════════════════════════════════════════════════════════ */
+(function setupErrorHandler() {
+  'use strict';
+  function showError(msg, details) {
+    try {
+      var screen = document.getElementById('errorScreen');
+      var detailsEl = document.getElementById('errorDetails');
+      if (!screen || !detailsEl) return;
+      detailsEl.textContent = (msg || 'خطأ غير معروف') + '\n\n' + (details || '');
+      screen.classList.add('active');
+    } catch (e) { /* لا شيء */ }
+  }
+  window.addEventListener('error', function (ev) {
+    showError(ev.message, (ev.filename || '') + ':' + (ev.lineno || '') + ':' + (ev.colno || ''));
+  });
+  window.addEventListener('unhandledrejection', function (ev) {
+    showError('Promise rejection', String(ev.reason));
+  });
+  window.__showAppError = showError;
+})();
 
-// ═══════════════════════════════════════════════════════════════
-// 🧠 محرك الذكاء الاصطناعي
-// ═══════════════════════════════════════════════════════════════
-const AIEngine = {
-  normalizeArabicNumbers(text) {
-    const map = {'٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9'};
-    return text.replace(/[٠-٩]/g, d => map[d]);
-  },
-  extractAge(text) {
-    const n = this.normalizeArabicNumbers(text);
-    const patterns = [/(?:عمر[هُه]?|عمره|سنّه)\s*[:：]?\s*(\d+)\s*(سن[ةه]|سنين|سنة|شهر)?/i, /(\d+)\s*(سن[ةه]|سنين|سنة|شهر)/i];
-    for (const p of patterns) { const m = n.match(p); if (m) return `${m[1]} ${m[2] || 'سنة'}`; }
-    return null;
-  },
-  extractClientName(text) {
-    const m = text.match(/(?:جلسة|العميل|الطفل)\s+(?:الطفل\s+)?([^\s،,.،]{2,}(?:\s+[^\s،,.،]{2,})?)/i);
-    return m && m[1] && !/^(جلسة|العميل|الطفل)/.test(m[1]) ? m[1].trim() : null;
-  },
-  extractSessionNotes(text) {
-    const m = text.match(/(?:اشتغلنا|عملنا|ركزنا|كان فيه|كان في|ملاحظات)\s+(.+?)(?:\.|$)/i);
-    return m && m[1] ? m[1].trim() : null;
-  },
-  extractProgress(text) {
-    if (/تحسن\s*(كبير|جدا|جيد|ملحوظ)/i.test(text)) return 'جيد جداً';
-    if (/تحسن|حسن|أحسن/i.test(text)) return 'جيد';
-    if (/ممتاز|رائع/i.test(text)) return 'ممتاز';
-    if (/ضعف|مش\s*كويس/i.test(text)) return 'يحتاج تحسين';
-    return null;
-  },
-  extractAll(text) {
-    const data = {};
-    const fields = [
-      { label: 'اسم العميل' }, { label: 'عمر العميل' },
-      { label: 'التشخيص', aliases: ['تشخيص','حالة','مشكلة'] },
-      { label: 'ملاحظات الجلسة', aliases: ['ملاحظات','جلسة','اشتغلنا','عملنا'] },
-      { label: 'تقييم التقدم', aliases: ['تقييم','تقدم','تحسن'] }
-    ];
-    
-    fields.forEach(f => {
-      if (f.label === 'اسم العميل') data[f.label] = this.extractClientName(text);
-      else if (f.label === 'عمر العميل') data[f.label] = this.extractAge(text);
-      else if (f.label === 'ملاحظات الجلسة') data[f.label] = this.extractSessionNotes(text);
-      else if (f.label === 'تقييم التقدم') data[f.label] = this.extractProgress(text);
-      else {
-        const keywords = [f.label, ...(f.aliases || [])];
-        for (const kw of keywords) {
-          const p = new RegExp(`(?:${kw})\\s*[:：]?\\s*([^،.\\n]{3,})`, 'i');
-          const m = text.match(p);
-          if (m && m[1]) { data[f.label] = m[1].trim(); break; }
+/* ═══════════════════════════════════════════════════════════════
+   طبقة التخزين (localStorage مع fallback للذاكرة)
+   ═══════════════════════════════════════════════════════════════ */
+var Storage = (function () {
+  'use strict';
+  var memory = {};
+  var useLocal = (function () {
+    try {
+      if (typeof localStorage === 'undefined') return false;
+      var k = '__t_' + Date.now();
+      localStorage.setItem(k, '1');
+      var v = localStorage.getItem(k);
+      localStorage.removeItem(k);
+      return v === '1';
+    } catch (e) { return false; }
+  })();
+
+  return {
+    get: function (key) {
+      try {
+        var raw = useLocal ? localStorage.getItem('tkhb_' + key) : (memory[key] || null);
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) { return null; }
+    },
+    set: function (key, value) {
+      try {
+        var raw = JSON.stringify(value);
+        if (useLocal) localStorage.setItem('tkhb_' + key, raw);
+        else memory[key] = raw;
+        return true;
+      } catch (e) { return false; }
+    },
+    remove: function (key) {
+      try {
+        if (useLocal) localStorage.removeItem('tkhb_' + key);
+        else delete memory[key];
+      } catch (e) { /* لا شيء */ }
+    },
+    clearAll: function () {
+      try {
+        if (useLocal) {
+          var keys = [];
+          for (var i = 0; i < localStorage.length; i++) {
+            var k = localStorage.key(i);
+            if (k && k.indexOf('tkhb_') === 0) keys.push(k);
+          }
+          keys.forEach(function (k) { localStorage.removeItem(k); });
         }
-      }
-    });
-    return data;
+        memory = {};
+      } catch (e) { /* لا شيء */ }
+    },
+    isLocal: function () { return useLocal; }
+  };
+})();
+
+/* ═══════════════════════════════════════════════════════════════
+   البيانات الافتراضية
+   ═══════════════════════════════════════════════════════════════ */
+var DEFAULT_USERS = [
+  { id: 1, username: 'admin', passwordHash: hashPassword('123456'), fullName: 'المدير العام', phone: '+201234567890', role: 'admin', active: true, createdAt: new Date().toISOString() },
+  { id: 2, username: 'employee1', passwordHash: hashPassword('123456'), fullName: 'د. سارة أحمد', phone: '+20111111111', role: 'employee', active: true, createdAt: new Date().toISOString() },
+  { id: 3, username: 'reviewer1', passwordHash: hashPassword('123456'), fullName: 'د. محمد علي', phone: '+20122222222', role: 'reviewer', active: true, createdAt: new Date().toISOString() }
+];
+
+var DEFAULT_TEMPLATE = {
+  version: 1,
+  updatedAt: new Date().toISOString(),
+  fields: [
+    { id: 1, label: 'اسم العميل', type: 'text', required: true, botQuestion: 'ما هو اسم العميل؟' },
+    { id: 2, label: 'عمر العميل', type: 'number', required: false, botQuestion: 'ما هو عمر العميل؟' },
+    { id: 3, label: 'التشخيص', type: 'text', required: true, botQuestion: 'ما هو التشخيص المسجل من المختص؟' },
+    { id: 4, label: 'ملاحظات الجلسة', type: 'textarea', required: true, botQuestion: 'اكتب ملاحظات الجلسة' },
+    { id: 5, label: 'الخطة العلاجية', type: 'textarea', required: false, botQuestion: 'ما هي الخطة العلاجية؟' },
+    { id: 6, label: 'تقييم التقدم', type: 'select', options: ['ممتاز', 'جيد جداً', 'جيد', 'يحتاج تحسين'], required: false, botQuestion: 'كيف تقيم التقدم؟' }
+  ]
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   تشفير بسيط لكلمات المرور (hash)
+   ملاحظة: في الإنتاج الحقيقي استخدم bcrypt/argon2 على الخادم
+   ═══════════════════════════════════════════════════════════════ */
+function hashPassword(pwd) {
+  // SHA-256 بسيط عبر SubtleCrypto (async) — نستخدم sync fallback
+  // هنا hash بسيط غير آمن نسبياً لكن أفضل من النص الصريح
+  var str = 'tkhb_salt_v1::' + (pwd || '');
+  var hash = 0;
+  for (var i = 0; i < str.length; i++) {
+    var c = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + c;
+    hash = hash & hash;
+  }
+  return 'h1$' + Math.abs(hash).toString(36) + '$' + str.length;
+}
+
+function verifyPassword(pwd, hash) {
+  return hashPassword(pwd) === hash;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   نظام الصلاحيات
+   ═══════════════════════════════════════════════════════════════ */
+var PERMISSIONS = {
+  admin: {
+    view_reports: 'all', create_report: true, edit_report: true, approve_report: true,
+    delete_report: true, export_reports: true, manage_users: true,
+    manage_template: true, manage_settings: true
   },
-  checkCompleteness(data) {
-    const missing = [];
-    if (!data['اسم العميل']) missing.push('اسم العميل');
-    if (!data['عمر العميل']) missing.push('عمر العميل');
-    if (!data['ملاحظات الجلسة']) missing.push('ملاحظات الجلسة');
-    return { complete: missing.length === 0, missing };
+  employee: {
+    view_reports: 'own', create_report: true, edit_report: 'own', approve_report: false,
+    delete_report: false, export_reports: false, manage_users: false,
+    manage_template: false, manage_settings: false
+  },
+  reviewer: {
+    view_reports: 'all', create_report: false, edit_report: false, approve_report: false,
+    delete_report: false, export_reports: true, manage_users: false,
+    manage_template: false, manage_settings: false
+  },
+  report_manager: {
+    view_reports: 'all', create_report: true, edit_report: true, approve_report: true,
+    delete_report: true, export_reports: true, manage_users: false,
+    manage_template: true, manage_settings: false
   }
 };
 
-// ═══════════════════════════════════════════════════════════════
-// 💬 إدارة المحادثة
-// ═══════════════════════════════════════════════════════════════
-let session = { state: 'idle', extractedData: {}, currentQuestion: null };
-
-function getTime() {
-  return new Date().toLocaleTimeString('ar-EG', {hour: '2-digit', minute: '2-digit'});
+function hasPerm(perm) {
+  if (!state.currentUser) return false;
+  var p = PERMISSIONS[state.currentUser.role];
+  return p ? !!p[perm] : false;
 }
 
-function addBubble(type, content, isHTML = false) {
-  const chat = document.getElementById('chatContainer');
-  const bubble = document.createElement('div');
-  bubble.className = `wa-bubble wa-bubble-${type}`;
-  bubble.innerHTML = (isHTML ? content : content.replace(/\n/g, '<br>')) + `<span class="wa-time">${getTime()}</span>`;
-  chat.appendChild(bubble);
+function canViewReport(report) {
+  if (!state.currentUser || !report) return false;
+  var scope = PERMISSIONS[state.currentUser.role] && PERMISSIONS[state.currentUser.role].view_reports;
+  if (scope === 'all') return true;
+  if (scope === 'own') return report.employeeId === state.currentUser.id;
+  return false;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   محرك استخراج البيانات (AI Adapter)
+   ═══════════════════════════════════════════════════════════════ */
+var AIExtractor = {
+  extract: function (text, template) {
+    var extracted = {};
+    var lines = text.split('\n').map(function (l) { return l.trim(); }).filter(Boolean);
+
+    template.fields.forEach(function (field) {
+      var value = '';
+      // نمط: "اسم الحقل: القيمة" أو "اسم الحقل القيمة"
+      try {
+        var pattern = new RegExp(escapeRegex(field.label) + '\\s*[:：\\-]?\\s*(.+)', 'i');
+        var m = text.match(pattern);
+        if (m) value = m[1].trim();
+      } catch (e) { /* لا شيء */ }
+
+      // fallback: السطر اللي فيه اسم الحقل واللي بعده القيمة
+      if (!value) {
+        for (var i = 0; i < lines.length; i++) {
+          if (lines[i].indexOf(field.label) !== -1) {
+            if (lines[i].length > field.label.length + 3) {
+              value = lines[i].substring(lines[i].indexOf(field.label) + field.label.length).replace(/^[\s:：\-]+/, '').trim();
+            } else if (i + 1 < lines.length) {
+              value = lines[i + 1].trim();
+            }
+            if (value) break;
+          }
+        }
+      }
+
+      // تحويل الأرقام العربية
+      if (field.type === 'number' && value) {
+        value = normalizeArabicNumbers(value);
+      }
+
+      extracted[field.label] = value;
+    });
+
+    return extracted;
+  },
+
+  getMissingFields: function (extracted, template) {
+    return template.fields.filter(function (f) {
+      return f.required && (!extracted[f.label] || String(extracted[f.label]).trim() === '');
+    });
+  }
+};
+
+function normalizeArabicNumbers(text) {
+  var map = { '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4', '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9' };
+  return String(text).replace(/[٠-٩]/g, function (d) { return map[d]; });
+}
+
+function escapeRegex(str) {
+  return String(str).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   حالة التطبيق
+   ═══════════════════════════════════════════════════════════════ */
+var state = {
+  currentUser: null,
+  currentTab: 'overview',
+  currentConversation: null
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   تهيئة البيانات
+   ═══════════════════════════════════════════════════════════════ */
+function initializeData() {
+  if (!Storage.get('users')) Storage.set('users', DEFAULT_USERS);
+  if (!Storage.get('reports')) Storage.set('reports', []);
+  if (!Storage.get('template')) Storage.set('template', DEFAULT_TEMPLATE);
+  if (!Storage.get('audit_log')) Storage.set('audit_log', []);
+  if (!Storage.get('conversations')) Storage.set('conversations', []);
+  if (!Storage.get('wa_settings')) Storage.set('wa_settings', { connected: false });
+  if (!Storage.get('ai_settings')) Storage.set('ai_settings', { provider: 'local', model: 'gpt-4o-mini' });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Toast
+   ═══════════════════════════════════════════════════════════════ */
+function showToast(message, type) {
+  type = type || 'info';
+  var container = document.getElementById('toastContainer');
+  if (!container) return;
+  var toast = document.createElement('div');
+  toast.className = 'toast toast-' + type;
+  toast.textContent = message;
+  container.appendChild(toast);
+  setTimeout(function () {
+    toast.style.opacity = '0';
+    toast.style.transition = 'opacity .3s';
+    setTimeout(function () { toast.remove(); }, 300);
+  }, 3000);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   سجل التدقيق
+   ═══════════════════════════════════════════════════════════════ */
+function addAuditLog(action, details) {
+  var logs = Storage.get('audit_log') || [];
+  logs.push({
+    id: Date.now() + Math.random(),
+    action: action,
+    details: details || '',
+    userId: state.currentUser ? state.currentUser.id : null,
+    userName: state.currentUser ? state.currentUser.fullName : 'نظام',
+    timestamp: new Date().toISOString()
+  });
+  // احتفظ بآخر 500 سجل فقط
+  if (logs.length > 500) logs = logs.slice(-500);
+  Storage.set('audit_log', logs);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   تسجيل الدخول
+   ═══════════════════════════════════════════════════════════════ */
+function handleLogin() {
+  var usernameEl = document.getElementById('username');
+  var passwordEl = document.getElementById('password');
+  var errorEl = document.getElementById('loginError');
+  var username = (usernameEl.value || '').trim();
+  var password = passwordEl.value || '';
+
+  errorEl.classList.add('hidden');
+  usernameEl.classList.remove('input-error');
+  passwordEl.classList.remove('input-error');
+
+  if (!username || !password) {
+    errorEl.textContent = '❌ يرجى ملء جميع الحقول';
+    errorEl.classList.remove('hidden');
+    if (!username) usernameEl.classList.add('input-error');
+    if (!password) passwordEl.classList.add('input-error');
+    return;
+  }
+
+  var users = Storage.get('users') || [];
+  var user = null;
+  for (var i = 0; i < users.length; i++) {
+    if (users[i].username === username && users[i].active && verifyPassword(password, users[i].passwordHash)) {
+      user = users[i];
+      break;
+    }
+  }
+
+  if (user) {
+    state.currentUser = user;
+    showDashboard();
+    showToast('✅ مرحباً ' + user.fullName, 'success');
+    addAuditLog('login', 'تسجيل دخول: ' + user.username);
+  } else {
+    errorEl.textContent = '❌ اسم المستخدم أو كلمة المرور غير صحيحة، أو الحساب معطل';
+    errorEl.classList.remove('hidden');
+    passwordEl.classList.add('input-error');
+    showToast('❌ فشل تسجيل الدخول', 'error');
+  }
+}
+
+function showDashboard() {
+  document.getElementById('loginPage').classList.add('hidden');
+  document.getElementById('dashboard').classList.remove('hidden');
+  document.getElementById('currentUser').textContent = state.currentUser.fullName;
+
+  var roleNames = { admin: '👑 مدير', employee: '👤 موظف', reviewer: '👁️ مراجع', report_manager: '📊 مدير تقارير' };
+  var roleClasses = { admin: 'badge-admin', employee: 'badge-employee', reviewer: 'badge-reviewer', report_manager: 'badge-manager' };
+  var roleEl = document.getElementById('userRole');
+  roleEl.textContent = roleNames[state.currentUser.role] || state.currentUser.role;
+  roleEl.className = 'badge ' + (roleClasses[state.currentUser.role] || '');
+
+  if (state.currentUser.role === 'admin' || state.currentUser.role === 'report_manager') {
+    document.getElementById('adminTabs').classList.remove('hidden');
+    document.getElementById('employeeView').classList.add('hidden');
+    switchTab('overview');
+  } else {
+    document.getElementById('adminTabs').classList.add('hidden');
+    document.getElementById('employeeView').classList.remove('hidden');
+    loadEmployeeData();
+  }
+}
+
+function logout() {
+  if (state.currentUser) addAuditLog('logout', 'تسجيل خروج: ' + state.currentUser.username);
+  state.currentUser = null;
+  document.getElementById('loginPage').classList.remove('hidden');
+  document.getElementById('dashboard').classList.add('hidden');
+  document.getElementById('username').value = '';
+  document.getElementById('password').value = '';
+  showToast('تم تسجيل الخروج', 'info');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   التنقل بين التبويبات
+   ═══════════════════════════════════════════════════════════════ */
+function switchTab(tabName) {
+  state.currentTab = tabName;
+  var panels = document.querySelectorAll('.tab-panel');
+  for (var i = 0; i < panels.length; i++) panels[i].classList.add('hidden');
+  var target = document.getElementById('tab-' + tabName);
+  if (target) target.classList.remove('hidden');
+
+  var btns = document.querySelectorAll('#tabsBar .tab-btn');
+  for (var j = 0; j < btns.length; j++) {
+    btns[j].classList.toggle('active', btns[j].getAttribute('data-tab') === tabName);
+  }
+
+  if (tabName === 'overview') loadOverview();
+  else if (tabName === 'users') loadUsers();
+  else if (tabName === 'template') loadTemplate();
+  else if (tabName === 'reports') loadAllReports();
+  else if (tabName === 'audit') loadAuditLog();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   نظرة عامة
+   ═══════════════════════════════════════════════════════════════ */
+function loadOverview() {
+  var reports = Storage.get('reports') || [];
+  var users = Storage.get('users') || [];
+  var convs = Storage.get('conversations') || [];
+
+  document.getElementById('statCompleted').textContent = reports.filter(function (r) { return r.status === 'approved'; }).length;
+  document.getElementById('statDrafts').textContent = reports.filter(function (r) { return r.status === 'draft'; }).length;
+  document.getElementById('statConversations').textContent = convs.filter(function (c) { return c.status === 'active'; }).length;
+  document.getElementById('statUsers').textContent = users.filter(function (u) { return u.active; }).length;
+
+  var logs = (Storage.get('audit_log') || []).slice(-8).reverse();
+  var container = document.getElementById('recentActivities');
+  if (logs.length === 0) {
+    container.innerHTML = '<p class="text-gray-500 text-center py-4">لا توجد نشاطات بعد</p>';
+    return;
+  }
+  container.innerHTML = logs.map(function (log) {
+    return '<div class="bg-gray-50 p-3 rounded-lg mb-2">' +
+      '<p class="text-sm text-gray-800"><b>' + escapeHtml(log.userName) + '</b>: ' + escapeHtml(log.details || log.action) + '</p>' +
+      '<p class="text-xs text-gray-500">' + new Date(log.timestamp).toLocaleString('ar-EG') + '</p>' +
+      '</div>';
+  }).join('');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   إدارة المستخدمين
+   ═══════════════════════════════════════════════════════════════ */
+function loadUsers() {
+  var users = Storage.get('users') || [];
+  var container = document.getElementById('usersList');
+
+  container.innerHTML = users.map(function (user) {
+    var roleBadge = { admin: 'badge-admin', employee: 'badge-employee', reviewer: 'badge-reviewer', report_manager: 'badge-manager' };
+    var roleNames = { admin: 'مدير', employee: 'موظف', reviewer: 'مراجع', report_manager: 'مدير تقارير' };
+    var isMain = user.id === 1;
+
+    return '<div class="user-row">' +
+      '<div class="flex items-center" style="flex:1;min-width:0">' +
+        '<div class="avatar">' + escapeHtml(user.fullName.charAt(0)) + '</div>' +
+        '<div style="min-width:0">' +
+          '<h3 class="font-semibold text-gray-800">' + escapeHtml(user.fullName) + '</h3>' +
+          '<p class="text-sm text-gray-600">@' + escapeHtml(user.username) + ' • <span class="badge ' + (roleBadge[user.role] || '') + '">' + (roleNames[user.role] || user.role) + '</span></p>' +
+          (user.phone ? '<p class="text-xs text-gray-500">📱 ' + escapeHtml(user.phone) + '</p>' : '') +
+          '<p class="text-xs ' + (user.active ? 'text-green-700' : 'text-red-700') + '">' + (user.active ? '✅ نشط' : '❌ معطل') + '</p>' +
+        '</div>' +
+      '</div>' +
+      (isMain ? '<span class="text-gray-400 text-sm">🔒 حساب رئيسي</span>' :
+        '<div class="flex gap-2" style="flex-wrap:wrap">' +
+          '<button type="button" data-action="toggle-user" data-id="' + user.id + '" class="btn ' + (user.active ? 'btn-warning' : 'btn-success') + ' btn-sm">' + (user.active ? 'تعطيل' : 'تفعيل') + '</button>' +
+          '<button type="button" data-action="reset-pwd" data-id="' + user.id + '" class="btn btn-info btn-sm">🔑 كلمة مرور</button>' +
+          '<button type="button" data-action="delete-user" data-id="' + user.id + '" class="btn btn-danger btn-sm">حذف</button>' +
+        '</div>') +
+      '</div>';
+  }).join('');
+}
+
+function submitAddUser() {
+  var fullName = (document.getElementById('newFullName').value || '').trim();
+  var username = (document.getElementById('newUsername').value || '').trim();
+  var password = document.getElementById('newPassword').value || '';
+  var phone = (document.getElementById('newPhone').value || '').trim();
+  var role = document.getElementById('newRole').value;
+
+  if (!fullName || !username || !password) {
+    showToast('❌ يرجى ملء جميع الحقول المطلوبة', 'error');
+    return;
+  }
+
+  var users = Storage.get('users') || [];
+  if (users.some(function (u) { return u.username === username; })) {
+    showToast('❌ اسم المستخدم موجود بالفعل', 'error');
+    return;
+  }
+
+  users.push({
+    id: Date.now(),
+    username: username,
+    passwordHash: hashPassword(password),
+    fullName: fullName,
+    phone: phone,
+    role: role,
+    active: true,
+    createdAt: new Date().toISOString()
+  });
+  Storage.set('users', users);
+
+  closeModal('addUserModal');
+  document.getElementById('newFullName').value = '';
+  document.getElementById('newUsername').value = '';
+  document.getElementById('newPassword').value = '';
+  document.getElementById('newPhone').value = '';
+
+  loadUsers();
+  addAuditLog('create_user', 'إنشاء حساب: ' + username);
+  showToast('✅ تم إضافة الحساب بنجاح', 'success');
+}
+
+function toggleUserStatus(userId) {
+  var users = Storage.get('users') || [];
+  var user = null;
+  for (var i = 0; i < users.length; i++) if (users[i].id === userId) { user = users[i]; break; }
+  if (!user) return;
+
+  if (user.role === 'admin' && user.active) {
+    var activeAdmins = users.filter(function (u) { return u.role === 'admin' && u.active; });
+    if (activeAdmins.length === 1) {
+      showToast('❌ لا يمكن تعطيل آخر مدير نشط', 'error');
+      return;
+    }
+  }
+
+  user.active = !user.active;
+  Storage.set('users', users);
+  loadUsers();
+  addAuditLog('toggle_user', (user.active ? 'تفعيل' : 'تعطيل') + ' حساب: ' + user.username);
+  showToast('✅ تم ' + (user.active ? 'تفعيل' : 'تعطيل') + ' الحساب', 'success');
+}
+
+function resetUserPassword(userId) {
+  var newPwd = prompt('أدخل كلمة المرور الجديدة (6 أحرف على الأقل):');
+  if (!newPwd) return;
+  if (newPwd.length < 6) {
+    showToast('❌ كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'error');
+    return;
+  }
+
+  var users = Storage.get('users') || [];
+  var user = null;
+  for (var i = 0; i < users.length; i++) if (users[i].id === userId) { user = users[i]; break; }
+  if (!user) return;
+
+  user.passwordHash = hashPassword(newPwd);
+  Storage.set('users', users);
+  addAuditLog('reset_password', 'إعادة تعيين كلمة المرور: ' + user.username);
+  showToast('✅ تم إعادة تعيين كلمة المرور', 'success');
+}
+
+function deleteUser(userId) {
+  if (!confirm('هل أنت متأكد من حذف هذا الحساب؟')) return;
+  var users = Storage.get('users') || [];
+  var user = null;
+  for (var i = 0; i < users.length; i++) if (users[i].id === userId) { user = users[i]; break; }
+  users = users.filter(function (u) { return u.id !== userId; });
+  Storage.set('users', users);
+  loadUsers();
+  addAuditLog('delete_user', 'حذف حساب: ' + (user ? user.username : userId));
+  showToast('✅ تم حذف الحساب', 'success');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   نموذج التقرير
+   ═══════════════════════════════════════════════════════════════ */
+function loadTemplate() {
+  var template = Storage.get('template') || DEFAULT_TEMPLATE;
+  var container = document.getElementById('templateForm');
+
+  container.innerHTML = template.fields.map(function (field, index) {
+    var optionsHtml = '';
+    if (field.type === 'select') {
+      optionsHtml = '<div class="mb-3">' +
+        '<label class="label text-xs">الخيارات (مفصولة بفاصلة)</label>' +
+        '<input type="text" data-field-index="' + index + '" data-field-prop="options" value="' + escapeHtml((field.options || []).join('،')) + '" class="input input-template-field">' +
+        '</div>';
+    }
+    return '<div class="field-card" draggable="true" data-field-index="' + index + '">' +
+      '<div class="flex justify-between items-center mb-3">' +
+        '<h4 class="font-semibold text-gray-800">⋮⋮ حقل ' + (index + 1) + '</h4>' +
+        '<button type="button" data-action="remove-field" data-index="' + index + '" class="btn btn-ghost text-red-700" style="padding:4px 8px">🗑️</button>' +
+      '</div>' +
+      '<div class="grid grid-2 gap-3">' +
+        '<div><label class="label text-xs">اسم الحقل</label><input type="text" data-field-index="' + index + '" data-field-prop="label" value="' + escapeHtml(field.label) + '" class="input input-template-field"></div>' +
+        '<div><label class="label text-xs">نوع الحقل</label><select data-field-index="' + index + '" data-field-prop="type" class="select input-template-field">' +
+          '<option value="text"' + (field.type === 'text' ? ' selected' : '') + '>نص</option>' +
+          '<option value="number"' + (field.type === 'number' ? ' selected' : '') + '>رقم</option>' +
+          '<option value="textarea"' + (field.type === 'textarea' ? ' selected' : '') + '>نص طويل</option>' +
+          '<option value="date"' + (field.type === 'date' ? ' selected' : '') + '>تاريخ</option>' +
+          '<option value="select"' + (field.type === 'select' ? ' selected' : '') + '>قائمة اختيار</option>' +
+        '</select></div>' +
+      '</div>' +
+      '<div class="mt-3"><label class="label text-xs">سؤال البوت عند النقص</label>' +
+        '<input type="text" data-field-index="' + index + '" data-field-prop="botQuestion" value="' + escapeHtml(field.botQuestion || '') + '" class="input input-template-field" placeholder="ما هو ' + escapeHtml(field.label) + '؟">' +
+      '</div>' +
+      optionsHtml +
+      '<label class="flex items-center mt-3"><input type="checkbox" data-field-index="' + index + '" data-field-prop="required"' + (field.required ? ' checked' : '') + ' class="input-template-field" style="margin-left:8px"><span class="text-sm text-gray-700">حقل مطلوب</span></label>' +
+      '</div>';
+  }).join('');
+
+  initDragAndDrop();
+}
+
+function initDragAndDrop() {
+  var cards = document.querySelectorAll('.field-card[draggable]');
+  var dragSrc = null;
+  for (var i = 0; i < cards.length; i++) {
+    cards[i].addEventListener('dragstart', function (e) {
+      dragSrc = this;
+      this.style.opacity = '0.4';
+    });
+    cards[i].addEventListener('dragend', function () {
+      this.style.opacity = '1';
+    });
+    cards[i].addEventListener('dragover', function (e) {
+      e.preventDefault();
+    });
+    cards[i].addEventListener('drop', function (e) {
+      e.preventDefault();
+      if (dragSrc !== this) {
+        var template = Storage.get('template') || DEFAULT_TEMPLATE;
+        var fromIdx = parseInt(dragSrc.getAttribute('data-field-index'));
+        var toIdx = parseInt(this.getAttribute('data-field-index'));
+        var fields = template.fields.slice();
+        var moved = fields.splice(fromIdx, 1)[0];
+        fields.splice(toIdx, 0, moved);
+        template.fields = fields;
+        Storage.set('template', template);
+        loadTemplate();
+      }
+    });
+  }
+}
+
+function updateTemplateField(index, prop, value) {
+  var template = Storage.get('template') || DEFAULT_TEMPLATE;
+  if (!template.fields[index]) return;
+  if (prop === 'required') {
+    template.fields[index][prop] = !!value;
+  } else if (prop === 'options') {
+    template.fields[index][prop] = String(value).split(/[,،]/).map(function (s) { return s.trim(); }).filter(Boolean);
+  } else {
+    template.fields[index][prop] = value;
+  }
+  Storage.set('template', template);
+}
+
+function addField() {
+  var template = Storage.get('template') || DEFAULT_TEMPLATE;
+  template.fields.push({
+    id: Date.now(),
+    label: 'حقل جديد',
+    type: 'text',
+    required: false,
+    botQuestion: ''
+  });
+  Storage.set('template', template);
+  loadTemplate();
+  showToast('✅ تم إضافة حقل جديد', 'success');
+}
+
+function removeField(index) {
+  if (!confirm('هل أنت متأكد من حذف هذا الحقل؟')) return;
+  var template = Storage.get('template') || DEFAULT_TEMPLATE;
+  template.fields.splice(index, 1);
+  Storage.set('template', template);
+  loadTemplate();
+  showToast('✅ تم حذف الحقل', 'success');
+}
+
+function saveTemplate() {
+  var template = Storage.get('template') || DEFAULT_TEMPLATE;
+  template.version = (template.version || 1) + 1;
+  template.updatedAt = new Date().toISOString();
+  Storage.set('template', template);
+  addAuditLog('update_template', 'تحديث النموذج - الإصدار ' + template.version);
+  showToast('✅ تم حفظ ونشر النموذج (الإصدار ' + template.version + ')', 'success');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   التقارير
+   ═══════════════════════════════════════════════════════════════ */
+function loadAllReports() {
+  var reports = Storage.get('reports') || [];
+  var container = document.getElementById('allReportsList');
+  var search = (document.getElementById('searchReports').value || '').toLowerCase();
+  var statusFilter = document.getElementById('filterStatus').value;
+
+  var filtered = reports.filter(function (r) {
+    if (!canViewReport(r)) return false;
+    if (statusFilter && r.status !== statusFilter) return false;
+    if (search) {
+      var hay = ((r.clientName || '') + ' ' + (r.employeeName || '') + ' ' + (r.reportNumber || '')).toLowerCase();
+      if (hay.indexOf(search) === -1) return false;
+    }
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<p class="text-gray-500 text-center py-8">لا توجد تقارير</p>';
+    return;
+  }
+
+  container.innerHTML = filtered.slice().reverse().map(function (report) {
+    var statusBadge = { draft: 'badge-draft', pending: 'badge-pending', approved: 'badge-approved' };
+    var statusName = { draft: 'مسودة', pending: 'بانتظار الاعتماد', approved: 'معتمد' };
+    return '<div class="bg-gray-50 rounded-lg p-4 report-card mb-3">' +
+      '<div class="flex justify-between items-start" style="flex-wrap:wrap;gap:8px">' +
+        '<div style="flex:1;min-width:200px">' +
+          '<h3 class="font-semibold text-gray-800">' + escapeHtml(report.clientName || 'عميل') + ' <span class="text-xs text-gray-500">#' + (report.reportNumber || report.id) + '</span></h3>' +
+          '<p class="text-sm text-gray-600">بواسطة: ' + escapeHtml(report.employeeName) + ' • ' + new Date(report.date).toLocaleDateString('ar-EG') + '</p>' +
+          '<span class="badge ' + (statusBadge[report.status] || '') + '">' + (statusName[report.status] || report.status) + '</span>' +
+        '</div>' +
+        '<button type="button" data-action="view-report" data-id="' + report.id + '" class="btn btn-primary btn-sm">عرض</button>' +
+      '</div>' +
+      '</div>';
+  }).join('');
+}
+
+function viewReport(reportId) {
+  var reports = Storage.get('reports') || [];
+  var report = null;
+  for (var i = 0; i < reports.length; i++) if (reports[i].id === reportId) { report = reports[i]; break; }
+  if (!report) { showToast('❌ التقرير غير موجود', 'error'); return; }
+  if (!canViewReport(report)) { showToast('❌ غير مصرح لك بعرض هذا التقرير', 'error'); return; }
+
+  var statusName = { draft: 'مسودة', pending: 'بانتظار الاعتماد', approved: 'معتمد' };
+  var content = '<div class="mb-4 bg-gray-50 p-4 rounded-lg">' +
+    '<h4 class="font-semibold mb-2">ℹ️ معلومات أساسية</h4>' +
+    '<p class="text-sm text-gray-700">رقم التقرير: <b>#' + (report.reportNumber || report.id) + '</b></p>' +
+    '<p class="text-sm text-gray-700">العميل: <b>' + escapeHtml(report.clientName || '-') + '</b></p>' +
+    '<p class="text-sm text-gray-700">الموظف: <b>' + escapeHtml(report.employeeName) + '</b></p>' +
+    '<p class="text-sm text-gray-700">التاريخ: <b>' + new Date(report.date).toLocaleString('ar-EG') + '</b></p>' +
+    '<p class="text-sm text-gray-700">الحالة: <b>' + (statusName[report.status] || report.status) + '</b></p>' +
+    '<p class="text-sm text-gray-700">إصدار النموذج: <b>v' + (report.templateVersion || 1) + '</b></p>' +
+    '</div>';
+
+  if (report.formattedData) {
+    content += '<div class="mb-4 bg-purple-50 p-4 rounded-lg">' +
+      '<h4 class="font-semibold mb-2 text-purple-700">✨ التقرير الموحد</h4>';
+    Object.keys(report.formattedData).forEach(function (key) {
+      content += '<p class="text-sm mb-1"><b>' + escapeHtml(key) + ':</b> ' + escapeHtml(report.formattedData[key] || '-') + '</p>';
+    });
+    content += '</div>';
+  }
+
+  if (report.originalContent) {
+    content += '<div class="mb-4 bg-gray-50 p-4 rounded-lg">' +
+      '<h4 class="font-semibold mb-2">📝 النص الأصلي</h4>' +
+      '<p class="text-sm whitespace-pre">' + escapeHtml(report.originalContent) + '</p>' +
+      '</div>';
+  }
+
+  var actions = '<div class="flex gap-2" style="flex-wrap:wrap">';
+  if (hasPerm('approve_report') && report.status !== 'approved') {
+    actions += '<button type="button" data-action="approve-report" data-id="' + report.id + '" class="btn btn-success flex-1">✅ اعتماد</button>';
+  }
+  if (hasPerm('delete_report')) {
+    actions += '<button type="button" data-action="delete-report" data-id="' + report.id + '" class="btn btn-danger flex-1">🗑️ حذف</button>';
+  }
+  actions += '</div>';
+
+  document.getElementById('drawerContent').innerHTML = content + actions;
+  document.getElementById('reportDrawer').classList.add('active');
+}
+
+function approveReport(reportId) {
+  var reports = Storage.get('reports') || [];
+  var report = null;
+  for (var i = 0; i < reports.length; i++) if (reports[i].id === reportId) { report = reports[i]; break; }
+  if (!report || !hasPerm('approve_report')) { showToast('❌ غير مصرح', 'error'); return; }
+
+  // تحقق من اكتمال الحقول المطلوبة
+  var template = Storage.get('template') || DEFAULT_TEMPLATE;
+  var missing = AIExtractor.getMissingFields(report.formattedData || {}, template);
+  if (missing.length > 0) {
+    showToast('❌ لا يمكن الاعتماد: الحقول التالية ناقصة: ' + missing.map(function (f) { return f.label; }).join('، '), 'error');
+    return;
+  }
+
+  report.status = 'approved';
+  report.approvedAt = new Date().toISOString();
+  report.approvedBy = state.currentUser.id;
+  Storage.set('reports', reports);
+  addAuditLog('approve_report', 'اعتماد تقرير #' + (report.reportNumber || report.id));
+  showToast('✅ تم اعتماد التقرير', 'success');
+  closeModal('reportDrawer');
+  loadAllReports();
+}
+
+function deleteReport(reportId) {
+  if (!confirm('هل أنت متأكد من حذف هذا التقرير؟')) return;
+  if (!hasPerm('delete_report')) { showToast('❌ غير مصرح', 'error'); return; }
+  var reports = Storage.get('reports') || [];
+  var report = null;
+  for (var i = 0; i < reports.length; i++) if (reports[i].id === reportId) { report = reports[i]; break; }
+  reports = reports.filter(function (r) { return r.id !== reportId; });
+  Storage.set('reports', reports);
+  addAuditLog('delete_report', 'حذف تقرير #' + (report ? (report.reportNumber || report.id) : reportId));
+  showToast('✅ تم حذف التقرير', 'success');
+  closeModal('reportDrawer');
+  loadAllReports();
+}
+
+function exportCSV() {
+  if (!hasPerm('export_reports')) { showToast('❌ غير مصرح', 'error'); return; }
+  var reports = Storage.get('reports') || [];
+  var filtered = reports.filter(canViewReport);
+  if (filtered.length === 0) { showToast('❌ لا توجد تقارير للتصدير', 'error'); return; }
+
+  var headers = ['رقم التقرير', 'العميل', 'الموظف', 'التاريخ', 'الحالة'];
+  var rows = [headers.join(',')];
+  filtered.forEach(function (r) {
+    rows.push([
+      r.reportNumber || r.id,
+      '"' + (r.clientName || '').replace(/"/g, '""') + '"',
+      '"' + (r.employeeName || '').replace(/"/g, '""') + '"',
+      new Date(r.date).toLocaleDateString('ar-EG'),
+      r.status
+    ].join(','));
+  });
+
+  var blob = new Blob(['\uFEFF' + rows.join('\n')], { type: 'text/csv;charset=utf-8' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'reports-' + new Date().toISOString().slice(0, 10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  addAuditLog('export_reports', 'تصدير ' + filtered.length + ' تقرير CSV');
+  showToast('✅ تم التصدير', 'success');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   واجهة الموظف
+   ═══════════════════════════════════════════════════════════════ */
+function loadEmployeeData() {
+  var reports = Storage.get('reports') || [];
+  var myReports = reports.filter(function (r) { return r.employeeId === state.currentUser.id; });
+
+  document.getElementById('myReportsCount').textContent = myReports.length;
+  document.getElementById('monthReportsCount').textContent = myReports.filter(function (r) {
+    var d = new Date(r.date); var n = new Date();
+    return d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear();
+  }).length;
+  document.getElementById('clientsCount').textContent = (new Set(myReports.map(function (r) { return r.clientName; }))).size;
+
+  var list = document.getElementById('myReportsList');
+  if (myReports.length === 0) {
+    list.innerHTML = '<p class="text-gray-500 text-center py-8">لا توجد تقارير بعد</p>';
+    return;
+  }
+  list.innerHTML = myReports.slice(-10).reverse().map(function (r) {
+    var statusBadge = { draft: 'badge-draft', pending: 'badge-pending', approved: 'badge-approved' };
+    var statusName = { draft: 'مسودة', pending: 'بانتظار', approved: 'معتمد' };
+    return '<div class="bg-gray-50 rounded-lg p-3 report-card mb-2">' +
+      '<div class="flex justify-between items-start">' +
+        '<div>' +
+          '<h3 class="font-semibold text-gray-800 text-sm">' + escapeHtml(r.clientName || 'عميل') + '</h3>' +
+          '<p class="text-xs text-gray-500">' + new Date(r.date).toLocaleDateString('ar-EG') + '</p>' +
+          '<span class="badge ' + (statusBadge[r.status] || '') + '" style="font-size:10px">' + (statusName[r.status] || r.status) + '</span>' +
+        '</div>' +
+        '<button type="button" data-action="view-report" data-id="' + r.id + '" class="btn btn-ghost btn-sm">عرض</button>' +
+      '</div>' +
+      '</div>';
+  }).join('');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   محادثة إنشاء التقرير (البوت الداخلي)
+   ═══════════════════════════════════════════════════════════════ */
+function startReportConversation() {
+  var initialText = (document.getElementById('reportContent').value || '').trim();
+  if (!initialText) {
+    showToast('❌ اكتب محتوى التقرير أولاً', 'error');
+    return;
+  }
+
+  var template = Storage.get('template') || DEFAULT_TEMPLATE;
+  var convId = 'conv_' + Date.now();
+  state.currentConversation = {
+    id: convId,
+    userId: state.currentUser.id,
+    startTime: new Date().toISOString(),
+    messages: [{ sender: 'user', text: initialText, timestamp: new Date().toISOString() }],
+    extractedData: {},
+    status: 'active',
+    templateSnapshot: JSON.parse(JSON.stringify(template))
+  };
+
+  document.getElementById('conversationChat').innerHTML = '';
+  document.getElementById('conversationInput').value = '';
+  document.getElementById('convApproveBtn').classList.add('hidden');
+  document.getElementById('convEditBtn').classList.add('hidden');
+  document.getElementById('conversationModal').classList.add('active');
+
+  addBubble('bot', '✅ تمام، استلمت بياناتك. خليني أرتبها...');
+  setTimeout(function () { processConversationMessage(); }, 400);
+}
+
+function processConversationMessage() {
+  var conv = state.currentConversation;
+  if (!conv) return;
+
+  var allUserText = conv.messages.filter(function (m) { return m.sender === 'user'; }).map(function (m) { return m.text; }).join('\n');
+  var template = conv.templateSnapshot;
+  var extracted = AIExtractor.extract(allUserText, template);
+  conv.extractedData = extracted;
+
+  var missing = AIExtractor.getMissingFields(extracted, template);
+
+  if (missing.length > 0) {
+    var field = missing[0];
+    var question = field.botQuestion || ('ما هو ' + field.label + '؟');
+    var filledCount = template.fields.length - missing.length;
+    addBubble('bot', '✅ سجلت ' + filledCount + ' من ' + template.fields.length + ' حقول.\n\n' + question);
+  } else {
+    // كل الحقول مكتملة — اعرض المسودة
+    conv.status = 'pending_review';
+    var summary = '📋 <b>مسودة التقرير — راجعها:</b>\n\n';
+    Object.keys(extracted).forEach(function (key) {
+      summary += '• <b>' + escapeHtml(key) + ':</b> ' + escapeHtml(extracted[key] || '-') + '\n';
+    });
+    summary += '\n✅ لو كل حاجة تمام، اضغط "اعتماد". لو فيه تعديل، اضغط "طلب تعديل".';
+    addBubble('bot', summary);
+    document.getElementById('convApproveBtn').classList.remove('hidden');
+    document.getElementById('convEditBtn').classList.remove('hidden');
+  }
+
+  renderConversation();
+}
+
+function addBubble(sender, text) {
+  var chat = document.getElementById('conversationChat');
+  var div = document.createElement('div');
+  div.className = 'bubble ' + (sender === 'user' ? 'bubble-user' : 'bubble-bot');
+  div.innerHTML = text;
+  chat.appendChild(div);
   chat.scrollTop = chat.scrollHeight;
 }
 
-function showTyping(show) {
-  document.getElementById('typingIndicator').style.display = show ? 'block' : 'none';
+function renderConversation() {
+  var chat = document.getElementById('conversationChat');
+  chat.innerHTML = '';
+  state.currentConversation.messages.forEach(function (m) {
+    addBubble(m.sender, escapeHtml(m.text));
+  });
 }
 
-function sendMessage() {
-  const input = document.getElementById('messageInput');
-  const text = input.value.trim();
-  if (!text) return;
-  
-  addBubble('user', text);
+function sendConversationMessage() {
+  var input = document.getElementById('conversationInput');
+  var text = (input.value || '').trim();
+  if (!text || !state.currentConversation) return;
+
+  state.currentConversation.messages.push({
+    sender: 'user',
+    text: text,
+    timestamp: new Date().toISOString()
+  });
   input.value = '';
-  
-  showTyping(true);
-  setTimeout(() => {
-    processInput(text);
-    showTyping(false);
+  addBubble('user', escapeHtml(text));
+  setTimeout(function () { processConversationMessage(); }, 300);
+}
+
+function approveConversation() {
+  var conv = state.currentConversation;
+  if (!conv || conv.status !== 'pending_review') return;
+
+  var reports = Storage.get('reports') || [];
+  var reportNumber = 'R-' + Date.now().toString(36).toUpperCase();
+
+  var report = {
+    id: Date.now(),
+    reportNumber: reportNumber,
+    employeeId: state.currentUser.id,
+    employeeName: state.currentUser.fullName,
+    clientName: conv.extractedData['اسم العميل'] || '',
+    originalContent: conv.messages.filter(function (m) { return m.sender === 'user'; }).map(function (m) { return m.text; }).join('\n\n'),
+    formattedData: conv.extractedData,
+    templateVersion: conv.templateSnapshot.version,
+    status: 'approved',
+    date: new Date().toISOString(),
+    approvedAt: new Date().toISOString(),
+    approvedBy: state.currentUser.id,
+    conversationId: conv.id
+  };
+
+  reports.push(report);
+  Storage.set('reports', reports);
+
+  conv.status = 'completed';
+  state.currentConversation = null;
+
+  addAuditLog('create_report', 'إنشاء تقرير #' + reportNumber + ' للعميل: ' + (report.clientName || '-'));
+  addBubble('bot', '✅ تم حفظ التقرير بنجاح!\n\n📌 رقم التقرير: <b>' + reportNumber + '</b>');
+  document.getElementById('convApproveBtn').classList.add('hidden');
+  document.getElementById('convEditBtn').classList.add('hidden');
+
+  showToast('✅ تم حفظ التقرير #' + reportNumber, 'success');
+  if (state.currentUser.role === 'employee') loadEmployeeData();
+  else loadAllReports();
+}
+
+function requestEditConversation() {
+  var reason = prompt('اكتب سبب التعديل (اختياري):');
+  if (reason === null) return;
+  var conv = state.currentConversation;
+  if (!conv) return;
+  conv.status = 'editing';
+  addBubble('bot', '✏️ تمام، قولي إيه اللي عايز تعدله؟\n' + (reason ? '(السبب: ' + escapeHtml(reason) + ')' : ''));
+  document.getElementById('convApproveBtn').classList.add('hidden');
+  document.getElementById('convEditBtn').classList.add('hidden');
+}
+
+function cancelConversation() {
+  if (!state.currentConversation) return;
+  if (!confirm('هل أنت متأكد من إلغاء المحادثة؟ لن يتم حفظ التقرير.')) return;
+  state.currentConversation.status = 'cancelled';
+  state.currentConversation = null;
+  closeModal('conversationModal');
+  showToast('تم إلغاء المحادثة', 'info');
+}
+
+function showConversationHelp() {
+  addBubble('bot', '❓ <b>الأوامر المتاحة:</b>\n\n• اكتب البيانات مباشرة بأي شكل\n• "مساعدة" — لعرض هذه الرسالة\n• "إلغاء" — لإلغاء المحادثة\n• "تعديل" — لطلب تعديل المسودة\n• "اعتماد" — لحفظ التقرير النهائي');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   سجل التدقيق
+   ═══════════════════════════════════════════════════════════════ */
+function loadAuditLog() {
+  var logs = (Storage.get('audit_log') || []).slice().reverse();
+  var container = document.getElementById('auditLogList');
+  if (logs.length === 0) {
+    container.innerHTML = '<p class="text-gray-500 text-center py-8">لا توجد سجلات</p>';
+    return;
+  }
+  container.innerHTML = logs.map(function (log) {
+    return '<div class="bg-gray-50 p-3 rounded-lg mb-2">' +
+      '<p class="text-sm text-gray-800"><b>' + escapeHtml(log.userName) + '</b> — ' + escapeHtml(log.details || log.action) + '</p>' +
+      '<p class="text-xs text-gray-500">' + new Date(log.timestamp).toLocaleString('ar-EG') + '</p>' +
+      '</div>';
+  }).join('');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   إعدادات واتساب والذكاء
+   ═══════════════════════════════════════════════════════════════ */
+function saveWhatsAppSettings() {
+  var settings = {
+    phoneId: document.getElementById('waPhoneId').value.trim(),
+    businessId: document.getElementById('waBusinessId').value.trim(),
+    token: document.getElementById('waToken').value.trim(),
+    verifyToken: document.getElementById('waVerifyToken').value.trim(),
+    connected: false,
+    lastTest: null
+  };
+  Storage.set('wa_settings', settings);
+  addAuditLog('save_wa_settings', 'حفظ إعدادات واتساب');
+  showToast('✅ تم حفظ الإعدادات', 'success');
+  updateWAStatus();
+}
+
+function testWhatsAppConnection() {
+  var settings = Storage.get('wa_settings') || {};
+  var statusEl = document.getElementById('waStatus');
+
+  if (!settings.phoneId || !settings.token) {
+    statusEl.innerHTML = '<p class="text-sm"><span class="status-dot status-error"></span> ❌ فشل: بيانات الاتصال ناقصة</p>';
+    showToast('❌ أكمل بيانات الاتصال أولاً', 'error');
+    return;
+  }
+
+  statusEl.innerHTML = '<p class="text-sm"><span class="status-dot status-warn"></span> جاري الاختبار...</p>';
+
+  // في الإنتاج: استدعاء حقيقي لـ Graph API
+  // هنا: محاكاة الاختبار مع توضيح أنه وضع اختبار
+  setTimeout(function () {
+    settings.lastTest = new Date().toISOString();
+    settings.connected = false; // وضع الاختبار دائماً غير متصل فعلياً
+    Storage.set('wa_settings', settings);
+    statusEl.innerHTML = '<p class="text-sm"><span class="status-dot status-warn"></span> ⚠️ وضع الاختبار — الربط الفعلي يتطلب تفعيل WhatsApp Business API من Meta</p>' +
+      '<p class="text-xs text-gray-500 mt-2">آخر اختبار: ' + new Date(settings.lastTest).toLocaleString('ar-EG') + '</p>';
+    showToast('⚠️ وضع الاختبار — ليس اتصالاً فعلياً', 'warn');
   }, 800);
 }
 
-function processInput(text) {
-  if (/^(إلغاء|الغاء)$/i.test(text.trim())) {
-    session = { state: 'idle', extractedData: {}, currentQuestion: null };
-    addBubble('bot', '✅ تم إلغاء التقرير الحالي.');
-    return;
-  }
-
-  if (session.state === 'collecting' && session.currentQuestion) {
-    const field = session.currentQuestion;
-    let value = text.trim();
-    
-    if (field === 'عمر العميل') {
-      const age = AIEngine.extractAge(text) || AIEngine.normalizeArabicNumbers(text).match(/(\d+)/)?.[1];
-      if (age) value = age + ' سنة';
-    }
-
-    session.extractedData[field] = value;
-    session.currentQuestion = null;
-    addBubble('bot', `✅ تم تسجيل: ${field} = ${value}`);
-
-    const { complete, missing } = AIEngine.checkCompleteness(session.extractedData);
-    if (complete) setTimeout(() => showDraftPreview(), 500); 
-    else setTimeout(() => askNextMissing(missing), 500);
-    return;
-  }
-
-  const extracted = AIEngine.extractAll(text);
-  Object.keys(extracted).forEach(k => { if (extracted[k]) session.extractedData[k] = extracted[k]; });
-
-  const extractedCount = Object.values(extracted).filter(v => v).length;
-  
-  if (extractedCount > 0) {
-    session.state = 'collecting';
-    let msg = '🤖 فهمت منك:\n\n';
-    Object.entries(extracted).forEach(([k,v]) => { if (v) msg += `✓ ${k}: ${v}\n`; });
-    addBubble('bot', msg);
-
-    const { complete, missing } = AIEngine.checkCompleteness(session.extractedData);
-    if (complete) setTimeout(() => showDraftPreview(), 800); 
-    else setTimeout(() => askNextMissing(missing), 800);
+function updateWAStatus() {
+  var settings = Storage.get('wa_settings') || {};
+  var statusEl = document.getElementById('waStatus');
+  if (!settings.phoneId || !settings.token) {
+    statusEl.innerHTML = '<p class="text-sm text-gray-600">الحالة: <span class="status-dot status-warn"></span> غير مُعدّ</p>';
   } else {
-    addBubble('bot', '🤔 لم أتمكن من استخراج بيانات واضحة. اكتب مثلاً: "جلسة أحمد عمره 5 سنين اشتغلنا على الراء"');
+    statusEl.innerHTML = '<p class="text-sm text-gray-600">الحالة: <span class="status-dot status-warn"></span> مُعدّ (وضع الاختبار)</p>' +
+      (settings.lastTest ? '<p class="text-xs text-gray-500 mt-1">آخر اختبار: ' + new Date(settings.lastTest).toLocaleString('ar-EG') + '</p>' : '');
   }
+  // املأ الحقول لو موجودة
+  if (settings.phoneId) document.getElementById('waPhoneId').value = settings.phoneId;
+  if (settings.businessId) document.getElementById('waBusinessId').value = settings.businessId;
+  if (settings.verifyToken) document.getElementById('waVerifyToken').value = settings.verifyToken;
 }
 
-function askNextMissing(missing) {
-  if (!missing.length) { showDraftPreview(); return; }
-  const field = missing[0];
-  session.currentQuestion = field;
-  addBubble('bot', `❓ ينقصني: ما هو ${field}؟`);
-}
-
-function showDraftPreview() {
-  session.state = 'reviewing';
-  const reportNum = 'R-' + Date.now().toString().slice(-6);
-  const fields = ['اسم العميل', 'عمر العميل', 'التشخيص', 'ملاحظات الجلسة', 'تقييم التقدم'];
-
-  let html = `<b>📋 مسودة التقرير #${reportNum}</b><br><br>`;
-  fields.forEach(f => {
-    const val = session.extractedData[f] || '<span style="color:#999">-</span>';
-    html += `<div style="border-bottom:1px solid #ddd; padding:5px 0;"><b>${f}:</b> ${val}</div>`;
-  });
-  
-  html += `<div style="margin-top:15px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
-    <button onclick="confirmAndSend('${reportNum}')" class="btn-action btn-confirm">✅ اعتماد وإرسال</button>
-    <button onclick="cancelDraft()" class="btn-action btn-cancel">❌ إلغاء</button>
-  </div>`;
-
-  addBubble('draft', html, true);
-}
-
-function cancelDraft() {
-  session = { state: 'idle', extractedData: {}, currentQuestion: null };
-  addBubble('bot', '❌ تم إلغاء المسودة.');
-}
-
-// ═══════════════════════════════════════════════════════════════
-// 🚀 إرسال البيانات إلى Google Sheet (مع الإصلاح التقني)
-// ═══════════════════════════════════════════════════════════════
-async function confirmAndSend(reportNum) {
-  addBubble('bot', '⏳ جاري حفظ التقرير في النظام...');
-
-  const payload = {
-    reportNumber: reportNum,
-    clientName: session.extractedData['اسم العميل'] || 'غير محدد',
-    clientAge: session.extractedData['عمر العميل'] || '',
-    formattedData: session.extractedData,
-    employeeName: 'مختص (من الرابط)'
+function saveAISettings() {
+  var settings = {
+    provider: document.getElementById('aiProvider').value,
+    apiKey: document.getElementById('aiApiKey').value.trim(),
+    model: document.getElementById('aiModel').value.trim()
   };
-
-  try {
-    const response = await fetch(GOOGLE_SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(payload),
-      redirect: 'follow'
-    });
-    
-    const data = await response.json();
-    
-    if (data.status === 'success') {
-      addBubble('bot', `✅ تم الحفظ بنجاح في النظام!\nرقم التقرير: ${reportNum}\nشكراً لك 🌟`);
-      session = { state: 'idle', extractedData: {}, currentQuestion: null };
-    } else {
-      addBubble('bot', `❌ حدث خطأ: ${data.message || 'غير معروف'}`);
-    }
-  } catch (error) {
-    console.error('Error:', error);
-    addBubble('bot', '❌ فشل الاتصال. تأكد من اتصال الإنترنت وحاول مرة أخرى.');
-  }
+  Storage.set('ai_settings', settings);
+  addAuditLog('save_ai_settings', 'حفظ إعدادات الذكاء - المزود: ' + settings.provider);
+  showToast('✅ تم حفظ الإعدادات', 'success');
 }
 
-document.getElementById('messageInput').addEventListener('keypress', function (e) {
-  if (e.key === 'Enter') sendMessage();
+/* ═══════════════════════════════════════════════════════════════
+   Modals
+   ═══════════════════════════════════════════════════════════════ */
+function openModal(id) {
+  var el = document.getElementById(id);
+  if (el) el.classList.add('active');
+}
+
+function closeModal(id) {
+  var el = document.getElementById(id);
+  if (el) el.classList.remove('active');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   أزرار خاصة
+   ═══════════════════════════════════════════════════════════════ */
+function fixLogin() {
+  if (!confirm('⚠️ سيتم استعادة حساب المدير الافتراضي.\n\nاسم المستخدم: admin\nكلمة المرور: 123456\n\nمتأكد؟')) return;
+  var users = Storage.get('users') || [];
+  var admin = null;
+  for (var i = 0; i < users.length; i++) if (users[i].username === 'admin') { admin = users[i]; break; }
+  if (admin) {
+    admin.passwordHash = hashPassword('123456');
+    admin.active = true;
+  } else {
+    users.unshift({
+      id: 1, username: 'admin', passwordHash: hashPassword('123456'),
+      fullName: 'المدير العام', phone: '+201234567890', role: 'admin', active: true,
+      createdAt: new Date().toISOString()
+    });
+  }
+  Storage.set('users', users);
+  document.getElementById('username').value = 'admin';
+  showToast('✅ تم الإصلاح. كلمة المرور: 123456', 'success');
+}
+
+function resetAllData() {
+  if (!confirm('⚠️ سيتم حذف جميع البيانات (المستخدمين، التقارير، الإعدادات)!\n\nمتأكد؟')) return;
+  if (!confirm('⚠️ تأكيد أخير: كل حاجة هتتمسح. متأكد جداً؟')) return;
+  Storage.clearAll();
+  initializeData();
+  showToast('✅ تم إعادة التعيين', 'success');
+  setTimeout(function () { location.reload(); }, 800);
+}
+
+function clearAppData() {
+  if (!confirm('مسح بيانات التطبيق وإعادة التحميل؟')) return;
+  Storage.clearAll();
+  location.reload();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   أدوات مساعدة
+   ═══════════════════════════════════════════════════════════════ */
+function escapeHtml(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Event Delegation — معالج أحداث مركزي
+   ═══════════════════════════════════════════════════════════════ */
+document.addEventListener('click', function (e) {
+  var target = e.target.closest('[data-action]');
+  if (!target) return;
+  var action = target.getAttribute('data-action');
+  var id = target.getAttribute('data-id');
+  var index = target.getAttribute('data-index');
+  var modal = target.getAttribute('data-modal');
+
+  switch (action) {
+    case 'logout': logout(); break;
+    case 'add-user': openModal('addUserModal'); break;
+    case 'submit-add-user': submitAddUser(); break;
+    case 'close-modal': closeModal(modal); break;
+    case 'close-drawer': closeModal('reportDrawer'); break;
+    case 'toggle-user': toggleUserStatus(parseInt(id)); break;
+    case 'reset-pwd': resetUserPassword(parseInt(id)); break;
+    case 'delete-user': deleteUser(parseInt(id)); break;
+    case 'add-field': addField(); break;
+    case 'remove-field': removeField(parseInt(index)); break;
+    case 'save-template': saveTemplate(); break;
+    case 'view-report': viewReport(parseInt(id)); break;
+    case 'approve-report': approveReport(parseInt(id)); break;
+    case 'delete-report': deleteReport(parseInt(id)); break;
+    case 'export-csv': exportCSV(); break;
+    case 'start-report': startReportConversation(); break;
+    case 'send-conv': sendConversationMessage(); break;
+    case 'conv-help': showConversationHelp(); break;
+    case 'conv-cancel': cancelConversation(); break;
+    case 'conv-approve': approveConversation(); break;
+    case 'conv-edit': requestEditConversation(); break;
+    case 'test-wa': testWhatsAppConnection(); break;
+    case 'save-wa': saveWhatsAppSettings(); break;
+    case 'save-ai': saveAISettings(); break;
+    case 'fix-login': fixLogin(); break;
+    case 'reset-data': resetAllData(); break;
+  }
 });
+
+// Tab buttons
+document.addEventListener('click', function (e) {
+  var tabBtn = e.target.closest('[data-tab]');
+  if (tabBtn && tabBtn.closest('#tabsBar')) {
+    switchTab(tabBtn.getAttribute('data-tab'));
+  }
+});
+
+// Template field changes
+document.addEventListener('input', function (e) {
+  if (e.target.classList.contains('input-template-field')) {
+    var idx = parseInt(e.target.getAttribute('data-field-index'));
+    var prop = e.target.getAttribute('data-field-prop');
+    var val = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    updateTemplateField(idx, prop, val);
+  }
+});
+document.addEventListener('change', function (e) {
+  if (e.target.classList.contains('input-template-field') && e.target.type === 'checkbox') {
+    var idx = parseInt(e.target.getAttribute('data-field-index'));
+    var prop = e.target.getAttribute('data-field-prop');
+    updateTemplateField(idx, prop, e.target.checked);
+  }
+});
+
+// Enter keys
+document.addEventListener('keypress', function (e) {
+  if (e.key !== 'Enter') return;
+  if (e.target.id === 'password' || e.target.id === 'username') {
+    e.preventDefault();
+    handleLogin();
+  } else if (e.target.id === 'conversationInput') {
+    e.preventDefault();
+    sendConversationMessage();
+  }
+});
+
+// Login button
+document.getElementById('loginBtn').addEventListener('click', handleLogin);
+
+// Search & filter
+document.getElementById('searchReports').addEventListener('input', loadAllReports);
+document.getElementById('filterStatus').addEventListener('change', loadAllReports);
+
+// Close modal on backdrop click
+document.addEventListener('click', function (e) {
+  if (e.target.classList.contains('modal')) {
+    e.target.classList.remove('active');
+  }
+});
+
+// Escape key closes modals
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') {
+    var modals = document.querySelectorAll('.modal.active');
+    for (var i = 0; i < modals.length; i++) modals[i].classList.remove('active');
+  }
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   بدء التشغيل
+   ═══════════════════════════════════════════════════════════════ */
+initializeData();
+// لا تطبع كلمات المرور في Console — إزالة السطر القديم
+// لا تعبئة تلقائية لبيانات المدير — إزالة fillDefaultCredentials
 </script>
 </body>
 </html>
