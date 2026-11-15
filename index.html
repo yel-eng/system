@@ -1,19 +1,4 @@
-
-                        <!DOCTYPE html>
-                        <html lang="en">
-                        <head>
-                            <meta charset="UTF-8">
-                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <style>
-                body {
-                  background-color: white; /* Ensure the iframe has a white background */
-                }
-
-                
-              </style>
-                        </head>
-                        <body>
-                            <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -30,7 +15,7 @@ button{cursor:pointer;border:0;background:none}
 .gap-2{gap:8px}.gap-3{gap:12px}.gap-4{gap:16px}.gap-6{gap:24px}.flex-1{flex:1}.flex-wrap{flex-wrap:wrap}
 .grid-2{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:repeat(3,1fr)}.grid-4{grid-template-columns:repeat(4,1fr)}
 @media(max-width:768px){.grid-3,.grid-4{grid-template-columns:1fr}.grid-2{grid-template-columns:1fr}}
-.p-3{padding:12px}.p-4{padding:16px}.p-6{padding:24px}
+.p-3{padding:12px}.p-4{padding:16px}.p-6{padding:24px}.p-8{padding:32px}
 .mb-2{margin-bottom:8px}.mb-3{margin-bottom:12px}.mb-4{margin-bottom:16px}.mb-6{margin-bottom:24px}
 .mt-2{margin-top:8px}.mt-3{margin-top:12px}.mt-4{margin-top:16px}.mt-6{margin-top:24px}
 .text-xs{font-size:12px}.text-sm{font-size:14px}.text-lg{font-size:18px}.text-xl{font-size:20px}.text-2xl{font-size:24px}.text-3xl{font-size:30px}
@@ -39,9 +24,9 @@ button{cursor:pointer;border:0;background:none}
 .text-gray-500{color:#6b7280}.text-gray-600{color:#4b5563}.text-gray-700{color:#374151}.text-gray-800{color:#1f2937}
 .text-white{color:#fff}.text-green-700{color:#15803d}.text-red-700{color:#b91c1c}
 .bg-white{background:#fff}.bg-gray-50{background:#f9fafb}.bg-gray-100{background:#f3f4f6}
-.bg-red-500{background:#ef4444}.bg-green-500{background:#22c55e}.bg-blue-500{background:#3b82f6}
+.bg-red-500{background:#ef4444}.bg-green-500{background:#22c55e}.bg-blue-500{background:#3b82f6}.bg-purple-500{background:#a855f7}
 .bg-purple-600{background:#9333ea}.bg-green-600{background:#16a34a}.bg-red-600{background:#dc2626}
-.border{border:1px solid #e5e7eb}.border-gray-300{border-color:#d1d5db}
+.border{border:1px solid #e5e7eb}.border-2{border:2px solid #e5e7eb}.border-gray-300{border-color:#d1d5db}
 .rounded{border-radius:4px}.rounded-lg{border-radius:8px}.rounded-xl{border-radius:12px}.rounded-2xl{border-radius:16px}.rounded-full{border-radius:9999px}
 .shadow{box-shadow:0 1px 3px rgba(0,0,0,.1)}.shadow-lg{box-shadow:0 10px 25px rgba(0,0,0,.1)}.shadow-2xl{box-shadow:0 25px 50px rgba(0,0,0,.2)}
 .gradient-bg{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)}
@@ -51,6 +36,7 @@ button{cursor:pointer;border:0;background:none}
 .btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 20px;border-radius:8px;font-weight:600;transition:background .15s,transform .1s;user-select:none}
 .btn:active{transform:scale(.97)}
 .btn-primary{background:linear-gradient(to right,#9333ea,#4f46e5);color:#fff}
+.btn-primary:hover{background:linear-gradient(to right,#7e22ce,#4338ca)}
 .btn-danger{background:#ef4444;color:#fff}.btn-danger:hover{background:#dc2626}
 .btn-success{background:#22c55e;color:#fff}.btn-success:hover{background:#16a34a}
 .btn-info{background:#3b82f6;color:#fff}.btn-info:hover{background:#2563eb}
@@ -68,6 +54,7 @@ button{cursor:pointer;border:0;background:none}
 .badge-draft{background:#e5e7eb;color:#374151}.badge-pending{background:#fef3c7;color:#92400e}.badge-approved{background:#dcfce7;color:#166534}
 .badge-bot{background:#dcfce7;color:#166534}
 .card{background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.card-hover{transition:transform .2s,box-shadow .2s}.card-hover:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(0,0,0,.12)}
 .tab-btn{padding:10px 18px;border-radius:8px;font-weight:600;color:#4b5563;background:transparent;transition:background .15s,color .15s}
 .tab-btn:hover{background:#f3f4f6}.tab-btn.active{background:#667eea;color:#fff}
 .report-card{border-right:4px solid #667eea}
@@ -92,6 +79,7 @@ button{cursor:pointer;border:0;background:none}
 .stat-card{border-radius:12px;padding:18px;color:#fff}
 .stat-label{font-size:13px;opacity:.9;margin-bottom:6px}.stat-value{font-size:28px;font-weight:700}
 .user-row{background:#f9fafb;border-radius:8px;padding:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.user-row:hover{background:#f3f4f6}
 .avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(to right,#9333ea,#4f46e5);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;margin-left:12px;flex-shrink:0;font-size:18px}
 .wa-container{max-width:500px;margin:0 auto;background:#e5ddd5;min-height:100vh;display:flex;flex-direction:column}
 .wa-header{background:#075e54;color:#fff;padding:15px;display:flex;align-items:center;gap:10px;box-shadow:0 2px 5px rgba(0,0,0,.2)}
@@ -99,6 +87,7 @@ button{cursor:pointer;border:0;background:none}
 .wa-input-area{background:#f0f0f0;padding:10px;display:flex;gap:8px;align-items:center}
 .wa-input{flex:1;padding:12px;border-radius:25px;border:none;outline:none;font-size:16px}
 .wa-btn{background:#075e54;color:#fff;border:none;width:45px;height:45px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s;flex-shrink:0}
+.wa-btn:active{transform:scale(.9)}
 .btn-action{padding:10px 20px;border-radius:8px;border:none;font-weight:bold;cursor:pointer;font-size:14px;margin:5px}
 .btn-confirm{background:#25d366;color:#fff}
 .btn-cancel{background:#ef4444;color:#fff}
@@ -123,16 +112,10 @@ button{cursor:pointer;border:0;background:none}
       <p class="text-gray-600 mt-2">نظام سحابي حقيقي ☁️</p>
       <div id="cloudStatus" class="mt-3"></div>
     </div>
-    
     <div class="space-y-4">
-      <button type="button" onclick="switchMode('bot')" class="btn btn-success btn-block" style="padding:16px;font-size:16px">
-        🤖 دخول كموظف (البوت)
-      </button>
-      <button type="button" onclick="switchMode('system')" class="btn btn-primary btn-block" style="padding:16px;font-size:16px">
-        👑 دخول كمدير (النظام)
-      </button>
+      <button type="button" onclick="switchMode('bot')" class="btn btn-success btn-block" style="padding:16px;font-size:16px">🤖 دخول كموظف (البوت)</button>
+      <button type="button" onclick="switchMode('system')" class="btn btn-primary btn-block" style="padding:16px;font-size:16px">👑 دخول كمدير (النظام)</button>
     </div>
-    
     <div class="banner banner-info mt-6">
       <p class="font-bold mb-2">☁️ نظام سحابي حقيقي</p>
       <ul class="text-sm text-blue-700 list-disc pr-5" style="line-height:1.8">
@@ -243,7 +226,6 @@ button{cursor:pointer;border:0;background:none}
                 <option value="bot">🤖 من البوت</option>
                 <option value="local">💻 محلي</option>
               </select>
-              <button type="button" onclick="refreshAll()" class="btn btn-info btn-sm">🔄 تحديث</button>
             </div>
           </div>
           <div id="allReportsList"></div>
@@ -313,15 +295,15 @@ button{cursor:pointer;border:0;background:none}
 
 <script>
 /* ═══════════════════════════════════════════════════════════════
-   ⚙️ إعدادات Firebase - ضعي بيانات مشروعك هنا
+   ⚙️ إعدادات Firebase الحقيقية
    ═══════════════════════════════════════════════════════════════ */
 const firebaseConfig = {
-  apiKey: "AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+  apiKey: "AIzaSyCVSkBviGIDznGBSSiRAcXn6iSN8nOQkSw",
   authDomain: "takhatab-center.firebaseapp.com",
   projectId: "takhatab-center",
-  storageBucket: "takhatab-center.appspot.com",
-  messagingSenderId: "000000000000",
-  appId: "1:000000000000:web:xxxxxxxxxxxxxxxxxxxx"
+  storageBucket: "takhatab-center.firebasestorage.app",
+  messagingSenderId: "386471383714",
+  appId: "1:386471383714:web:2eebe888626537a15e87b"
 };
 
 // تهيئة Firebase
@@ -332,7 +314,6 @@ const db = firebase.firestore();
 const USERS_COL = 'users';
 const REPORTS_COL = 'reports';
 const TEMPLATE_COL = 'template';
-const AUDIT_COL = 'audit_log';
 
 /* ═══════════════════════════════════════════════════════════════
    التحقق من الاتصال
@@ -344,8 +325,7 @@ db.collection(USERS_COL).limit(1).get().then(() => {
   console.log('✅ Firebase متصل بنجاح');
 }).catch(err => {
   console.error('Firebase error:', err);
-  updateCloudStatus('error', 'خطأ في الاتصال');
-  showToast('❌ خطأ في Firebase: ' + err.message, 'error');
+  updateCloudStatus('error', 'خطأ: ' + err.message);
 });
 
 function updateCloudStatus(status, text) {
@@ -443,7 +423,6 @@ let currentTemplate = DEFAULT_TEMPLATE;
 let botSession = { state: 'idle', extractedData: {}, currentQuestion: null };
 let allReports = [];
 let allUsers = [];
-let unsubscribeReports = null;
 
 /* ═══════════════════════════════════════════════════════════════
    التهيئة
@@ -456,7 +435,7 @@ async function initializeData() {
     else await db.collection(TEMPLATE_COL).doc('current').set(currentTemplate);
   } catch(e) { console.error('Template error:', e); }
   
-  // تحميل المستخدمين
+  // تحميل/إنشاء المستخدمين
   try {
     const usersSnap = await db.collection(USERS_COL).get();
     if (usersSnap.empty) {
@@ -478,7 +457,7 @@ async function initializeData() {
   } catch(e) { console.error('Users error:', e); }
   
   // الاستماع للتقارير في الوقت الحقيقي
-  unsubscribeReports = db.collection(REPORTS_COL).onSnapshot(snapshot => {
+  db.collection(REPORTS_COL).onSnapshot(snapshot => {
     allReports = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
     refreshCurrentView();
   }, err => { console.error('Reports listener error:', err); });
@@ -523,20 +502,6 @@ function showToast(message, type) {
     toast.style.transition = 'opacity .3s';
     setTimeout(() => toast.remove(), 300);
   }, 3000);
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   سجل التدقيق
-   ═══════════════════════════════════════════════════════════════ */
-async function addAuditLog(action, details) {
-  try {
-    await db.collection(AUDIT_COL).add({
-      action: action, details: details || '',
-      userId: currentUser ? currentUser.id : null,
-      userName: currentUser ? currentUser.fullName : 'نظام',
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    });
-  } catch(e) { console.error('Audit error:', e); }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -693,7 +658,6 @@ async function handleLogin() {
       document.getElementById('userRole').className = 'badge ' + (roleClasses[user.role] || '');
       switchTab('overview');
       showToast('✅ مرحباً ' + user.fullName, 'success');
-      addAuditLog('login', 'تسجيل دخول: ' + user.username);
     } else { errorEl.textContent = '❌ اسم المستخدم أو كلمة المرور غير صحيحة'; errorEl.classList.remove('hidden'); }
   } catch(e) { errorEl.textContent = '❌ خطأ: ' + e.message; errorEl.classList.remove('hidden'); }
 }
@@ -702,7 +666,6 @@ document.getElementById('loginBtn').addEventListener('click', handleLogin);
 document.getElementById('password').addEventListener('keypress', e => { if (e.key === 'Enter') handleLogin(); });
 
 function logout() {
-  if (currentUser) addAuditLog('logout', 'تسجيل خروج: ' + currentUser.username);
   currentUser = null;
   document.getElementById('loginPage').classList.remove('hidden');
   document.getElementById('dashboard').classList.add('hidden');
@@ -733,8 +696,6 @@ function refreshCurrentView() {
   if (!document.getElementById('tab-overview').classList.contains('hidden')) loadOverview();
   if (!document.getElementById('tab-reports').classList.contains('hidden')) loadAllReports();
 }
-
-function refreshAll() { showToast('✅ البيانات محدّثة تلقائياً', 'success'); loadAllReports(); }
 
 /* ═══════════════════════════════════════════════════════════════
    تحميل البيانات
@@ -794,7 +755,7 @@ function viewReport(reportId) {
 
 async function deleteReport(reportId) {
   if (!confirm('هل أنت متأكد من حذف هذا التقرير؟')) return;
-  try { await db.collection(REPORTS_COL).doc(reportId).delete(); addAuditLog('delete_report', 'حذف تقرير #' + reportId); showToast('✅ تم حذف التقرير', 'success'); closeModal('reportDrawer'); }
+  try { await db.collection(REPORTS_COL).doc(reportId).delete(); showToast('✅ تم حذف التقرير', 'success'); closeModal('reportDrawer'); }
   catch(e) { showToast('❌ فشل الحذف: ' + e.message, 'error'); }
 }
 
@@ -837,7 +798,6 @@ async function submitAddUser() {
     closeModal('addUserModal');
     document.getElementById('newFullName').value = ''; document.getElementById('newUsername').value = ''; document.getElementById('newPassword').value = ''; document.getElementById('newPhone').value = '';
     showToast('✅ تم إضافة الحساب', 'success');
-    addAuditLog('create_user', 'إنشاء حساب: ' + username);
   } catch(e) { showToast('❌ فشل: ' + e.message, 'error'); }
 }
 
@@ -863,7 +823,6 @@ async function saveTemplate() {
   try {
     currentTemplate.version = (currentTemplate.version || 1) + 1;
     await db.collection(TEMPLATE_COL).doc('current').set(currentTemplate);
-    addAuditLog('update_template', 'تحديث النموذج v' + currentTemplate.version);
     showToast('✅ تم حفظ النموذج', 'success');
   } catch(e) { showToast('❌ فشل: ' + e.message, 'error'); }
 }
@@ -878,20 +837,3 @@ updateCloudStatus('pending', 'جاري الاتصال...');
 </script>
 </body>
 </html>
-
-
-              <script>
-                              const firebaseConfig = {
-  apiKey: "AIzaSyBxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-  authDomain: "takhatab-center.firebaseapp.com",
-  projectId: "takhatab-center",
-  storageBucket: "takhatab-center.appspot.com",
-  messagingSenderId: "123456789012",
-  appId: "1:123456789012:web:abcdef1234567890"
-};
-
-
-              </script>
-                        </body>
-                        </html>
-                    
