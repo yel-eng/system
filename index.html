@@ -505,7 +505,7 @@ function showToast(message, type) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   🤖 واجهة البوت
+   🤖 واجهة البوت - الإصلاح هنا
    ═══════════════════════════════════════════════════════════════ */
 function initBot() {
   botSession = { state: 'idle', extractedData: {}, currentQuestion: null };
@@ -548,18 +548,21 @@ function processBotInput(text) {
     else { botSession = { state: 'idle', extractedData: {}, currentQuestion: null }; addBotBubble('bot', '✅ تم إلغاء التقرير.'); }
     return;
   }
+  
+  // ✅ الإصلاح: استخدام field.label بدلاً من field
   if (botSession.state === 'collecting' && botSession.currentQuestion) {
-    const field = botSession.currentQuestion;
+    const fieldLabel = botSession.currentQuestion; // هذا string الآن
     let value = text.trim();
-    if (field === 'عمر العميل') { const age = text.match(/(\d+)/); if (age) value = age[1] + ' سنة'; }
-    botSession.extractedData[field] = value;
+    if (fieldLabel === 'عمر العميل') { const age = text.match(/(\d+)/); if (age) value = age[1] + ' سنة'; }
+    botSession.extractedData[fieldLabel] = value;
     botSession.currentQuestion = null;
-    addBotBubble('bot', '✅ تم: ' + field + ' = ' + value);
+    addBotBubble('bot', '✅ تم: ' + fieldLabel + ' = ' + value);
     const missing = AIExtractor.getMissingFields(botSession.extractedData, currentTemplate);
     if (missing.length === 0) setTimeout(() => showDraftPreview(), 500);
     else setTimeout(() => askNextMissing(missing), 500);
     return;
   }
+  
   const extracted = AIExtractor.extract(text, currentTemplate);
   Object.keys(extracted).forEach(k => { if (extracted[k]) botSession.extractedData[k] = extracted[k]; });
   const extractedCount = Object.values(extracted).filter(v => v).length;
@@ -576,12 +579,13 @@ function processBotInput(text) {
   }
 }
 
+// ✅ الإصلاح: استخدام field.label
 function askNextMissing(missing) {
   if (!missing.length) { showDraftPreview(); return; }
   const field = missing[0];
-  botSession.currentQuestion = field;
-  const fieldObj = currentTemplate.fields.find(f => f.label === field);
-  const question = (fieldObj && fieldObj.botQuestion) || ('ما هو ' + field + '؟');
+  const fieldLabel = field.label; // ✅ استخدام label
+  botSession.currentQuestion = fieldLabel; // ✅ حفظ string
+  const question = field.botQuestion || ('ما هو ' + fieldLabel + '؟');
   addBotBubble('bot', '❓ ينقص: ' + question);
 }
 
@@ -604,9 +608,10 @@ function cancelDraft() {
   addBotBubble('bot', '❌ تم الإلغاء.');
 }
 
+// ✅ الإصلاح: الحفظ في Firebase
 async function confirmAndSend(reportNum) {
   addBotBubble('bot', '⏳ جاري الحفظ في السحابة...');
-  const originalContent = botSession.extractedData['ملاحظات الجلسة'] || Object.values(botSession.extractedData).join(' - ');
+  const originalContent = botSession.extractedData['ملاحظات الجلسة'] || Object.values(botSession.extractedData).filter(v => v).join(' - ');
   const report = {
     reportNumber: reportNum,
     clientName: botSession.extractedData['اسم العميل'] || 'غير محدد',
