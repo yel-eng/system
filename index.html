@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>مركز التخاطب - نظام ذكي متكامل</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -12,44 +12,22 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;line-height:i
 button{cursor:pointer;border:0;background:none}
 a{color:inherit;text-decoration:none}
 .hidden{display:none!important}
-
-/* ═══════════════════════════════════════════════════════════════
-   نظام التصميم الحديث - Glassmorphism + Gradients
-   ═══════════════════════════════════════════════════════════════ */
-:root{
-  --primary:#667eea;
-  --primary-dark:#764ba2;
-  --success:#10b981;
-  --danger:#ef4444;
-  --warning:#f59e0b;
-  --info:#3b82f6;
-  --bg:#f3f4f6;
-  --card:#fff;
-  --text:#1f2937;
-  --text-light:#6b7280;
-  --border:#e5e7eb;
-  --shadow:0 10px 25px rgba(0,0,0,.08);
-  --shadow-lg:0 20px 40px rgba(0,0,0,.12);
-}
-
 .container{max-width:1200px;margin:0 auto;padding:0 16px}
 .flex{display:flex}.grid{display:grid}.items-center{align-items:center}.justify-between{justify-content:space-between}
 .gap-2{gap:8px}.gap-3{gap:12px}.gap-4{gap:16px}.gap-6{gap:24px}.flex-1{flex:1}.flex-wrap{flex-wrap:wrap}
 .grid-2{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:repeat(3,1fr)}.grid-4{grid-template-columns:repeat(4,1fr)}
 @media(max-width:768px){.grid-3,.grid-4{grid-template-columns:1fr}.grid-2{grid-template-columns:1fr}}
-
-.p-3{padding:12px}.p-4{padding:16px}.p-6{padding:24px}.p-8{padding:32px}
-.px-4{padding-left:16px;padding-right:16px}.py-3{padding-top:12px;padding-bottom:12px}
+.p-3{padding:12px}.p-4{padding:16px}.p-6{padding:24px}
 .mb-2{margin-bottom:8px}.mb-3{margin-bottom:12px}.mb-4{margin-bottom:16px}.mb-6{margin-bottom:24px}
 .mt-2{margin-top:8px}.mt-3{margin-top:12px}.mt-4{margin-top:16px}.mt-6{margin-top:24px}
 .text-xs{font-size:12px}.text-sm{font-size:14px}.text-base{font-size:16px}.text-lg{font-size:18px}.text-xl{font-size:20px}.text-2xl{font-size:24px}.text-3xl{font-size:30px}
 .font-semibold{font-weight:600}.font-bold{font-weight:700}.font-mono{font-family:ui-monospace,monospace}
 .text-center{text-align:center}.whitespace-pre{white-space:pre-wrap}
 .text-gray-500{color:#6b7280}.text-gray-600{color:#4b5563}.text-gray-700{color:#374151}.text-gray-800{color:#1f2937}
-.text-white{color:#fff}.text-red-700{color:#b91c1c}.text-green-700{color:#15803d}.text-blue-700{color:#1d4ed8}.text-purple-700{color:#7e22ce}
+.text-white{color:#fff}.text-green-700{color:#15803d}.text-red-700{color:#b91c1c}.text-blue-700{color:#1d4ed8}
 .bg-white{background:#fff}.bg-gray-50{background:#f9fafb}.bg-gray-100{background:#f3f4f6}
 .bg-red-500{background:#ef4444}.bg-green-500{background:#22c55e}.bg-blue-500{background:#3b82f6}.bg-purple-500{background:#a855f7}
-.bg-red-600{background:#dc2626}.bg-green-600{background:#16a34a}.bg-blue-600{background:#2563eb}.bg-purple-600{background:#9333ea}
+.bg-purple-600{background:#9333ea}.bg-green-600{background:#16a34a}.bg-red-600{background:#dc2626}
 .border{border:1px solid #e5e7eb}.border-2{border:2px solid #e5e7eb}.border-gray-300{border-color:#d1d5db}
 .rounded{border-radius:4px}.rounded-lg{border-radius:8px}.rounded-xl{border-radius:12px}.rounded-2xl{border-radius:16px}.rounded-full{border-radius:9999px}
 .shadow{box-shadow:0 1px 3px rgba(0,0,0,.1)}.shadow-lg{box-shadow:0 10px 25px rgba(0,0,0,.1)}.shadow-2xl{box-shadow:0 25px 50px rgba(0,0,0,.2)}
@@ -57,13 +35,8 @@ a{color:inherit;text-decoration:none}
 .gradient-purple{background:linear-gradient(to right,#9333ea,#4f46e5)}
 .gradient-green{background:linear-gradient(to right,#10b981,#0d9488)}
 .gradient-orange{background:linear-gradient(to right,#f97316,#ef4444)}
-
-/* ═══════════════════════════════════════════════════════════════
-   الأزرار
-   ═══════════════════════════════════════════════════════════════ */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 20px;border-radius:8px;font-weight:600;transition:all .15s;user-select:none;white-space:nowrap}
 .btn:active{transform:scale(.97)}
-.btn:disabled{opacity:.5;cursor:not-allowed}
 .btn-primary{background:linear-gradient(to right,#9333ea,#4f46e5);color:#fff;box-shadow:0 4px 12px rgba(147,51,234,.3)}
 .btn-primary:hover:not(:disabled){box-shadow:0 6px 16px rgba(147,51,234,.4);transform:translateY(-1px)}
 .btn-danger{background:#ef4444;color:#fff}.btn-danger:hover:not(:disabled){background:#dc2626}
@@ -72,70 +45,38 @@ a{color:inherit;text-decoration:none}
 .btn-secondary{background:#e5e7eb;color:#374151}.btn-secondary:hover:not(:disabled){background:#d1d5db}
 .btn-warning{background:#f59e0b;color:#fff}.btn-warning:hover:not(:disabled){background:#d97706}
 .btn-ghost{background:transparent;color:#374151}.btn-ghost:hover{background:#f3f4f6}
-.btn-block{width:100%}.btn-sm{padding:6px 12px;font-size:13px}
-.btn-lg{padding:14px 24px;font-size:16px}
-
-/* ═══════════════════════════════════════════════════════════════
-   المدخلات
-   ═══════════════════════════════════════════════════════════════ */
+.btn-block{width:100%}.btn-sm{padding:6px 12px;font-size:13px}.btn-lg{padding:14px 24px;font-size:16px}
 .input{width:100%;padding:10px 14px;border:2px solid #d1d5db;border-radius:8px;background:#fff;transition:border-color .15s}
 .input:focus{outline:0;border-color:#9333ea;box-shadow:0 0 0 3px rgba(147,51,234,.15)}
-.input-error{border-color:#ef4444!important;background:#fef2f2!important}
 .label{display:block;margin-bottom:6px;font-weight:600;color:#374151;font-size:14px}
 .select{width:100%;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;background:#fff}
 .textarea{width:100%;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;background:#fff;resize:vertical;min-height:80px}
-
-/* ═══════════════════════════════════════════════════════════════
-   الشارات
-   ═══════════════════════════════════════════════════════════════ */
 .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
-.badge-admin{background:#f3e8ff;color:#6d28d9}.badge-employee{background:#dbeafe;color:#1e40af}
-.badge-reviewer{background:#fef3c7;color:#92400e}
+.badge-admin{background:#f3e8ff;color:#6d28d9}.badge-employee{background:#dbeafe;color:#1e40af}.badge-reviewer{background:#fef3c7;color:#92400e}
 .badge-draft{background:#e5e7eb;color:#374151}.badge-pending{background:#fef3c7;color:#92400e}.badge-approved{background:#dcfce7;color:#166534}
-.badge-bot{background:#dcfce7;color:#166534}
-
-/* ═══════════════════════════════════════════════════════════════
-   البطاقات
-   ═══════════════════════════════════════════════════════════════ */
+.badge-bot{background:#dcfce7;color:#166534}.badge-specialist{background:#e0e7ff;color:#3730a3}
 .card{background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.1)}
 .card-hover{transition:transform .2s,box-shadow .2s}.card-hover:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(0,0,0,.12)}
 .tab-btn{padding:10px 18px;border-radius:8px;font-weight:600;color:#4b5563;background:transparent;transition:background .15s,color .15s}
 .tab-btn:hover{background:#f3f4f6}.tab-btn.active{background:#667eea;color:#fff}
 .report-card{border-right:4px solid #667eea}
-
-/* ═══════════════════════════════════════════════════════════════
-   النوافذ المنبثقة
-   ═══════════════════════════════════════════════════════════════ */
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px)}
 .modal.active{display:flex}
 .modal-content{background:#fff;padding:24px;border-radius:16px;max-width:600px;width:100%;max-height:85vh;overflow-y:auto;animation:modalIn .3s ease}
 @keyframes modalIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
-
-/* ═══════════════════════════════════════════════════════════════
-   Toast
-   ═══════════════════════════════════════════════════════════════ */
 .toast-container{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;width:90%;max-width:400px}
 .toast{padding:12px 20px;border-radius:8px;color:#fff;font-weight:600;animation:toastIn .3s ease;pointer-events:auto;box-shadow:0 4px 12px rgba(0,0,0,.15)}
 .toast-success{background:#10b981}.toast-error{background:#ef4444}.toast-info{background:#3b82f6}.toast-warn{background:#f59e0b}
 @keyframes toastIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
-
-/* ═══════════════════════════════════════════════════════════════
-   البانر
-   ═══════════════════════════════════════════════════════════════ */
 .banner{padding:12px;border-radius:8px;margin-bottom:12px;border-right:4px solid}
 .banner-error{background:#fee2e2;border-color:#ef4444;color:#991b1b}
 .banner-success{background:#dcfce7;border-color:#22c55e;color:#166534}
 .banner-info{background:#dbeafe;border-color:#3b82f6;color:#1e40af}
 .banner-warn{background:#fef3c7;border-color:#f59e0b;color:#92400e}
-
-/* ═══════════════════════════════════════════════════════════════
-   Navigation
-   ═══════════════════════════════════════════════════════════════ */
 .nav{background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.1);height:60px;display:flex;align-items:center}
 .nav-inner{display:flex;justify-content:space-between;align-items:center;width:100%;max-width:1200px;margin:0 auto;padding:0 16px}
 .logo-circle{width:40px;height:40px;border-radius:50%;background:linear-gradient(to right,#9333ea,#4f46e5);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;margin-left:10px}
 .avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(to right,#9333ea,#4f46e5);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;margin-left:12px;flex-shrink:0;font-size:18px}
-.field-card{background:#f9fafb;border-radius:8px;padding:12px;margin-bottom:10px}
 .stat-card{border-radius:12px;padding:18px;color:#fff}
 .stat-label{font-size:13px;opacity:.9;margin-bottom:6px}.stat-value{font-size:28px;font-weight:700}
 .user-row{background:#f9fafb;border-radius:8px;padding:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
@@ -147,483 +88,91 @@ a{color:inherit;text-decoration:none}
 ::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-track{background:#f3f4f6}::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:4px}::-webkit-scrollbar-thumb:hover{background:#9ca3af}
 
 /* ═══════════════════════════════════════════════════════════════
-   🤖 واجهة البوت العصرية - Glassmorphism Design
+   🤖 واجهة البوت العصرية
    ═══════════════════════════════════════════════════════════════ */
-.bot-container{
-  max-width:480px;
-  margin:0 auto;
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-  background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
-  position:relative;
-  overflow:hidden;
-}
-
-.bot-container::before{
-  content:'';
-  position:absolute;
-  top:-50%;
-  right:-50%;
-  width:200%;
-  height:200%;
-  background:radial-gradient(circle,rgba(255,255,255,.1) 0%,transparent 70%);
-  animation:rotate 30s linear infinite;
-  pointer-events:none;
-}
-
-@keyframes rotate{
-  from{transform:rotate(0deg)}
-  to{transform:rotate(360deg)}
-}
-
-.bot-header{
-  background:rgba(255,255,255,.15);
-  backdrop-filter:blur(20px);
-  -webkit-backdrop-filter:blur(20px);
-  color:#fff;
-  padding:16px 20px;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  box-shadow:0 4px 20px rgba(0,0,0,.1);
-  position:relative;
-  z-index:10;
-  border-bottom:1px solid rgba(255,255,255,.2);
-}
-
-.bot-avatar{
-  width:48px;
-  height:48px;
-  border-radius:50%;
-  background:linear-gradient(135deg,#fff 0%,#f0f0f0 100%);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:24px;
-  box-shadow:0 4px 12px rgba(0,0,0,.15);
-  position:relative;
-}
-
-.bot-avatar::after{
-  content:'';
-  position:absolute;
-  bottom:2px;
-  right:2px;
-  width:12px;
-  height:12px;
-  background:#22c55e;
-  border-radius:50%;
-  border:2px solid rgba(255,255,255,.9);
-  animation:pulse-green 2s infinite;
-}
-
-@keyframes pulse-green{
-  0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.7)}
-  50%{box-shadow:0 0 0 6px rgba(34,197,94,0)}
-}
-
-.bot-info{flex:1;min-width:0}
-.bot-name{font-weight:700;font-size:16px}
-.bot-status{font-size:12px;opacity:.9;display:flex;align-items:center;gap:4px}
+.bot-container{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);position:relative;overflow:hidden}
+.bot-container::before{content:'';position:absolute;top:-50%;right:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,.1) 0%,transparent 70%);animation:rotate 30s linear infinite;pointer-events:none}
+@keyframes rotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.bot-header{background:rgba(255,255,255,.15);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);color:#fff;padding:16px 20px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(0,0,0,.1);position:relative;z-index:10;border-bottom:1px solid rgba(255,255,255,.2)}
+.bot-avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#fff 0%,#f0f0f0 100%);display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 4px 12px rgba(0,0,0,.15);position:relative}
+.bot-avatar::after{content:'';position:absolute;bottom:2px;right:2px;width:12px;height:12px;background:#22c55e;border-radius:50%;border:2px solid rgba(255,255,255,.9);animation:pulse-green 2s infinite}
+@keyframes pulse-green{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.7)}50%{box-shadow:0 0 0 6px rgba(34,197,94,0)}}
+.bot-info{flex:1;min-width:0}.bot-name{font-weight:700;font-size:16px}.bot-status{font-size:12px;opacity:.9;display:flex;align-items:center;gap:4px}
 .bot-status::before{content:'';width:6px;height:6px;background:#22c55e;border-radius:50%;display:inline-block}
-
 .bot-actions{display:flex;gap:8px}
-.bot-action-btn{
-  width:36px;
-  height:36px;
-  border-radius:50%;
-  background:rgba(255,255,255,.2);
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  transition:all .2s;
-}
+.bot-action-btn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.2);color:#fff;display:flex;align-items:center;justify-content:center;transition:all .2s}
 .bot-action-btn:hover{background:rgba(255,255,255,.3);transform:scale(1.1)}
-
-.bot-chat{
-  flex:1;
-  overflow-y:auto;
-  padding:20px 16px;
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-  position:relative;
-  z-index:5;
-  scroll-behavior:smooth;
-}
-
-.bot-message{
-  max-width:85%;
-  padding:12px 16px;
-  border-radius:18px;
-  font-size:15px;
-  line-height:1.6;
-  word-wrap:break-word;
-  position:relative;
-  animation:messageIn .3s ease;
-  box-shadow:0 2px 8px rgba(0,0,0,.08);
-}
-
-@keyframes messageIn{
-  from{opacity:0;transform:translateY(10px)}
-  to{opacity:1;transform:translateY(0)}
-}
-
-.bot-message.user{
-  background:linear-gradient(135deg,#fff 0%,#f8f9fa 100%);
-  align-self:flex-end;
-  border-bottom-left-radius:4px;
-  color:#1f2937;
-}
-
-.bot-message.bot{
-  background:rgba(255,255,255,.95);
-  backdrop-filter:blur(10px);
-  align-self:flex-start;
-  border-bottom-right-radius:4px;
-  color:#1f2937;
-  border:1px solid rgba(255,255,255,.3);
-}
-
-.bot-message.draft{
-  background:linear-gradient(135deg,#f3e8ff 0%,#e9d5ff 100%);
-  align-self:center;
-  max-width:95%;
-  border:2px solid #a855f7;
-  border-radius:16px;
-  padding:16px;
-}
-
-.bot-message.system{
-  background:rgba(255,255,255,.2);
-  backdrop-filter:blur(10px);
-  align-self:center;
-  max-width:90%;
-  text-align:center;
-  font-size:13px;
-  color:#fff;
-  border-radius:12px;
-  padding:8px 16px;
-}
-
-.msg-time{
-  font-size:10px;
-  color:#9ca3af;
-  text-align:left;
-  margin-top:4px;
-  display:block;
-}
-
+.bot-chat{flex:1;overflow-y:auto;padding:20px 16px;display:flex;flex-direction:column;gap:12px;position:relative;z-index:5;scroll-behavior:smooth}
+.bot-message{max-width:85%;padding:12px 16px;border-radius:18px;font-size:15px;line-height:1.6;word-wrap:break-word;position:relative;animation:messageIn .3s ease;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+@keyframes messageIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.bot-message.user{background:linear-gradient(135deg,#fff 0%,#f8f9fa 100%);align-self:flex-end;border-bottom-left-radius:4px;color:#1f2937}
+.bot-message.bot{background:rgba(255,255,255,.95);backdrop-filter:blur(10px);align-self:flex-start;border-bottom-right-radius:4px;color:#1f2937;border:1px solid rgba(255,255,255,.3)}
+.bot-message.draft{background:linear-gradient(135deg,#f3e8ff 0%,#e9d5ff 100%);align-self:center;max-width:95%;border:2px solid #a855f7;border-radius:16px;padding:16px}
+.msg-time{font-size:10px;color:#9ca3af;text-align:left;margin-top:4px;display:block}
 .bot-message.user .msg-time{color:#6b7280}
-
-.typing-indicator{
-  display:none;
-  align-self:flex-start;
-  background:rgba(255,255,255,.95);
-  padding:12px 16px;
-  border-radius:18px;
-  border-bottom-right-radius:4px;
-  box-shadow:0 2px 8px rgba(0,0,0,.08);
-}
-
+.typing-indicator{display:none;align-self:flex-start;background:rgba(255,255,255,.95);padding:12px 16px;border-radius:18px;border-bottom-right-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
 .typing-indicator.active{display:flex;gap:4px;align-items:center}
-
-.typing-dot{
-  width:8px;
-  height:8px;
-  background:#9ca3af;
-  border-radius:50%;
-  animation:typingBounce 1.4s infinite;
-}
-
-.typing-dot:nth-child(2){animation-delay:.2s}
-.typing-dot:nth-child(3){animation-delay:.4s}
-
-@keyframes typingBounce{
-  0%,60%,100%{transform:translateY(0);opacity:.5}
-  30%{transform:translateY(-8px);opacity:1}
-}
-
-.bot-input-area{
-  background:rgba(255,255,255,.95);
-  backdrop-filter:blur(20px);
-  padding:12px 16px;
-  display:flex;
-  gap:10px;
-  align-items:center;
-  position:relative;
-  z-index:10;
-  border-top:1px solid rgba(255,255,255,.3);
-  box-shadow:0 -4px 20px rgba(0,0,0,.08);
-}
-
-.bot-input{
-  flex:1;
-  padding:12px 18px;
-  border-radius:24px;
-  border:2px solid #e5e7eb;
-  outline:none;
-  font-size:15px;
-  background:#fff;
-  transition:border-color .2s;
-}
-
+.typing-dot{width:8px;height:8px;background:#9ca3af;border-radius:50%;animation:typingBounce 1.4s infinite}
+.typing-dot:nth-child(2){animation-delay:.2s}.typing-dot:nth-child(3){animation-delay:.4s}
+@keyframes typingBounce{0%,60%,100%{transform:translateY(0);opacity:.5}30%{transform:translateY(-8px);opacity:1}}
+.bot-input-area{background:rgba(255,255,255,.95);backdrop-filter:blur(20px);padding:12px 16px;display:flex;gap:10px;align-items:center;position:relative;z-index:10;border-top:1px solid rgba(255,255,255,.3);box-shadow:0 -4px 20px rgba(0,0,0,.08)}
+.bot-input{flex:1;padding:12px 18px;border-radius:24px;border:2px solid #e5e7eb;outline:none;font-size:15px;background:#fff;transition:border-color .2s}
 .bot-input:focus{border-color:#9333ea}
-
-.bot-send-btn{
-  width:48px;
-  height:48px;
-  border-radius:50%;
-  background:linear-gradient(135deg,#9333ea,#4f46e5);
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow:0 4px 12px rgba(147,51,234,.4);
-  transition:all .2s;
-  flex-shrink:0;
-}
-
+.bot-send-btn{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#9333ea,#4f46e5);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(147,51,234,.4);transition:all .2s;flex-shrink:0}
 .bot-send-btn:hover{transform:scale(1.05);box-shadow:0 6px 16px rgba(147,51,234,.5)}
 .bot-send-btn:active{transform:scale(.95)}
-
-.bot-quick-actions{
-  display:flex;
-  gap:8px;
-  padding:8px 16px;
-  overflow-x:auto;
-  position:relative;
-  z-index:10;
-  scrollbar-width:none;
-}
-
+.bot-quick-actions{display:flex;gap:8px;padding:8px 16px;overflow-x:auto;position:relative;z-index:10;scrollbar-width:none}
 .bot-quick-actions::-webkit-scrollbar{display:none}
-
-.quick-action{
-  padding:8px 16px;
-  border-radius:20px;
-  background:rgba(255,255,255,.2);
-  backdrop-filter:blur(10px);
-  color:#fff;
-  font-size:13px;
-  font-weight:600;
-  white-space:nowrap;
-  border:1px solid rgba(255,255,255,.3);
-  transition:all .2s;
-}
-
+.quick-action{padding:8px 16px;border-radius:20px;background:rgba(255,255,255,.2);backdrop-filter:blur(10px);color:#fff;font-size:13px;font-weight:600;white-space:nowrap;border:1px solid rgba(255,255,255,.3);transition:all .2s}
 .quick-action:hover{background:rgba(255,255,255,.3);transform:translateY(-2px)}
-
-/* ═══════════════════════════════════════════════════════════════
-   أزرار المسودة
-   ═══════════════════════════════════════════════════════════════ */
-.draft-actions{
-  display:flex;
-  gap:10px;
-  margin-top:14px;
-  justify-content:center;
-  flex-wrap:wrap;
-}
-
-.draft-btn{
-  padding:10px 20px;
-  border-radius:24px;
-  border:none;
-  font-weight:700;
-  font-size:14px;
-  cursor:pointer;
-  transition:all .2s;
-  display:flex;
-  align-items:center;
-  gap:6px;
-}
-
-.draft-btn.confirm{
-  background:linear-gradient(135deg,#22c55e,#16a34a);
-  color:#fff;
-  box-shadow:0 4px 12px rgba(34,197,94,.4);
-}
-
+.draft-actions{display:flex;gap:10px;margin-top:14px;justify-content:center;flex-wrap:wrap}
+.draft-btn{padding:10px 20px;border-radius:24px;border:none;font-weight:700;font-size:14px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px}
+.draft-btn.confirm{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;box-shadow:0 4px 12px rgba(34,197,94,.4)}
 .draft-btn.confirm:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(34,197,94,.5)}
-
-.draft-btn.cancel{
-  background:linear-gradient(135deg,#ef4444,#dc2626);
-  color:#fff;
-  box-shadow:0 4px 12px rgba(239,68,68,.4);
-}
-
+.draft-btn.cancel{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;box-shadow:0 4px 12px rgba(239,68,68,.4)}
 .draft-btn.cancel:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(239,68,68,.5)}
-
-/* ═══════════════════════════════════════════════════════════════
-   عرض البيانات المستخرجة
-   ═══════════════════════════════════════════════════════════════ */
-.extracted-item{
-  padding:8px 0;
-  border-bottom:1px solid rgba(168,85,247,.2);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:8px;
-}
-
+.extracted-item{padding:8px 0;border-bottom:1px solid rgba(168,85,247,.2);display:flex;justify-content:space-between;align-items:center;gap:8px}
 .extracted-item:last-child{border-bottom:none}
-
 .extracted-label{font-weight:700;color:#6d28d9;font-size:13px}
-
 .extracted-value{color:#374151;font-size:13px;text-align:left}
-
 .extracted-value.empty{color:#9ca3af;font-style:italic}
+@media(max-width:480px){.bot-message{max-width:90%;font-size:14px}.bot-header{padding:12px 16px}.bot-chat{padding:16px 12px}.bot-input-area{padding:10px 12px}}
+@media(min-width:768px){.bot-container{border-radius:24px;margin:20px auto;min-height:calc(100vh - 40px);box-shadow:0 25px 50px rgba(0,0,0,.25);overflow:hidden}}
 
 /* ═══════════════════════════════════════════════════════════════
-   Responsive Design
+   شاشة اختيار المختص
    ═══════════════════════════════════════════════════════════════ */
-@media(max-width:480px){
-  .bot-message{max-width:90%;font-size:14px}
-  .bot-header{padding:12px 16px}
-  .bot-chat{padding:16px 12px}
-  .bot-input-area{padding:10px 12px}
-}
-
-@media(min-width:768px){
-  .bot-container{
-    border-radius:24px;
-    margin:20px auto;
-    min-height:calc(100vh - 40px);
-    box-shadow:0 25px 50px rgba(0,0,0,.25);
-    overflow:hidden;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   شاشة الخطأ
-   ═══════════════════════════════════════════════════════════════ */
-.error-screen{display:none;position:fixed;inset:0;background:#fef2f2;z-index:10000;padding:40px;overflow-y:auto}
-.error-screen.active{display:block}
-.error-screen h1{color:#991b1b;margin-bottom:16px;font-size:24px}
-.error-screen pre{background:#fff;padding:16px;border-radius:8px;overflow-x:auto;border:1px solid #fca5a5;font-family:ui-monospace,monospace;font-size:13px;color:#7f1d1d;direction:ltr;text-align:left}
+.specialist-selector{background:rgba(255,255,255,.98);backdrop-filter:blur(20px);padding:24px;border-radius:20px;margin:16px;box-shadow:0 10px 30px rgba(0,0,0,.2);position:relative;z-index:10}
+.specialist-selector h3{font-size:18px;font-weight:700;color:#1f2937;margin-bottom:12px;text-align:center}
+.specialist-selector p{font-size:13px;color:#6b7280;text-align:center;margin-bottom:16px}
+.specialist-select{width:100%;padding:12px 16px;border:2px solid #e5e7eb;border-radius:12px;font-size:15px;background:#fff;cursor:pointer;transition:border-color .2s}
+.specialist-select:focus{outline:0;border-color:#9333ea}
+.specialist-confirm{width:100%;padding:12px;border-radius:12px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-weight:700;font-size:15px;margin-top:12px;box-shadow:0 4px 12px rgba(34,197,94,.4);transition:all .2s}
+.specialist-confirm:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(34,197,94,.5)}
+.specialist-confirm:disabled{opacity:.5;cursor:not-allowed;transform:none}
 
 /* ═══════════════════════════════════════════════════════════════
    شاشة اختيار الوضع
    ═══════════════════════════════════════════════════════════════ */
-.mode-selector{
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
-  position:relative;
-  overflow:hidden;
-}
-
-.mode-selector::before{
-  content:'';
-  position:absolute;
-  top:-50%;
-  right:-50%;
-  width:200%;
-  height:200%;
-  background:radial-gradient(circle,rgba(255,255,255,.1) 0%,transparent 70%);
-  animation:rotate 30s linear infinite;
-}
-
-.mode-card{
-  background:rgba(255,255,255,.98);
-  backdrop-filter:blur(20px);
-  padding:40px;
-  border-radius:24px;
-  box-shadow:0 25px 50px rgba(0,0,0,.25);
-  width:100%;
-  max-width:500px;
-  position:relative;
-  z-index:10;
-}
-
-.mode-btn{
-  width:100%;
-  padding:18px;
-  border-radius:16px;
-  font-size:16px;
-  font-weight:700;
-  color:#fff;
-  margin-bottom:12px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  transition:all .2s;
-  box-shadow:0 8px 20px rgba(0,0,0,.15);
-}
-
+.mode-selector{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);position:relative;overflow:hidden}
+.mode-selector::before{content:'';position:absolute;top:-50%;right:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,.1) 0%,transparent 70%);animation:rotate 30s linear infinite}
+.mode-card{background:rgba(255,255,255,.98);backdrop-filter:blur(20px);padding:40px;border-radius:24px;box-shadow:0 25px 50px rgba(0,0,0,.25);width:100%;max-width:500px;position:relative;z-index:10}
+.mode-btn{width:100%;padding:18px;border-radius:16px;font-size:16px;font-weight:700;color:#fff;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .2s;box-shadow:0 8px 20px rgba(0,0,0,.15)}
 .mode-btn:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,0,0,.2)}
-
 .mode-btn.bot{background:linear-gradient(135deg,#22c55e,#16a34a)}
 .mode-btn.system{background:linear-gradient(135deg,#9333ea,#4f46e5)}
-
 .mode-icon{font-size:24px}
-
-/* ═══════════════════════════════════════════════════════════════
-   شاشة تسجيل الدخول
-   ═══════════════════════════════════════════════════════════════ */
-.login-container{
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
-}
-
-.login-card{
-  background:#fff;
-  padding:40px;
-  border-radius:24px;
-  box-shadow:0 25px 50px rgba(0,0,0,.25);
-  width:100%;
-  max-width:420px;
-}
-
-.login-logo{
-  width:80px;
-  height:80px;
-  border-radius:50%;
-  background:linear-gradient(135deg,#9333ea,#4f46e5);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:32px;
-  margin:0 auto 16px;
-  box-shadow:0 10px 25px rgba(147,51,234,.4);
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   Dashboard
-   ═══════════════════════════════════════════════════════════════ */
+.login-container{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)}
+.login-card{background:#fff;padding:40px;border-radius:24px;box-shadow:0 25px 50px rgba(0,0,0,.25);width:100%;max-width:420px}
+.login-logo{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#9333ea,#4f46e5);display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 16px;box-shadow:0 10px 25px rgba(147,51,234,.4)}
 .dashboard-container{min-height:100vh;background:#f3f4f6}
+.report-detail-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #e5e7eb}
+.report-detail-row:last-child{border-bottom:none}
+.report-detail-label{font-weight:600;color:#6d28d9}
+.report-detail-value{color:#374151;text-align:left}
 </style>
 </head>
 <body>
-
-<!-- ═══════════════════════════════════════════════════════════════
-     شاشة الخطأ العامة
-     ═══════════════════════════════════════════════════════════════ -->
-<div id="errorScreen" class="error-screen" role="alert">
-  <div class="container">
-    <h1>⚠️ حصل خطأ في النظام</h1>
-    <p class="mb-4">النظام واجه مشكلة. جرب إعادة تحميل الصفحة.</p>
-    <pre id="errorDetails">لا توجد تفاصيل</pre>
-    <div class="mt-4 flex gap-3">
-      <button class="btn btn-primary" onclick="location.reload()">🔄 إعادة تحميل الصفحة</button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════════════════
-     Toast Container
-     ═══════════════════════════════════════════════════════════════ -->
-<div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
 
 <!-- ═══════════════════════════════════════════════════════════════
      شاشة اختيار الوضع
@@ -652,6 +201,7 @@ a{color:inherit;text-decoration:none}
       <ul class="text-sm text-blue-700 list-disc pr-5" style="line-height:1.8">
         <li>البيانات محفوظة في Firebase Cloud</li>
         <li>الذكاء الاصطناعي يحول البيانات تلقائياً</li>
+        <li>اسم المختص والتاريخ يُسجلان أوتوماتيك</li>
         <li>تحديث فوري بين البوت والنظام</li>
       </ul>
     </div>
@@ -679,7 +229,19 @@ a{color:inherit;text-decoration:none}
       </div>
     </div>
 
-    <div class="bot-quick-actions">
+    <!-- ✅ اختيار المختص -->
+    <div id="specialistSelector" class="specialist-selector">
+      <h3>👤 اختر اسمك (المختص)</h3>
+      <p>لازم تختار اسمك قبل ما تبدأ التقرير</p>
+      <select id="specialistSelect" class="specialist-select">
+        <option value="">-- اختر المختص --</option>
+      </select>
+      <button type="button" id="confirmSpecialistBtn" class="specialist-confirm" disabled onclick="confirmSpecialist()">
+        ✅ تأكيد والبدء
+      </button>
+    </div>
+
+    <div class="bot-quick-actions hidden" id="quickActionsBar">
       <button type="button" onclick="sendQuickAction('مساعدة')" class="quick-action">❓ مساعدة</button>
       <button type="button" onclick="sendQuickAction('إلغاء')" class="quick-action">❌ إلغاء</button>
       <button type="button" onclick="sendQuickAction('جلسة أحمد عمره 5 سنين اشتغلنا على نطق الراء')" class="quick-action">📝 مثال</button>
@@ -693,7 +255,7 @@ a{color:inherit;text-decoration:none}
       <div class="typing-dot"></div>
     </div>
 
-    <div class="bot-input-area">
+    <div class="bot-input-area hidden" id="inputArea">
       <input type="text" id="messageInput" class="bot-input" placeholder="اكتب بيانات الجلسة..." autocomplete="off">
       <button onclick="sendMessage()" class="bot-send-btn" title="إرسال">
         <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24" style="transform:rotate(180deg)"><path d="M1.101 21.757 23.8 12.028 1.101 2.3l.011 7.912 13.623 1.816-13.623 1.817-.011 7.912z"/></svg>
@@ -706,7 +268,6 @@ a{color:inherit;text-decoration:none}
      واجهة النظام (لوحة التحكم)
      ═══════════════════════════════════════════════════════════════ -->
 <div id="systemInterface" class="hidden">
-  <!-- صفحة تسجيل الدخول -->
   <div id="loginPage" class="login-container">
     <div class="login-card">
       <div class="text-center mb-6">
@@ -736,7 +297,6 @@ a{color:inherit;text-decoration:none}
     </div>
   </div>
 
-  <!-- لوحة التحكم -->
   <div id="dashboard" class="hidden dashboard-container">
     <nav class="nav">
       <div class="nav-inner">
@@ -766,7 +326,7 @@ a{color:inherit;text-decoration:none}
           <div class="stat-card gradient-purple"><p class="stat-label">التقارير المكتملة</p><p class="stat-value" id="statCompleted">0</p></div>
           <div class="stat-card" style="background:linear-gradient(to right,#f59e0b,#ea580c)"><p class="stat-label">المسودات</p><p class="stat-value" id="statDrafts">0</p></div>
           <div class="stat-card gradient-green"><p class="stat-label">🤖 من البوت</p><p class="stat-value" id="statBot">0</p></div>
-          <div class="stat-card" style="background:linear-gradient(to right,#3b82f6,#1d4ed8)"><p class="stat-label">الموظفين</p><p class="stat-value" id="statUsers">0</p></div>
+          <div class="stat-card" style="background:linear-gradient(to right,#3b82f6,#1d4ed8)"><p class="stat-label">المختصين</p><p class="stat-value" id="statUsers">0</p></div>
         </div>
         <div class="card p-6">
           <h3 class="text-xl font-bold text-gray-800 mb-4">آخر التقارير</h3>
@@ -779,7 +339,10 @@ a{color:inherit;text-decoration:none}
           <div class="flex justify-between items-center mb-6" style="flex-wrap:wrap;gap:12px">
             <h2 class="text-2xl font-bold text-gray-800">جميع التقارير</h2>
             <div class="flex gap-2" style="flex-wrap:wrap">
-              <input type="text" id="searchReports" placeholder="🔍 بحث..." class="input" style="width:200px">
+              <input type="text" id="searchReports" placeholder="🔍 بحث..." class="input" style="width:180px">
+              <select id="filterSpecialist" class="select" style="width:auto">
+                <option value="">كل المختصين</option>
+              </select>
               <select id="filterSource" class="select" style="width:auto">
                 <option value="">كل المصادر</option>
                 <option value="bot">🤖 من البوت</option>
@@ -837,7 +400,7 @@ a{color:inherit;text-decoration:none}
     <div class="mb-3"><label class="label">رقم الهاتف</label><input type="tel" id="newPhone" class="input"></div>
     <div class="mb-4"><label class="label">الدور</label>
       <select id="newRole" class="select">
-        <option value="employee">موظف</option>
+        <option value="employee">موظف / مختص</option>
         <option value="admin">مدير</option>
         <option value="reviewer">مراجع</option>
       </select>
@@ -848,6 +411,8 @@ a{color:inherit;text-decoration:none}
     </div>
   </div>
 </div>
+
+<div id="toastContainer" class="toast-container"></div>
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -928,8 +493,6 @@ const AIExtractor = {
     const map = { '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4', '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9' };
     return String(text).replace(/[٠-٩]/g, d => map[d]);
   },
-
-  // استخراج اسم العميل
   extractClientName: function(text) {
     const patterns = [
       /(?:جلسة|العميل|الطفل)\s+(?:الطفل\s+)?([^\s،,.،]{2,}(?:\s+[^\s،,.،]{2,})?)/i,
@@ -938,14 +501,10 @@ const AIExtractor = {
     ];
     for (const p of patterns) {
       const m = text.match(p);
-      if (m && m[1] && !/^(جلسة|العميل|الطفل|اسم|عمر|سن)/.test(m[1].trim())) {
-        return m[1].trim();
-      }
+      if (m && m[1] && !/^(جلسة|العميل|الطفل|اسم|عمر|سن)/.test(m[1].trim())) return m[1].trim();
     }
     return null;
   },
-
-  // استخراج العمر
   extractAge: function(text) {
     const n = this.normalizeArabicNumbers(text);
     const patterns = [
@@ -959,12 +518,10 @@ const AIExtractor = {
     }
     return null;
   },
-
-  // استخراج التشخيص
   extractDiagnosis: function(text) {
     const patterns = [
       /(?:تشخيص|حالة|مشكلة|يعاني\s*من|عنده)\s*[:：]?\s*(.+?)(?:\.|،|\n|$)/i,
-      /(?:التشخيص|الحالة)\s*(?:هو|:|:)\s*(.+?)(?:\.|،|\n|$)/i
+      /(?:التشخيص|الحالة)\s*(?:هو|:|：)\s*(.+?)(?:\.|،|\n|$)/i
     ];
     for (const p of patterns) {
       const m = text.match(p);
@@ -972,8 +529,6 @@ const AIExtractor = {
     }
     return null;
   },
-
-  // استخراج ملاحظات الجلسة
   extractSessionNotes: function(text) {
     const patterns = [
       /(?:اشتغلنا|عملنا|ركزنا|كان\s*فيه|كان\s*في|ملاحظات|الجلسة)\s*(?:على|في|عن|:|：)?\s*(.+?)(?:\.|$)/i,
@@ -985,8 +540,6 @@ const AIExtractor = {
     }
     return null;
   },
-
-  // استخراج الخطة العلاجية
   extractTreatmentPlan: function(text) {
     const patterns = [
       /(?:خطة|خطة\s*علاجية|العلاج)\s*(?:هي|:|：)?\s*(.+?)(?:\.|$)/i,
@@ -998,8 +551,6 @@ const AIExtractor = {
     }
     return null;
   },
-
-  // استخراج تقييم التقدم
   extractProgress: function(text) {
     if (/تحسن\s*(?:كبير|جدا|جيد|ملحوظ|واضح)/i.test(text)) return 'جيد جداً';
     if (/ممتاز|رائع|ممتازة/i.test(text)) return 'ممتاز';
@@ -1007,25 +558,18 @@ const AIExtractor = {
     if (/ضعف|مش\s*كويس|سيء|لم\s*يتحسن/i.test(text)) return 'يحتاج تحسين';
     return null;
   },
-
-  // الاستخراج الشامل
   extract: function(text, template) {
     if (!text) return {};
     const extracted = {};
     const normalizedText = this.normalizeArabicNumbers(text);
     const lines = normalizedText.split('\n').map(l => l.trim()).filter(Boolean);
-
     template.fields.forEach(field => {
       let value = '';
-
-      // 1. البحث عن النمط: "اسم الحقل: القيمة"
       try {
         const pattern = new RegExp(escapeRegex(field.label) + '\\s*[:：\\-]?\\s*(.+)', 'i');
         const m = normalizedText.match(pattern);
         if (m) value = m[1].trim();
       } catch(e) {}
-
-      // 2. البحث عن aliases
       if (!value && field.aliases) {
         for (const alias of field.aliases) {
           try {
@@ -1035,22 +579,16 @@ const AIExtractor = {
           } catch(e) {}
         }
       }
-
-      // 3. البحث في الأسطر
       if (!value) {
         for (let i = 0; i < lines.length; i++) {
           if (lines[i].indexOf(field.label) !== -1 || (field.aliases && field.aliases.some(a => lines[i].indexOf(a) !== -1))) {
             if (lines[i].length > field.label.length + 3) {
               value = lines[i].substring(lines[i].indexOf(field.label) + field.label.length).replace(/^[\s:：\-]+/, '').trim();
-            } else if (i + 1 < lines.length) {
-              value = lines[i + 1].trim();
-            }
+            } else if (i + 1 < lines.length) { value = lines[i + 1].trim(); }
             if (value) break;
           }
         }
       }
-
-      // 4. استخراج ذكي حسب نوع الحقل
       if (!value) {
         if (field.label === 'اسم العميل') value = this.extractClientName(normalizedText);
         else if (field.label === 'عمر العميل') value = this.extractAge(normalizedText);
@@ -1059,27 +597,13 @@ const AIExtractor = {
         else if (field.label === 'الخطة العلاجية') value = this.extractTreatmentPlan(normalizedText);
         else if (field.label === 'تقييم التقدم') value = this.extractProgress(normalizedText);
       }
-
       if (field.type === 'number' && value) value = this.normalizeArabicNumbers(value);
       extracted[field.label] = value;
     });
-
     return extracted;
   },
-
   getMissingFields: function(extracted, template) {
     return template.fields.filter(f => f.required && (!extracted[f.label] || String(extracted[f.label]).trim() === ''));
-  },
-
-  // توليد ملخص ذكي
-  generateSummary: function(extracted) {
-    const parts = [];
-    if (extracted['اسم العميل']) parts.push('العميل: ' + extracted['اسم العميل']);
-    if (extracted['عمر العميل']) parts.push('العمر: ' + extracted['عمر العميل']);
-    if (extracted['التشخيص']) parts.push('التشخيص: ' + extracted['التشخيص']);
-    if (extracted['ملاحظات الجلسة']) parts.push('الملاحظات: ' + extracted['ملاحظات الجلسة']);
-    if (extracted['تقييم التقدم']) parts.push('التقييم: ' + extracted['تقييم التقدم']);
-    return parts.join(' | ');
   }
 };
 
@@ -1094,7 +618,7 @@ function escapeHtml(str) {
    ═══════════════════════════════════════════════════════════════ */
 let currentUser = null;
 let currentTemplate = DEFAULT_TEMPLATE;
-let botSession = { state: 'idle', extractedData: {}, currentQuestion: null };
+let botSession = { state: 'idle', extractedData: {}, currentQuestion: null, specialistName: null };
 let allReports = [];
 let allUsers = [];
 
@@ -1119,9 +643,14 @@ async function initializeData() {
         id: 2, username: 'employee1', passwordHash: hashPassword('123456'),
         fullName: 'د. سارة أحمد', phone: '+20111111111', role: 'employee', active: true
       });
+      await db.collection(USERS_COL).doc('employee2').set({
+        id: 3, username: 'employee2', passwordHash: hashPassword('123456'),
+        fullName: 'د. محمد علي', phone: '+20122222222', role: 'employee', active: true
+      });
       allUsers = [
         { id: 1, username: 'admin', passwordHash: hashPassword('123456'), fullName: 'المدير العام', role: 'admin', active: true },
-        { id: 2, username: 'employee1', passwordHash: hashPassword('123456'), fullName: 'د. سارة أحمد', role: 'employee', active: true }
+        { id: 2, username: 'employee1', passwordHash: hashPassword('123456'), fullName: 'د. سارة أحمد', role: 'employee', active: true },
+        { id: 3, username: 'employee2', passwordHash: hashPassword('123456'), fullName: 'د. محمد علي', role: 'employee', active: true }
       ];
     } else {
       allUsers = usersSnap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -1176,15 +705,68 @@ function showToast(message, type) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   🤖 واجهة البوت العصرية
+   🤖 واجهة البوت - مع اختيار المختص
    ═══════════════════════════════════════════════════════════════ */
-function initBot() {
-  botSession = { state: 'idle', extractedData: {}, currentQuestion: null };
+async function initBot() {
+  botSession = { state: 'idle', extractedData: {}, currentQuestion: null, specialistName: null };
   document.getElementById('chatContainer').innerHTML = '';
+  document.getElementById('quickActionsBar').classList.add('hidden');
+  document.getElementById('inputArea').classList.add('hidden');
   
-  // رسالة ترحيبية أنيقة
+  // تحميل قائمة المختصين
+  await loadSpecialists();
+  
+  // إظهار شاشة اختيار المختص
+  document.getElementById('specialistSelector').classList.remove('hidden');
+}
+
+async function loadSpecialists() {
+  const select = document.getElementById('specialistSelect');
+  select.innerHTML = '<option value="">-- اختر المختص --</option>';
+  
+  // تحميل من Firebase
+  try {
+    const usersSnap = await db.collection(USERS_COL).where('active', '==', true).get();
+    const specialists = usersSnap.docs.map(d => d.data());
+    
+    specialists.forEach(user => {
+      const option = document.createElement('option');
+      option.value = user.fullName;
+      option.textContent = user.fullName + (user.role === 'admin' ? ' 👑' : ' 👤');
+      select.appendChild(option);
+    });
+  } catch(e) {
+    console.error('Error loading specialists:', e);
+    // Fallback
+    const fallback = ['د. سارة أحمد', 'د. محمد علي', 'المدير العام'];
+    fallback.forEach(name => {
+      const option = document.createElement('option');
+      option.value = name;
+      option.textContent = name;
+      select.appendChild(option);
+    });
+  }
+  
+  select.onchange = function() {
+    document.getElementById('confirmSpecialistBtn').disabled = !this.value;
+  };
+}
+
+function confirmSpecialist() {
+  const name = document.getElementById('specialistSelect').value;
+  if (!name) {
+    showToast('❌ يرجى اختيار المختص', 'error');
+    return;
+  }
+  
+  botSession.specialistName = name;
+  document.getElementById('specialistSelector').classList.add('hidden');
+  document.getElementById('quickActionsBar').classList.remove('hidden');
+  document.getElementById('inputArea').classList.remove('hidden');
+  
+  // رسالة ترحيب
   setTimeout(() => {
-    addBotBubble('bot', 'أهلاً بك! 👋\nأنا المساعد الذكي لمركز التخاطب.\n\nاكتب بيانات جلسة العميل بأي صيغة، وسأساعدك في تنظيمها وتحويلها لتقرير موحد.');
+    addBotBubble('bot', 'أهلاً بك <b>' + escapeHtml(name) + '</b>! 👋\n\nأنا المساعد الذكي لمركز التخاطب.\nاكتب بيانات جلسة العميل بأي صيغة، وسأساعدك في تنظيمها.');
   }, 300);
   
   setTimeout(() => {
@@ -1200,13 +782,11 @@ function addBotBubble(type, content, isHTML) {
   const chat = document.getElementById('chatContainer');
   const bubble = document.createElement('div');
   bubble.className = 'bot-message ' + type;
-  
   if (isHTML) {
     bubble.innerHTML = content + '<span class="msg-time">' + getTime() + '</span>';
   } else {
     bubble.innerHTML = escapeHtml(content).replace(/\n/g, '<br>') + '<span class="msg-time">' + getTime() + '</span>';
   }
-  
   chat.appendChild(bubble);
   chat.scrollTop = chat.scrollHeight;
 }
@@ -1223,15 +803,10 @@ function sendMessage() {
   const input = document.getElementById('messageInput');
   const text = input.value.trim();
   if (!text) return;
-  
   addBotBubble('user', text);
   input.value = '';
-  
   showTyping(true);
-  setTimeout(() => {
-    processBotInput(text);
-    showTyping(false);
-  }, 800);
+  setTimeout(() => { processBotInput(text); showTyping(false); }, 800);
 }
 
 function sendQuickAction(text) {
@@ -1244,42 +819,28 @@ function showBotHelp() {
 }
 
 function processBotInput(text) {
-  // أوامر خاصة
   if (/^(إلغاء|الغاء)$/i.test(text.trim())) {
-    botSession = { state: 'idle', extractedData: {}, currentQuestion: null };
-    addBotBubble('bot', '✅ تم إلغاء التقرير الحالي.\nيمكنك بدء تقرير جديد في أي وقت.');
+    botSession = { state: 'idle', extractedData: {}, currentQuestion: null, specialistName: botSession.specialistName };
+    addBotBubble('bot', '✅ تم إلغاء التقرير الحالي.');
     return;
   }
-  
-  if (/^مساعدة$/i.test(text.trim())) {
-    showBotHelp();
-    return;
-  }
+  if (/^مساعدة$/i.test(text.trim())) { showBotHelp(); return; }
 
-  // إذا كان في حالة جمع بيانات
   if (botSession.state === 'collecting' && botSession.currentQuestion) {
     const fieldLabel = botSession.currentQuestion;
     let value = text.trim();
-    
-    if (fieldLabel === 'عمر العميل') {
-      const age = text.match(/(\d+)/);
-      if (age) value = age[1] + ' سنة';
-    }
-
+    if (fieldLabel === 'عمر العميل') { const age = text.match(/(\d+)/); if (age) value = age[1] + ' سنة'; }
     botSession.extractedData[fieldLabel] = value;
     botSession.currentQuestion = null;
-    addBotBubble('bot', '✅ تم تسجيل: <b>' + fieldLabel + '</b> = ' + value);
-
+    addBotBubble('bot', '✅ تم: <b>' + fieldLabel + '</b> = ' + value);
     const missing = AIExtractor.getMissingFields(botSession.extractedData, currentTemplate);
     if (missing.length === 0) setTimeout(() => showDraftPreview(), 500);
     else setTimeout(() => askNextMissing(missing), 500);
     return;
   }
 
-  // استخراج ذكي من النص
   const extracted = AIExtractor.extract(text, currentTemplate);
   Object.keys(extracted).forEach(k => { if (extracted[k]) botSession.extractedData[k] = extracted[k]; });
-
   const extractedCount = Object.values(extracted).filter(v => v).length;
   
   if (extractedCount > 0) {
@@ -1287,12 +848,11 @@ function processBotInput(text) {
     let msg = '🤖 <b>فهمت منك:</b>\n\n';
     Object.entries(extracted).forEach(([k,v]) => { if (v) msg += '✓ <b>' + k + ':</b> ' + v + '\n'; });
     addBotBubble('bot', msg);
-
     const missing = AIExtractor.getMissingFields(botSession.extractedData, currentTemplate);
     if (missing.length === 0) setTimeout(() => showDraftPreview(), 800);
     else setTimeout(() => askNextMissing(missing), 800);
   } else {
-    addBotBubble('bot', '🤔 لم أتمكن من استخراج بيانات واضحة.\n\n💡 جرب كتابة:\n"جلسة أحمد عمره 5 سنين، اشتغلنا على نطق الراء"');
+    addBotBubble('bot', '🤔 لم أفهم. اكتب مثلاً: "جلسة أحمد عمره 5 سنين"');
   }
 }
 
@@ -1307,8 +867,13 @@ function askNextMissing(missing) {
 function showDraftPreview() {
   botSession.state = 'reviewing';
   const reportNum = 'R-' + Date.now().toString(36).toUpperCase();
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('ar-EG') + ' ' + now.toLocaleTimeString('ar-EG', {hour:'2-digit',minute:'2-digit'});
 
   let html = '<b>📋 مسودة التقرير #' + reportNum + '</b><br><br>';
+  html += '<div class="extracted-item"><span class="extracted-label">👤 المختص:</span><span class="extracted-value">' + escapeHtml(botSession.specialistName || 'غير محدد') + '</span></div>';
+  html += '<div class="extracted-item"><span class="extracted-label">📅 تاريخ الإرسال:</span><span class="extracted-value">' + dateStr + '</span></div>';
+  
   currentTemplate.fields.forEach(f => {
     const val = botSession.extractedData[f.label];
     const displayVal = val ? escapeHtml(val) : '<span style="color:#999">-</span>';
@@ -1324,7 +889,7 @@ function showDraftPreview() {
 }
 
 function cancelDraft() {
-  botSession = { state: 'idle', extractedData: {}, currentQuestion: null };
+  botSession = { state: 'idle', extractedData: {}, currentQuestion: null, specialistName: botSession.specialistName };
   addBotBubble('bot', '❌ تم إلغاء المسودة.');
 }
 
@@ -1332,14 +897,18 @@ async function confirmAndSend(reportNum) {
   addBotBubble('bot', '⏳ جاري الحفظ في السحابة...');
   
   const originalContent = botSession.extractedData['ملاحظات الجلسة'] || Object.values(botSession.extractedData).filter(v => v).join(' - ');
+  const now = new Date();
   
+  // ✅ التقرير مع اسم المختص الحقيقي والتاريخ الأوتوماتيك
   const report = {
     reportNumber: reportNum,
     clientName: botSession.extractedData['اسم العميل'] || 'غير محدد',
     clientAge: botSession.extractedData['عمر العميل'] || '',
     formattedData: botSession.extractedData,
-    employeeName: 'مختص (من البوت)',
-    date: new Date().toISOString(),
+    employeeName: botSession.specialistName || 'مختص', // ✅ اسم المختص الحقيقي
+    employeeUsername: currentUser ? currentUser.username : 'bot',
+    date: now.toISOString(), // ✅ التاريخ الأوتوماتيك
+    sentAt: now.toISOString(), // ✅ وقت الإرسال
     status: 'approved',
     source: 'bot',
     originalContent: originalContent,
@@ -1350,8 +919,9 @@ async function confirmAndSend(reportNum) {
     const existing = await db.collection(REPORTS_COL).where('reportNumber', '==', reportNum).get();
     if (!existing.empty) { addBotBubble('bot', '⚠️ التقرير موجود بالفعل!'); return; }
     await db.collection(REPORTS_COL).add(report);
-    addBotBubble('bot', '✅ <b>تم الحفظ بنجاح في السحابة!</b>\n\n📌 رقم التقرير: <b>' + reportNum + '</b>\n👑 المدير هيشوفه فوراً في لوحة التحكم\n\n🌟 شكراً لك!');
-    botSession = { state: 'idle', extractedData: {}, currentQuestion: null };
+    
+    addBotBubble('bot', '✅ <b>تم الحفظ بنجاح!</b>\n\n📌 رقم التقرير: <b>' + reportNum + '</b>\n👤 المختص: <b>' + escapeHtml(botSession.specialistName) + '</b>\n📅 التاريخ: <b>' + now.toLocaleDateString('ar-EG') + ' ' + now.toLocaleTimeString('ar-EG', {hour:'2-digit',minute:'2-digit'}) + '</b>\n\n👑 المدير هيشوف التقرير فوراً في لوحة التحكم\n\n🌟 شكراً لك!');
+    botSession = { state: 'idle', extractedData: {}, currentQuestion: null, specialistName: botSession.specialistName };
   } catch (error) {
     console.error('Save error:', error);
     addBotBubble('bot', '❌ فشل الحفظ: ' + error.message);
@@ -1368,15 +938,12 @@ async function handleLogin() {
   const password = document.getElementById('password').value || '';
   const errorEl = document.getElementById('loginError');
   errorEl.classList.add('hidden');
-  
   if (!username || !password) { errorEl.textContent = '❌ يرجى ملء جميع الحقول'; errorEl.classList.remove('hidden'); return; }
   if (!firebaseConnected) { errorEl.textContent = '❌ لا يوجد اتصال بـ Firebase'; errorEl.classList.remove('hidden'); return; }
-  
   try {
     const usersSnap = await db.collection(USERS_COL).get();
     allUsers = usersSnap.docs.map(d => ({ id: d.id, ...d.data() }));
     const user = allUsers.find(u => u.username === username && u.active && u.passwordHash === hashPassword(password));
-    
     if (user) {
       currentUser = user;
       document.getElementById('loginPage').classList.add('hidden');
@@ -1440,15 +1007,26 @@ function loadOverview() {
   const container = document.getElementById('recentActivities');
   const recent = allReports.slice(-8).reverse();
   if (recent.length === 0) { container.innerHTML = '<p class="text-gray-500 text-center py-4">لا توجد تقارير بعد</p>'; return; }
-  container.innerHTML = recent.map(r => '<div class="bg-gray-50 p-3 rounded-lg mb-2"><p class="text-sm text-gray-800"><b>' + escapeHtml(r.employeeName || 'مجهول') + '</b>: تقرير #' + escapeHtml(r.reportNumber || '') + ' - ' + escapeHtml(r.clientName || '') + '</p><p class="text-xs text-gray-500">' + (r.date ? new Date(r.date).toLocaleString('ar-EG') : '') + '</p></div>').join('');
+  container.innerHTML = recent.map(r => 
+    '<div class="bg-gray-50 p-3 rounded-lg mb-2">' +
+    '<p class="text-sm text-gray-800"><b>👤 ' + escapeHtml(r.employeeName || 'مجهول') + '</b>: تقرير #' + escapeHtml(r.reportNumber || '') + ' - ' + escapeHtml(r.clientName || '') + '</p>' +
+    '<p class="text-xs text-gray-500">📅 ' + (r.date ? new Date(r.date).toLocaleString('ar-EG') : '') + '</p>' +
+    '</div>'
+  ).join('');
 }
 
 function loadAllReports() {
   const container = document.getElementById('allReportsList');
   const search = (document.getElementById('searchReports').value || '').toLowerCase();
   const sourceFilter = document.getElementById('filterSource').value;
+  const specialistFilter = document.getElementById('filterSpecialist').value;
+  
+  // تحديث قائمة المختصين في الفلتر
+  updateSpecialistFilter();
+  
   const filtered = allReports.filter(r => {
     if (sourceFilter && r.source !== sourceFilter) return false;
+    if (specialistFilter && r.employeeName !== specialistFilter) return false;
     if (search) { const hay = ((r.clientName || '') + ' ' + (r.employeeName || '') + ' ' + (r.reportNumber || '')).toLowerCase(); if (hay.indexOf(search) === -1) return false; }
     return true;
   });
@@ -1459,9 +1037,35 @@ function loadAllReports() {
     const statusBadge = { draft: 'badge-draft', pending: 'badge-pending', approved: 'badge-approved' };
     const statusName = { draft: 'مسودة', pending: 'بانتظار', approved: 'معتمد' };
     const sourceTag = report.source === 'bot' ? '<span class="badge badge-bot" style="font-size:10px;margin-right:5px">🤖 بوت</span>' : '<span class="badge badge-draft" style="font-size:10px;margin-right:5px">💻 محلي</span>';
-    return '<div class="bg-gray-50 rounded-lg p-4 report-card mb-3"><div class="flex justify-between items-start" style="flex-wrap:wrap;gap:8px"><div style="flex:1;min-width:200px"><h3 class="font-semibold text-gray-800">' + escapeHtml(report.clientName || 'عميل') + ' <span class="text-xs text-gray-500">#' + escapeHtml(report.reportNumber || report.id) + '</span> ' + sourceTag + '</h3><p class="text-sm text-gray-600">بواسطة: ' + escapeHtml(report.employeeName) + ' • ' + (report.date ? new Date(report.date).toLocaleDateString('ar-EG') : '') + '</p><span class="badge ' + (statusBadge[report.status] || '') + '">' + (statusName[report.status] || report.status) + '</span></div><button type="button" onclick="viewReport(\'' + report.id + '\')" class="btn btn-primary btn-sm">عرض</button></div></div>';
+    return '<div class="bg-gray-50 rounded-lg p-4 report-card mb-3">' +
+      '<div class="flex justify-between items-start" style="flex-wrap:wrap;gap:8px">' +
+        '<div style="flex:1;min-width:200px">' +
+          '<h3 class="font-semibold text-gray-800">' + escapeHtml(report.clientName || 'عميل') + ' <span class="text-xs text-gray-500">#' + escapeHtml(report.reportNumber || report.id) + '</span> ' + sourceTag + '</h3>' +
+          '<p class="text-sm text-gray-600">👤 <b>' + escapeHtml(report.employeeName || 'مجهول') + '</b> • 📅 ' + (report.date ? new Date(report.date).toLocaleString('ar-EG') : '') + '</p>' +
+          '<span class="badge ' + (statusBadge[report.status] || '') + '">' + (statusName[report.status] || report.status) + '</span>' +
+        '</div>' +
+        '<button type="button" onclick="viewReport(\'' + report.id + '\')" class="btn btn-primary btn-sm">عرض</button>' +
+      '</div></div>';
   }).join('');
 }
+
+function updateSpecialistFilter() {
+  const select = document.getElementById('filterSpecialist');
+  const currentValue = select.value;
+  const specialists = [...new Set(allReports.map(r => r.employeeName).filter(Boolean))];
+  select.innerHTML = '<option value="">كل المختصين</option>';
+  specialists.forEach(name => {
+    const option = document.createElement('option');
+    option.value = name;
+    option.textContent = name;
+    if (name === currentValue) option.selected = true;
+    select.appendChild(option);
+  });
+}
+
+document.getElementById('filterSpecialist').addEventListener('change', loadAllReports);
+document.getElementById('filterSource').addEventListener('change', loadAllReports);
+document.getElementById('searchReports').addEventListener('input', loadAllReports);
 
 function viewReport(reportId) {
   const report = allReports.find(r => r.id === reportId);
@@ -1472,20 +1076,28 @@ function viewReport(reportId) {
   let content = '<div class="mb-4 bg-gray-50 p-4 rounded-lg"><h4 class="font-semibold mb-2">ℹ️ معلومات أساسية</h4>' +
     '<p class="text-sm text-gray-700">رقم التقرير: <b>#' + escapeHtml(report.reportNumber || report.id) + '</b></p>' +
     '<p class="text-sm text-gray-700">العميل: <b>' + escapeHtml(report.clientName || '-') + '</b></p>' +
-    '<p class="text-sm text-gray-700">الموظف: <b>' + escapeHtml(report.employeeName) + '</b></p>' +
-    '<p class="text-sm text-gray-700">التاريخ: <b>' + (report.date ? new Date(report.date).toLocaleString('ar-EG') : '') + '</b></p>' +
+    '<p class="text-sm text-gray-700">👤 <b>المختص:</b> ' + escapeHtml(report.employeeName || 'مجهول') + '</p>' +
+    '<p class="text-sm text-gray-700">📅 <b>تاريخ الإرسال:</b> ' + (report.date ? new Date(report.date).toLocaleString('ar-EG') : '-') + '</p>' +
     '<p class="text-sm text-gray-700">الحالة: <b>' + (statusName[report.status] || report.status) + '</b></p>' +
     '<p class="text-sm text-gray-700">المصدر: <b>' + sourceLabel + '</b></p></div>';
 
   if (report.formattedData && Object.keys(report.formattedData).length > 0) {
-    content += '<div class="mb-4 bg-purple-50 p-4 rounded-lg"><h4 class="font-semibold mb-2 text-purple-700">✨ التقرير الموحد (بعد الذكاء الاصطناعي)</h4>';
-    Object.keys(report.formattedData).forEach(key => { content += '<p class="text-sm mb-1"><b>' + escapeHtml(key) + ':</b> ' + escapeHtml(report.formattedData[key] || '-') + '</p>'; });
+    content += '<div class="mb-4 bg-purple-50 p-4 rounded-lg" style="border-right:4px solid #9333ea"><h4 class="font-semibold mb-3 text-purple-700">✨ التقرير الموحد (بعد الذكاء الاصطناعي)</h4>';
+    Object.keys(report.formattedData).forEach(key => { 
+      content += '<div class="report-detail-row"><span class="report-detail-label">' + escapeHtml(key) + ':</span><span class="report-detail-value">' + escapeHtml(report.formattedData[key] || '-') + '</span></div>'; 
+    });
     content += '</div>';
   }
 
-  if (report.originalContent) { content += '<div class="mb-4 bg-gray-50 p-4 rounded-lg"><h4 class="font-semibold mb-2">📝 النص الأصلي</h4><p class="text-sm whitespace-pre">' + escapeHtml(report.originalContent) + '</p></div>'; }
-  
-  const actions = '<div class="flex gap-2" style="flex-wrap:wrap"><button type="button" onclick="deleteReport(\'' + report.id + '\')" class="btn btn-danger flex-1">🗑️ حذف</button></div>';
+  if (report.originalContent) {
+    content += '<div class="mb-4 bg-gray-50 p-4 rounded-lg"><h4 class="font-semibold mb-2">📝 النص الأصلي (كما كتبه المختص)</h4>' +
+      '<p class="text-sm whitespace-pre">' + escapeHtml(report.originalContent) + '</p></div>';
+  }
+
+  const actions = '<div class="flex gap-2" style="flex-wrap:wrap">' +
+    '<button type="button" onclick="deleteReport(\'' + report.id + '\')" class="btn btn-danger flex-1">🗑️ حذف</button>' +
+    '</div>';
+
   document.getElementById('drawerContent').innerHTML = content + actions;
   document.getElementById('reportDrawer').classList.add('active');
 }
