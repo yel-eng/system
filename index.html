@@ -62,7 +62,7 @@ a{color:inherit;text-decoration:none}
 .report-card{border-right:4px solid #667eea}
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px)}
 .modal.active{display:flex}
-.modal-content{background:#fff;padding:24px;border-radius:16px;max-width:600px;width:100%;max-height:85vh;overflow-y:auto;animation:modalIn .3s ease}
+.modal-content{background:#fff;padding:24px;border-radius:16px;max-width:700px;width:100%;max-height:90vh;overflow-y:auto;animation:modalIn .3s ease}
 @keyframes modalIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
 .toast-container{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;width:90%;max-width:400px}
 .toast{padding:12px 20px;border-radius:8px;color:#fff;font-weight:600;animation:toastIn .3s ease;pointer-events:auto;box-shadow:0 4px 12px rgba(0,0,0,.15)}
@@ -162,6 +162,32 @@ a{color:inherit;text-decoration:none}
 .report-detail-row:last-child{border-bottom:none}
 .report-detail-label{font-weight:600;color:#6d28d9}
 .report-detail-value{color:#374151;text-align:left}
+
+/* 📊 أنماط التقارير المجمعة */
+.report-generator-card{background:linear-gradient(135deg,#f3e8ff 0%,#e0e7ff 100%);border:2px solid #a855f7;border-radius:16px;padding:20px;margin-bottom:20px}
+.report-type-btn{padding:16px;border-radius:12px;background:#fff;border:2px solid #e5e7eb;cursor:pointer;transition:all .2s;text-align:center;flex:1;min-width:140px}
+.report-type-btn:hover{border-color:#9333ea;transform:translateY(-2px)}
+.report-type-btn.active{border-color:#9333ea;background:#f3e8ff}
+.report-type-icon{font-size:32px;margin-bottom:8px}
+.report-type-title{font-weight:700;color:#1f2937;font-size:14px}
+.report-type-desc{font-size:12px;color:#6b7280;margin-top:4px}
+.report-preview{background:#f9fafb;border-radius:12px;padding:20px;margin-top:16px;max-height:500px;overflow-y:auto}
+.report-section{background:#fff;border-radius:8px;padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.report-section-title{font-weight:700;color:#6d28d9;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #e5e7eb}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:16px}
+.stat-box{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:16px;border-radius:12px;text-align:center}
+.stat-box-value{font-size:24px;font-weight:700}
+.stat-box-label{font-size:12px;opacity:.9;margin-top:4px}
+.session-item{background:#f9fafb;border-radius:8px;padding:12px;margin-bottom:8px;border-right:4px solid #667eea}
+.session-date{font-size:12px;color:#6b7280;margin-bottom:4px}
+.session-notes{font-size:14px;color:#1f2937}
+.progress-bar{height:8px;background:#e5e7eb;border-radius:4px;overflow:hidden;margin-top:8px}
+.progress-fill{height:100%;background:linear-gradient(to right,#10b981,#059669);border-radius:4px;transition:width .5s ease}
+.export-btn{padding:10px 20px;border-radius:8px;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.export-btn.pdf{background:#ef4444;color:#fff}
+.export-btn.excel{background:#10b981;color:#fff}
+.export-btn.print{background:#3b82f6;color:#fff}
+.export-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.15)}
 </style>
 </head>
 <body>
@@ -187,8 +213,7 @@ a{color:inherit;text-decoration:none}
       <ul class="text-sm text-blue-700 list-disc pr-5" style="line-height:1.8">
         <li>البيانات محفوظة في Firebase Cloud</li>
         <li>الذكاء الاصطناعي يحول البيانات تلقائياً</li>
-        <li>اسم المختص والتاريخ يُسجلان أوتوماتيك</li>
-        <li>تحديث فوري بين البوت والنظام</li>
+        <li>تقارير مجمعة ذكية للمدير</li>
       </ul>
     </div>
   </div>
@@ -286,9 +311,11 @@ a{color:inherit;text-decoration:none}
       <div class="flex flex-wrap gap-2 mb-6 bg-white p-2 rounded-lg shadow" id="tabsBar">
         <button type="button" data-tab="overview" class="tab-btn active">📊 نظرة عامة</button>
         <button type="button" data-tab="reports" class="tab-btn">📄 التقارير</button>
+        <button type="button" data-tab="generator" class="tab-btn">📈 توليد تقارير</button>
         <button type="button" data-tab="users" class="tab-btn">👥 الحسابات</button>
         <button type="button" data-tab="template" class="tab-btn">📋 النموذج</button>
       </div>
+
       <div id="tab-overview" class="tab-panel">
         <div class="grid grid-4 gap-4 mb-6">
           <div class="stat-card gradient-purple"><p class="stat-label">التقارير المكتملة</p><p class="stat-value" id="statCompleted">0</p></div>
@@ -301,6 +328,7 @@ a{color:inherit;text-decoration:none}
           <div id="recentActivities"></div>
         </div>
       </div>
+
       <div id="tab-reports" class="tab-panel hidden">
         <div class="card p-6">
           <div class="flex justify-between items-center mb-6" style="flex-wrap:wrap;gap:12px">
@@ -318,6 +346,118 @@ a{color:inherit;text-decoration:none}
           <div id="allReportsList"></div>
         </div>
       </div>
+
+      <!-- ✅ تبويب توليد التقارير المجمعة -->
+      <div id="tab-generator" class="tab-panel hidden">
+        <div class="card p-6">
+          <h2 class="text-2xl font-bold text-gray-800 mb-4">📈 توليد تقارير مجمعة ذكية</h2>
+          <p class="text-gray-600 mb-6">اختر نوع التقرير المراد توليده، وسيقوم الذكاء الاصطناعي بتجميع البيانات تلقائياً</p>
+          
+          <div class="report-generator-card">
+            <h3 class="font-bold text-gray-800 mb-4">🎯 اختر نوع التقرير</h3>
+            <div class="flex gap-3" style="flex-wrap:wrap">
+              <div class="report-type-btn" onclick="selectReportType('client')" id="rt-client">
+                <div class="report-type-icon">👤</div>
+                <div class="report-type-title">تقرير عميل شامل</div>
+                <div class="report-type-desc">كل جلسات العميل وتطوره</div>
+              </div>
+              <div class="report-type-btn" onclick="selectReportType('monthly')" id="rt-monthly">
+                <div class="report-type-icon">📅</div>
+                <div class="report-type-title">تقرير شهري</div>
+                <div class="report-type-desc">ملخص شهر كامل للمركز</div>
+              </div>
+              <div class="report-type-btn" onclick="selectReportType('specialist')" id="rt-specialist">
+                <div class="report-type-icon">👨‍⚕️</div>
+                <div class="report-type-title">تقرير مختص</div>
+                <div class="report-type-desc">أداء مختص معين</div>
+              </div>
+              <div class="report-type-btn" onclick="selectReportType('custom')" id="rt-custom">
+                <div class="report-type-icon">⚙️</div>
+                <div class="report-type-title">تقرير مخصص</div>
+                <div class="report-type-desc">فلترة حسب معاييرك</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- خيارات التقرير -->
+          <div id="reportOptions" class="card p-6 mb-6 hidden">
+            <h3 class="font-bold text-gray-800 mb-4">⚙️ خيارات التقرير</h3>
+            <div id="clientOptions" class="hidden">
+              <div class="mb-4">
+                <label class="label">اختر العميل</label>
+                <select id="clientSelect" class="select"><option value="">-- اختر العميل --</option></select>
+              </div>
+            </div>
+            <div id="monthlyOptions" class="hidden">
+              <div class="grid grid-2 gap-4">
+                <div>
+                  <label class="label">الشهر</label>
+                  <select id="monthSelect" class="select">
+                    <option value="0">يناير</option><option value="1">فبراير</option><option value="2">مارس</option>
+                    <option value="3">أبريل</option><option value="4">مايو</option><option value="5">يونيو</option>
+                    <option value="6">يوليو</option><option value="7">أغسطس</option><option value="8">سبتمبر</option>
+                    <option value="9">أكتوبر</option><option value="10">نوفمبر</option><option value="11">ديسمبر</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="label">السنة</label>
+                  <select id="yearSelect" class="select"></select>
+                </div>
+              </div>
+            </div>
+            <div id="specialistOptions" class="hidden">
+              <div class="mb-4">
+                <label class="label">اختر المختص</label>
+                <select id="specialistReportSelect" class="select"><option value="">-- اختر المختص --</option></select>
+              </div>
+            </div>
+            <div id="customOptions" class="hidden">
+              <div class="grid grid-2 gap-4">
+                <div>
+                  <label class="label">من تاريخ</label>
+                  <input type="date" id="dateFrom" class="input">
+                </div>
+                <div>
+                  <label class="label">إلى تاريخ</label>
+                  <input type="date" id="dateTo" class="input">
+                </div>
+              </div>
+              <div class="grid grid-2 gap-4 mt-4">
+                <div>
+                  <label class="label">المختص (اختياري)</label>
+                  <select id="customSpecialist" class="select"><option value="">الكل</option></select>
+                </div>
+                <div>
+                  <label class="label">الحالة</label>
+                  <select id="customStatus" class="select">
+                    <option value="">الكل</option>
+                    <option value="approved">معتمد</option>
+                    <option value="draft">مسودة</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="flex gap-3 mt-6" style="flex-wrap:wrap">
+              <button type="button" onclick="generateReport()" class="btn btn-primary btn-lg">📊 توليد التقرير</button>
+              <button type="button" onclick="clearReportOptions()" class="btn btn-secondary">🔄 إعادة تعيين</button>
+            </div>
+          </div>
+
+          <!-- معاينة التقرير -->
+          <div id="reportPreview" class="hidden">
+            <div class="flex justify-between items-center mb-4" style="flex-wrap:wrap;gap:12px">
+              <h3 class="text-xl font-bold text-gray-800">📄 معاينة التقرير</h3>
+              <div class="flex gap-2" style="flex-wrap:wrap">
+                <button type="button" onclick="exportReportPDF()" class="export-btn pdf">📄 تصدير PDF</button>
+                <button type="button" onclick="exportReportExcel()" class="export-btn excel">📊 تصدير Excel</button>
+                <button type="button" onclick="window.print()" class="export-btn print">🖨️ طباعة</button>
+              </div>
+            </div>
+            <div id="reportContent" class="report-preview"></div>
+          </div>
+        </div>
+      </div>
+
       <div id="tab-users" class="tab-panel hidden">
         <div class="card p-6">
           <div class="flex justify-between items-center mb-6" style="flex-wrap:wrap;gap:12px">
@@ -327,10 +467,10 @@ a{color:inherit;text-decoration:none}
           <div id="usersList"></div>
         </div>
       </div>
+
       <div id="tab-template" class="tab-panel hidden">
         <div class="card p-6">
           <h2 class="text-2xl font-bold text-gray-800 mb-4">نموذج التقرير الموحد</h2>
-          <p class="text-gray-600 mb-4 text-sm">الذكاء الاصطناعي سيحول كل التقارير لهذا النموذج تلقائياً</p>
           <div id="templateForm"></div>
           <div class="mt-6 flex gap-3" style="flex-wrap:wrap">
             <button type="button" onclick="addField()" class="btn btn-success">+ إضافة حقل</button>
@@ -379,9 +519,6 @@ a{color:inherit;text-decoration:none}
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
-/* ═══════════════════════════════════════════════════════════════
-   ⚙️ إعدادات Firebase
-   ═══════════════════════════════════════════════════════════════ */
 const firebaseConfig = {
   apiKey: "AIzaSyCVSkBviGIDznGBSSiRAcXn6iSN8nOQkSw",
   authDomain: "takhatab-center.firebaseapp.com",
@@ -393,67 +530,15 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-
 const USERS_COL = 'users';
 const REPORTS_COL = 'reports';
 const TEMPLATE_COL = 'template';
-const SESSION_KEY = 'tkhb_session'; // ✅ مفتاح حفظ الجلسة
+const SESSION_KEY = 'tkhb_session';
 
-/* ═══════════════════════════════════════════════════════════════
-   ✅ نظام حفظ واستعادة الجلسة (حل مشكلة Refresh)
-   ═══════════════════════════════════════════════════════════════ */
-function saveSession(user, mode) {
-  try {
-    const session = {
-      userId: user.id,
-      username: user.username,
-      fullName: user.fullName,
-      role: user.role,
-      mode: mode, // 'bot' أو 'system'
-      specialistName: botSession.specialistName || null,
-      loginTime: new Date().toISOString()
-    };
-    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-    console.log('✅ تم حفظ الجلسة:', session);
-  } catch(e) {
-    console.error('خطأ في حفظ الجلسة:', e);
-  }
-}
-
-function restoreSession() {
-  try {
-    const sessionStr = localStorage.getItem(SESSION_KEY);
-    if (!sessionStr) return null;
-    const session = JSON.parse(sessionStr);
-    
-    // التحقق من صلاحية الجلسة (24 ساعة)
-    const loginTime = new Date(session.loginTime);
-    const now = new Date();
-    const hoursDiff = (now - loginTime) / (1000 * 60 * 60);
-    if (hoursDiff > 24) {
-      localStorage.removeItem(SESSION_KEY);
-      return null;
-    }
-    
-    return session;
-  } catch(e) {
-    console.error('خطأ في استعادة الجلسة:', e);
-    return null;
-  }
-}
-
-function clearSession() {
-  localStorage.removeItem(SESSION_KEY);
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   التحقق من الاتصال
-   ═══════════════════════════════════════════════════════════════ */
 let firebaseConnected = false;
 db.collection(USERS_COL).limit(1).get().then(() => {
   firebaseConnected = true;
   updateCloudStatus('ok', 'متصل بالسحابة ✓');
-  console.log('✅ Firebase متصل بنجاح');
 }).catch(err => {
   console.error('Firebase error:', err);
   updateCloudStatus('error', 'خطأ: ' + err.message);
@@ -467,9 +552,6 @@ function updateCloudStatus(status, text) {
   if (navEl) { navEl.className = 'sync-status ' + classes[status]; navEl.textContent = '☁️ ' + text; }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   البيانات الافتراضية
-   ═══════════════════════════════════════════════════════════════ */
 function hashPassword(pwd) {
   const str = 'tkhb_salt_v1::' + (pwd || '');
   let hash = 0;
@@ -486,16 +568,13 @@ const DEFAULT_TEMPLATE = {
   fields: [
     { id: 1, label: 'اسم العميل', type: 'text', required: true, botQuestion: 'ما هو اسم العميل؟', aliases: ['العميل','الطفل','اسم'] },
     { id: 2, label: 'عمر العميل', type: 'number', required: false, botQuestion: 'ما هو عمر العميل؟', aliases: ['عمر','سن','السن'] },
-    { id: 3, label: 'التشخيص', type: 'text', required: false, botQuestion: 'ما هو التشخيص المسجل من المختص؟', aliases: ['تشخيص','حالة','مشكلة'] },
-    { id: 4, label: 'ملاحظات الجلسة', type: 'textarea', required: true, botQuestion: 'اكتب ملاحظات الجلسة', aliases: ['ملاحظات','جلسة','اشتغلنا','عملنا','ركزنا'] },
-    { id: 5, label: 'الخطة العلاجية', type: 'textarea', required: false, botQuestion: 'ما هي الخطة العلاجية؟', aliases: ['خطة','علاج','خطة علاجية'] },
+    { id: 3, label: 'التشخيص', type: 'text', required: false, botQuestion: 'ما هو التشخيص؟', aliases: ['تشخيص','حالة','مشكلة'] },
+    { id: 4, label: 'ملاحظات الجلسة', type: 'textarea', required: true, botQuestion: 'اكتب ملاحظات الجلسة', aliases: ['ملاحظات','جلسة','اشتغلنا','عملنا'] },
+    { id: 5, label: 'الخطة العلاجية', type: 'textarea', required: false, botQuestion: 'ما هي الخطة العلاجية؟', aliases: ['خطة','علاج'] },
     { id: 6, label: 'تقييم التقدم', type: 'select', options: ['ممتاز', 'جيد جداً', 'جيد', 'يحتاج تحسين'], required: false, botQuestion: 'كيف تقيم التقدم؟', aliases: ['تقييم','تقدم','تحسن'] }
   ]
 };
 
-/* ═══════════════════════════════════════════════════════════════
-   🧠 محرك الذكاء الاصطناعي
-   ═══════════════════════════════════════════════════════════════ */
 const AIExtractor = {
   normalizeArabicNumbers: function(text) {
     const map = { '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4', '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9' };
@@ -621,18 +700,36 @@ function escapeHtml(str) {
   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   الحالة العامة
-   ═══════════════════════════════════════════════════════════════ */
 let currentUser = null;
 let currentTemplate = DEFAULT_TEMPLATE;
 let botSession = { state: 'idle', extractedData: {}, currentQuestion: null, specialistName: null };
 let allReports = [];
 let allUsers = [];
+let currentReportType = null;
+let currentGeneratedReport = null;
 
-/* ═══════════════════════════════════════════════════════════════
-   التهيئة
-   ═══════════════════════════════════════════════════════════════ */
+function saveSession(user, mode) {
+  try {
+    const session = { userId: user.id, username: user.username, fullName: user.fullName, role: user.role, mode: mode, specialistName: botSession.specialistName || null, loginTime: new Date().toISOString() };
+    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+  } catch(e) {}
+}
+
+function restoreSession() {
+  try {
+    const sessionStr = localStorage.getItem(SESSION_KEY);
+    if (!sessionStr) return null;
+    const session = JSON.parse(sessionStr);
+    const loginTime = new Date(session.loginTime);
+    const now = new Date();
+    const hoursDiff = (now - loginTime) / (1000 * 60 * 60);
+    if (hoursDiff > 24) { localStorage.removeItem(SESSION_KEY); return null; }
+    return session;
+  } catch(e) { return null; }
+}
+
+function clearSession() { localStorage.removeItem(SESSION_KEY); }
+
 async function initializeData() {
   try {
     const templateDoc = await db.collection(TEMPLATE_COL).doc('current').get();
@@ -643,18 +740,9 @@ async function initializeData() {
   try {
     const usersSnap = await db.collection(USERS_COL).get();
     if (usersSnap.empty) {
-      await db.collection(USERS_COL).doc('admin').set({
-        id: 1, username: 'admin', passwordHash: hashPassword('123456'),
-        fullName: 'المدير العام', phone: '+201234567890', role: 'admin', active: true
-      });
-      await db.collection(USERS_COL).doc('employee1').set({
-        id: 2, username: 'employee1', passwordHash: hashPassword('123456'),
-        fullName: 'د. سارة أحمد', phone: '+20111111111', role: 'employee', active: true
-      });
-      await db.collection(USERS_COL).doc('employee2').set({
-        id: 3, username: 'employee2', passwordHash: hashPassword('123456'),
-        fullName: 'د. محمد علي', phone: '+20122222222', role: 'employee', active: true
-      });
+      await db.collection(USERS_COL).doc('admin').set({ id: 1, username: 'admin', passwordHash: hashPassword('123456'), fullName: 'المدير العام', phone: '+201234567890', role: 'admin', active: true });
+      await db.collection(USERS_COL).doc('employee1').set({ id: 2, username: 'employee1', passwordHash: hashPassword('123456'), fullName: 'د. سارة أحمد', phone: '+20111111111', role: 'employee', active: true });
+      await db.collection(USERS_COL).doc('employee2').set({ id: 3, username: 'employee2', passwordHash: hashPassword('123456'), fullName: 'د. محمد علي', phone: '+20122222222', role: 'employee', active: true });
       allUsers = [
         { id: 1, username: 'admin', passwordHash: hashPassword('123456'), fullName: 'المدير العام', role: 'admin', active: true },
         { id: 2, username: 'employee1', passwordHash: hashPassword('123456'), fullName: 'د. سارة أحمد', role: 'employee', active: true },
@@ -671,9 +759,6 @@ async function initializeData() {
   }, err => { console.error('Reports listener error:', err); });
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   التنقل بين الأوضاع
-   ═══════════════════════════════════════════════════════════════ */
 function switchMode(mode) {
   document.getElementById('modeSelector').classList.add('hidden');
   if (mode === 'bot') {
@@ -694,9 +779,6 @@ function backToMode() {
   document.getElementById('modeSelector').classList.remove('hidden');
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   Toast
-   ═══════════════════════════════════════════════════════════════ */
 function showToast(message, type) {
   type = type || 'info';
   const container = document.getElementById('toastContainer');
@@ -713,14 +795,13 @@ function showToast(message, type) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   🤖 واجهة البوت
+   🤖 واجهة البوت - إصلاح عرض HTML
    ═══════════════════════════════════════════════════════════════ */
 async function initBot() {
   botSession = { state: 'idle', extractedData: {}, currentQuestion: null, specialistName: null };
   document.getElementById('chatContainer').innerHTML = '';
   document.getElementById('quickActionsBar').classList.add('hidden');
   document.getElementById('inputArea').classList.add('hidden');
-  
   await loadSpecialists();
   document.getElementById('specialistSelector').classList.remove('hidden');
 }
@@ -728,7 +809,6 @@ async function initBot() {
 async function loadSpecialists() {
   const select = document.getElementById('specialistSelect');
   select.innerHTML = '<option value="">-- اختر المختص --</option>';
-  
   try {
     const usersSnap = await db.collection(USERS_COL).where('active', '==', true).get();
     const specialists = usersSnap.docs.map(d => d.data());
@@ -739,7 +819,6 @@ async function loadSpecialists() {
       select.appendChild(option);
     });
   } catch(e) {
-    console.error('Error loading specialists:', e);
     const fallback = ['د. سارة أحمد', 'د. محمد علي', 'المدير العام'];
     fallback.forEach(name => {
       const option = document.createElement('option');
@@ -748,78 +827,65 @@ async function loadSpecialists() {
       select.appendChild(option);
     });
   }
-  
-  select.onchange = function() {
-    document.getElementById('confirmSpecialistBtn').disabled = !this.value;
-  };
+  select.onchange = function() { document.getElementById('confirmSpecialistBtn').disabled = !this.value; };
 }
 
 function confirmSpecialist() {
   const name = document.getElementById('specialistSelect').value;
   if (!name) { showToast('❌ يرجى اختيار المختص', 'error'); return; }
-  
   botSession.specialistName = name;
   document.getElementById('specialistSelector').classList.add('hidden');
   document.getElementById('quickActionsBar').classList.remove('hidden');
   document.getElementById('inputArea').classList.remove('hidden');
-  
   setTimeout(() => {
-    addBotBubble('bot', 'أهلاً بك <b>' + escapeHtml(name) + '</b>! 👋\n\nأنا المساعد الذكي لمركز التخاطب.\nاكتب بيانات جلسة العميل بأي صيغة، وسأساعدك في تنظيمها.');
+    addBotBubble('bot', 'أهلاً بك <b>' + escapeHtml(name) + '</b>! 👋\n\nأنا المساعد الذكي لمركز التخاطب.\nاكتب بيانات جلسة العميل بأي صيغة، وسأساعدك في تنظيمها.', true);
   }, 300);
-  
   setTimeout(() => {
-    addBotBubble('bot', '💡 مثال:\n"جلسة أحمد عمره 5 سنين، اشتغلنا النهارده على نطق الراء، وكان فيه تحسن عن الجلسة اللي فاتت"');
+    addBotBubble('bot', '💡 مثال:\n"جلسة أحمد عمره 5 سنين، اشتغلنا النهارده على نطق الراء، وكان فيه تحسن عن الجلسة اللي فاتت"', false);
   }, 800);
 }
 
-function getTime() {
-  return new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
-}
+function getTime() { return new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }); }
 
+// ✅ الإصلاح: دالة addBotBubble تتعامل مع HTML بشكل صحيح
 function addBotBubble(type, content, isHTML) {
   const chat = document.getElementById('chatContainer');
   const bubble = document.createElement('div');
   bubble.className = 'bot-message ' + type;
-  if (isHTML) {
-    bubble.innerHTML = content + '<span class="msg-time">' + getTime() + '</span>';
-  } else {
-    bubble.innerHTML = escapeHtml(content).replace(/\n/g, '<br>') + '<span class="msg-time">' + getTime() + '</span>';
-  }
+  
+  // ✅ الإصلاح: لو isHTML=true نستخدم المحتوى كما هو، لو لا نعمل escape
+  const displayContent = isHTML ? content : escapeHtml(content).replace(/\n/g, '<br>');
+  bubble.innerHTML = displayContent + '<span class="msg-time">' + getTime() + '</span>';
+  
   chat.appendChild(bubble);
   chat.scrollTop = chat.scrollHeight;
 }
 
 function showTyping(show) {
   document.getElementById('typingIndicator').classList.toggle('active', show);
-  if (show) {
-    const chat = document.getElementById('chatContainer');
-    chat.scrollTop = chat.scrollHeight;
-  }
+  if (show) { document.getElementById('chatContainer').scrollTop = document.getElementById('chatContainer').scrollHeight; }
 }
 
 function sendMessage() {
   const input = document.getElementById('messageInput');
   const text = input.value.trim();
   if (!text) return;
-  addBotBubble('user', text);
+  addBotBubble('user', text, false);
   input.value = '';
   showTyping(true);
   setTimeout(() => { processBotInput(text); showTyping(false); }, 800);
 }
 
-function sendQuickAction(text) {
-  document.getElementById('messageInput').value = text;
-  sendMessage();
-}
+function sendQuickAction(text) { document.getElementById('messageInput').value = text; sendMessage(); }
 
 function showBotHelp() {
-  addBotBubble('bot', '❓ <b>كيف أستخدم البوت؟</b>\n\n1️⃣ اكتب بيانات الجلسة بصيغة حرة\n2️⃣ سأسأل عن البيانات الناقصة\n3️⃣ راجع المسودة\n4️⃣ اضغط اعتماد للحفظ\n\n💡 الأوامر:\n• "مساعدة" - هذه الرسالة\n• "إلغاء" - إلغاء التقرير الحالي');
+  addBotBubble('bot', '❓ <b>كيف أستخدم البوت؟</b>\n\n1️⃣ اكتب بيانات الجلسة بصيغة حرة\n2️⃣ سأسأل عن البيانات الناقصة\n3️⃣ راجع المسودة\n4️⃣ اضغط اعتماد للحفظ\n\n💡 الأوامر:\n• "مساعدة" - هذه الرسالة\n• "إلغاء" - إلغاء التقرير الحالي', true);
 }
 
 function processBotInput(text) {
   if (/^(إلغاء|الغاء)$/i.test(text.trim())) {
     botSession = { state: 'idle', extractedData: {}, currentQuestion: null, specialistName: botSession.specialistName };
-    addBotBubble('bot', '✅ تم إلغاء التقرير الحالي.');
+    addBotBubble('bot', '✅ تم إلغاء التقرير الحالي.', false);
     return;
   }
   if (/^مساعدة$/i.test(text.trim())) { showBotHelp(); return; }
@@ -830,7 +896,7 @@ function processBotInput(text) {
     if (fieldLabel === 'عمر العميل') { const age = text.match(/(\d+)/); if (age) value = age[1] + ' سنة'; }
     botSession.extractedData[fieldLabel] = value;
     botSession.currentQuestion = null;
-    addBotBubble('bot', '✅ تم: <b>' + fieldLabel + '</b> = ' + value);
+    addBotBubble('bot', '✅ تم: <b>' + fieldLabel + '</b> = ' + escapeHtml(value), true);
     const missing = AIExtractor.getMissingFields(botSession.extractedData, currentTemplate);
     if (missing.length === 0) setTimeout(() => showDraftPreview(), 500);
     else setTimeout(() => askNextMissing(missing), 500);
@@ -844,13 +910,13 @@ function processBotInput(text) {
   if (extractedCount > 0) {
     botSession.state = 'collecting';
     let msg = '🤖 <b>فهمت منك:</b>\n\n';
-    Object.entries(extracted).forEach(([k,v]) => { if (v) msg += '✓ <b>' + k + ':</b> ' + v + '\n'; });
-    addBotBubble('bot', msg);
+    Object.entries(extracted).forEach(([k,v]) => { if (v) msg += '✓ <b>' + k + ':</b> ' + escapeHtml(v) + '\n'; });
+    addBotBubble('bot', msg, true);
     const missing = AIExtractor.getMissingFields(botSession.extractedData, currentTemplate);
     if (missing.length === 0) setTimeout(() => showDraftPreview(), 800);
     else setTimeout(() => askNextMissing(missing), 800);
   } else {
-    addBotBubble('bot', '🤔 لم أفهم. اكتب مثلاً: "جلسة أحمد عمره 5 سنين"');
+    addBotBubble('bot', '🤔 لم أفهم. اكتب مثلاً: "جلسة أحمد عمره 5 سنين"', false);
   }
 }
 
@@ -859,7 +925,7 @@ function askNextMissing(missing) {
   const field = missing[0];
   botSession.currentQuestion = field.label;
   const question = field.botQuestion || ('ما هو ' + field.label + '؟');
-  addBotBubble('bot', '❓ <b>ينقصني:</b> ' + question);
+  addBotBubble('bot', '❓ <b>ينقصني:</b> ' + question, true);
 }
 
 function showDraftPreview() {
@@ -888,12 +954,11 @@ function showDraftPreview() {
 
 function cancelDraft() {
   botSession = { state: 'idle', extractedData: {}, currentQuestion: null, specialistName: botSession.specialistName };
-  addBotBubble('bot', '❌ تم إلغاء المسودة.');
+  addBotBubble('bot', '❌ تم إلغاء المسودة.', false);
 }
 
 async function confirmAndSend(reportNum) {
-  addBotBubble('bot', '⏳ جاري الحفظ في السحابة...');
-  
+  addBotBubble('bot', '⏳ جاري الحفظ في السحابة...', false);
   const originalContent = botSession.extractedData['ملاحظات الجلسة'] || Object.values(botSession.extractedData).filter(v => v).join(' - ');
   const now = new Date();
   
@@ -914,41 +979,32 @@ async function confirmAndSend(reportNum) {
 
   try {
     const existing = await db.collection(REPORTS_COL).where('reportNumber', '==', reportNum).get();
-    if (!existing.empty) { addBotBubble('bot', '⚠️ التقرير موجود بالفعل!'); return; }
+    if (!existing.empty) { addBotBubble('bot', '⚠️ التقرير موجود بالفعل!', false); return; }
     await db.collection(REPORTS_COL).add(report);
-    
-    addBotBubble('bot', '✅ <b>تم الحفظ بنجاح!</b>\n\n📌 رقم التقرير: <b>' + reportNum + '</b>\n👤 المختص: <b>' + escapeHtml(botSession.specialistName) + '</b>\n📅 التاريخ: <b>' + now.toLocaleDateString('ar-EG') + ' ' + now.toLocaleTimeString('ar-EG', {hour:'2-digit',minute:'2-digit'}) + '</b>\n\n👑 المدير هيشوف التقرير فوراً في لوحة التحكم\n\n🌟 شكراً لك!');
+    addBotBubble('bot', '✅ <b>تم الحفظ بنجاح!</b>\n\n📌 رقم التقرير: <b>' + reportNum + '</b>\n👤 المختص: <b>' + escapeHtml(botSession.specialistName) + '</b>\n📅 التاريخ: <b>' + now.toLocaleDateString('ar-EG') + ' ' + now.toLocaleTimeString('ar-EG', {hour:'2-digit',minute:'2-digit'}) + '</b>\n\n👑 المدير هيشوف التقرير فوراً في لوحة التحكم\n\n🌟 شكراً لك!', true);
     botSession = { state: 'idle', extractedData: {}, currentQuestion: null, specialistName: botSession.specialistName };
   } catch (error) {
     console.error('Save error:', error);
-    addBotBubble('bot', '❌ فشل الحفظ: ' + error.message);
+    addBotBubble('bot', '❌ فشل الحفظ: ' + error.message, false);
   }
 }
 
 document.getElementById('messageInput').addEventListener('keypress', function(e) { if (e.key === 'Enter') sendMessage(); });
 
-/* ═══════════════════════════════════════════════════════════════
-   🔐 تسجيل دخول النظام - مع حفظ الجلسة
-   ═══════════════════════════════════════════════════════════════ */
 async function handleLogin() {
   const username = (document.getElementById('username').value || '').trim();
   const password = document.getElementById('password').value || '';
   const errorEl = document.getElementById('loginError');
   errorEl.classList.add('hidden');
-  
   if (!username || !password) { errorEl.textContent = '❌ يرجى ملء جميع الحقول'; errorEl.classList.remove('hidden'); return; }
   if (!firebaseConnected) { errorEl.textContent = '❌ لا يوجد اتصال بـ Firebase'; errorEl.classList.remove('hidden'); return; }
-  
   try {
     const usersSnap = await db.collection(USERS_COL).get();
     allUsers = usersSnap.docs.map(d => ({ id: d.id, ...d.data() }));
     const user = allUsers.find(u => u.username === username && u.active && u.passwordHash === hashPassword(password));
-    
     if (user) {
       currentUser = user;
-      // ✅ حفظ الجلسة
       saveSession(user, 'system');
-      
       document.getElementById('loginPage').classList.add('hidden');
       document.getElementById('dashboard').classList.remove('hidden');
       document.getElementById('currentUser').textContent = user.fullName;
@@ -967,7 +1023,6 @@ document.getElementById('password').addEventListener('keypress', e => { if (e.ke
 
 function logout() {
   currentUser = null;
-  // ✅ مسح الجلسة عند الخروج
   clearSession();
   document.getElementById('loginPage').classList.remove('hidden');
   document.getElementById('dashboard').classList.add('hidden');
@@ -976,46 +1031,30 @@ function logout() {
   showToast('تم تسجيل الخروج', 'info');
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   ✅ استعادة الجلسة التلقائية عند تحميل الصفحة
-   ═══════════════════════════════════════════════════════════════ */
 async function autoRestoreSession() {
   const session = restoreSession();
   if (!session) return false;
-  
-  console.log('🔄 استعادة جلسة:', session);
-  
-  // إخفاء شاشة اختيار الوضع
   document.getElementById('modeSelector').classList.add('hidden');
-  
   if (session.mode === 'bot') {
-    // استعادة وضع البوت
     document.getElementById('botInterface').classList.remove('hidden');
     document.getElementById('systemInterface').classList.add('hidden');
     await loadSpecialists();
-    
     if (session.specialistName) {
       botSession.specialistName = session.specialistName;
       document.getElementById('specialistSelector').classList.add('hidden');
       document.getElementById('quickActionsBar').classList.remove('hidden');
       document.getElementById('inputArea').classList.remove('hidden');
       showToast('👋 مرحباً بعودتك ' + session.specialistName, 'success');
-    } else {
-      initBot();
-    }
+    } else { initBot(); }
   } else {
-    // استعادة وضع النظام
     document.getElementById('botInterface').classList.add('hidden');
     document.getElementById('systemInterface').classList.remove('hidden');
     document.getElementById('loginPage').classList.add('hidden');
     document.getElementById('dashboard').classList.remove('hidden');
-    
-    // البحث عن المستخدم في Firebase
     try {
       const usersSnap = await db.collection(USERS_COL).get();
       allUsers = usersSnap.docs.map(d => ({ id: d.id, ...d.data() }));
       const user = allUsers.find(u => u.username === session.username && u.active);
-      
       if (user) {
         currentUser = user;
         document.getElementById('currentUser').textContent = user.fullName;
@@ -1026,25 +1065,18 @@ async function autoRestoreSession() {
         switchTab('overview');
         showToast('👋 مرحباً بعودتك ' + user.fullName, 'success');
       } else {
-        // المستخدم مش موجود أو معطل
         clearSession();
         document.getElementById('loginPage').classList.remove('hidden');
         document.getElementById('dashboard').classList.add('hidden');
-        showToast('⚠️ انتهت الجلسة، يرجى تسجيل الدخول', 'warn');
       }
     } catch(e) {
-      console.error('Error restoring session:', e);
       document.getElementById('loginPage').classList.remove('hidden');
       document.getElementById('dashboard').classList.add('hidden');
     }
   }
-  
   return true;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   التبويبات
-   ═══════════════════════════════════════════════════════════════ */
 function switchTab(tabName) {
   document.querySelectorAll('.tab-panel').forEach(el => el.classList.add('hidden'));
   document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -1053,6 +1085,7 @@ function switchTab(tabName) {
   document.querySelectorAll('#tabsBar .tab-btn').forEach(btn => { if (btn.getAttribute('data-tab') === tabName) btn.classList.add('active'); });
   if (tabName === 'overview') loadOverview();
   else if (tabName === 'reports') loadAllReports();
+  else if (tabName === 'generator') initReportGenerator();
   else if (tabName === 'users') loadUsers();
   else if (tabName === 'template') loadTemplate();
 }
@@ -1065,25 +1098,16 @@ function refreshCurrentView() {
   if (!document.getElementById('tab-reports').classList.contains('hidden')) loadAllReports();
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   تحميل البيانات
-   ═══════════════════════════════════════════════════════════════ */
 function loadOverview() {
   const botReports = allReports.filter(r => r.source === 'bot');
   document.getElementById('statCompleted').textContent = allReports.filter(r => r.status === 'approved').length;
   document.getElementById('statDrafts').textContent = allReports.filter(r => r.status === 'draft').length;
   document.getElementById('statBot').textContent = botReports.length;
   document.getElementById('statUsers').textContent = allUsers.filter(u => u.active).length;
-  
   const container = document.getElementById('recentActivities');
   const recent = allReports.slice(-8).reverse();
   if (recent.length === 0) { container.innerHTML = '<p class="text-gray-500 text-center py-4">لا توجد تقارير بعد</p>'; return; }
-  container.innerHTML = recent.map(r => 
-    '<div class="bg-gray-50 p-3 rounded-lg mb-2">' +
-    '<p class="text-sm text-gray-800"><b>👤 ' + escapeHtml(r.employeeName || 'مجهول') + '</b>: تقرير #' + escapeHtml(r.reportNumber || '') + ' - ' + escapeHtml(r.clientName || '') + '</p>' +
-    '<p class="text-xs text-gray-500">📅 ' + (r.date ? new Date(r.date).toLocaleString('ar-EG') : '') + '</p>' +
-    '</div>'
-  ).join('');
+  container.innerHTML = recent.map(r => '<div class="bg-gray-50 p-3 rounded-lg mb-2"><p class="text-sm text-gray-800"><b>👤 ' + escapeHtml(r.employeeName || 'مجهول') + '</b>: تقرير #' + escapeHtml(r.reportNumber || '') + ' - ' + escapeHtml(r.clientName || '') + '</p><p class="text-xs text-gray-500">📅 ' + (r.date ? new Date(r.date).toLocaleString('ar-EG') : '') + '</p></div>').join('');
 }
 
 function loadAllReports() {
@@ -1091,31 +1115,19 @@ function loadAllReports() {
   const search = (document.getElementById('searchReports').value || '').toLowerCase();
   const sourceFilter = document.getElementById('filterSource').value;
   const specialistFilter = document.getElementById('filterSpecialist').value;
-  
   updateSpecialistFilter();
-  
   const filtered = allReports.filter(r => {
     if (sourceFilter && r.source !== sourceFilter) return false;
     if (specialistFilter && r.employeeName !== specialistFilter) return false;
     if (search) { const hay = ((r.clientName || '') + ' ' + (r.employeeName || '') + ' ' + (r.reportNumber || '')).toLowerCase(); if (hay.indexOf(search) === -1) return false; }
     return true;
   });
-  
-  if (filtered.length === 0) { container.innerHTML = '<p class="text-gray-500 text-center py-8">لا توجد تقارير. البوت هيضيف تقارير هنا فوراً.</p>'; return; }
-  
+  if (filtered.length === 0) { container.innerHTML = '<p class="text-gray-500 text-center py-8">لا توجد تقارير.</p>'; return; }
   container.innerHTML = filtered.slice().reverse().map(report => {
     const statusBadge = { draft: 'badge-draft', pending: 'badge-pending', approved: 'badge-approved' };
     const statusName = { draft: 'مسودة', pending: 'بانتظار', approved: 'معتمد' };
     const sourceTag = report.source === 'bot' ? '<span class="badge badge-bot" style="font-size:10px;margin-right:5px">🤖 بوت</span>' : '<span class="badge badge-draft" style="font-size:10px;margin-right:5px">💻 محلي</span>';
-    return '<div class="bg-gray-50 rounded-lg p-4 report-card mb-3">' +
-      '<div class="flex justify-between items-start" style="flex-wrap:wrap;gap:8px">' +
-        '<div style="flex:1;min-width:200px">' +
-          '<h3 class="font-semibold text-gray-800">' + escapeHtml(report.clientName || 'عميل') + ' <span class="text-xs text-gray-500">#' + escapeHtml(report.reportNumber || report.id) + '</span> ' + sourceTag + '</h3>' +
-          '<p class="text-sm text-gray-600">👤 <b>' + escapeHtml(report.employeeName || 'مجهول') + '</b> • 📅 ' + (report.date ? new Date(report.date).toLocaleString('ar-EG') : '') + '</p>' +
-          '<span class="badge ' + (statusBadge[report.status] || '') + '">' + (statusName[report.status] || report.status) + '</span>' +
-        '</div>' +
-        '<button type="button" onclick="viewReport(\'' + report.id + '\')" class="btn btn-primary btn-sm">عرض</button>' +
-      '</div></div>';
+    return '<div class="bg-gray-50 rounded-lg p-4 report-card mb-3"><div class="flex justify-between items-start" style="flex-wrap:wrap;gap:8px"><div style="flex:1;min-width:200px"><h3 class="font-semibold text-gray-800">' + escapeHtml(report.clientName || 'عميل') + ' <span class="text-xs text-gray-500">#' + escapeHtml(report.reportNumber || report.id) + '</span> ' + sourceTag + '</h3><p class="text-sm text-gray-600">👤 <b>' + escapeHtml(report.employeeName || 'مجهول') + '</b> • 📅 ' + (report.date ? new Date(report.date).toLocaleString('ar-EG') : '') + '</p><span class="badge ' + (statusBadge[report.status] || '') + '">' + (statusName[report.status] || report.status) + '</span></div><button type="button" onclick="viewReport(\'' + report.id + '\')" class="btn btn-primary btn-sm">عرض</button></div></div>';
   }).join('');
 }
 
@@ -1142,7 +1154,6 @@ function viewReport(reportId) {
   if (!report) { showToast('❌ التقرير غير موجود', 'error'); return; }
   const statusName = { draft: 'مسودة', pending: 'بانتظار', approved: 'معتمد' };
   const sourceLabel = report.source === 'bot' ? '🤖 من البوت' : '💻 محلي';
-  
   let content = '<div class="mb-4 bg-gray-50 p-4 rounded-lg"><h4 class="font-semibold mb-2">ℹ️ معلومات أساسية</h4>' +
     '<p class="text-sm text-gray-700">رقم التقرير: <b>#' + escapeHtml(report.reportNumber || report.id) + '</b></p>' +
     '<p class="text-sm text-gray-700">العميل: <b>' + escapeHtml(report.clientName || '-') + '</b></p>' +
@@ -1150,24 +1161,13 @@ function viewReport(reportId) {
     '<p class="text-sm text-gray-700">📅 <b>تاريخ الإرسال:</b> ' + (report.date ? new Date(report.date).toLocaleString('ar-EG') : '-') + '</p>' +
     '<p class="text-sm text-gray-700">الحالة: <b>' + (statusName[report.status] || report.status) + '</b></p>' +
     '<p class="text-sm text-gray-700">المصدر: <b>' + sourceLabel + '</b></p></div>';
-
   if (report.formattedData && Object.keys(report.formattedData).length > 0) {
     content += '<div class="mb-4 bg-purple-50 p-4 rounded-lg" style="border-right:4px solid #9333ea"><h4 class="font-semibold mb-3 text-purple-700">✨ التقرير الموحد (بعد الذكاء الاصطناعي)</h4>';
-    Object.keys(report.formattedData).forEach(key => { 
-      content += '<div class="report-detail-row"><span class="report-detail-label">' + escapeHtml(key) + ':</span><span class="report-detail-value">' + escapeHtml(report.formattedData[key] || '-') + '</span></div>'; 
-    });
+    Object.keys(report.formattedData).forEach(key => { content += '<div class="report-detail-row"><span class="report-detail-label">' + escapeHtml(key) + ':</span><span class="report-detail-value">' + escapeHtml(report.formattedData[key] || '-') + '</span></div>'; });
     content += '</div>';
   }
-
-  if (report.originalContent) {
-    content += '<div class="mb-4 bg-gray-50 p-4 rounded-lg"><h4 class="font-semibold mb-2">📝 النص الأصلي (كما كتبه المختص)</h4>' +
-      '<p class="text-sm whitespace-pre">' + escapeHtml(report.originalContent) + '</p></div>';
-  }
-
-  const actions = '<div class="flex gap-2" style="flex-wrap:wrap">' +
-    '<button type="button" onclick="deleteReport(\'' + report.id + '\')" class="btn btn-danger flex-1">🗑️ حذف</button>' +
-    '</div>';
-
+  if (report.originalContent) { content += '<div class="mb-4 bg-gray-50 p-4 rounded-lg"><h4 class="font-semibold mb-2">📝 النص الأصلي</h4><p class="text-sm whitespace-pre">' + escapeHtml(report.originalContent) + '</p></div>'; }
+  const actions = '<div class="flex gap-2" style="flex-wrap:wrap"><button type="button" onclick="deleteReport(\'' + report.id + '\')" class="btn btn-danger flex-1">🗑️ حذف</button></div>';
   document.getElementById('drawerContent').innerHTML = content + actions;
   document.getElementById('reportDrawer').classList.add('active');
 }
@@ -1249,17 +1249,347 @@ async function saveTemplate() {
 function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
 /* ═══════════════════════════════════════════════════════════════
-   بدء التشغيل - مع استعادة الجلسة التلقائية
+   📊 ميزة توليد التقارير المجمعة
    ═══════════════════════════════════════════════════════════════ */
+function initReportGenerator() {
+  currentReportType = null;
+  document.getElementById('reportOptions').classList.add('hidden');
+  document.getElementById('reportPreview').classList.add('hidden');
+  document.querySelectorAll('.report-type-btn').forEach(btn => btn.classList.remove('active'));
+  
+  // تهيئة خيارات الشهر والسنة
+  const monthSelect = document.getElementById('monthSelect');
+  const now = new Date();
+  monthSelect.value = now.getMonth();
+  
+  const yearSelect = document.getElementById('yearSelect');
+  yearSelect.innerHTML = '';
+  const currentYear = now.getFullYear();
+  for (let y = currentYear - 2; y <= currentYear + 1; y++) {
+    const option = document.createElement('option');
+    option.value = y;
+    option.textContent = y;
+    if (y === currentYear) option.selected = true;
+    yearSelect.appendChild(option);
+  }
+  
+  // تهيئة قائمة العملاء
+  updateClientList();
+  updateSpecialistReportList();
+  updateCustomSpecialistList();
+}
+
+function updateClientList() {
+  const select = document.getElementById('clientSelect');
+  const clients = [...new Set(allReports.map(r => r.clientName).filter(n => n && n !== 'غير محدد'))];
+  select.innerHTML = '<option value="">-- اختر العميل --</option>';
+  clients.forEach(name => {
+    const option = document.createElement('option');
+    option.value = name;
+    option.textContent = name;
+    select.appendChild(option);
+  });
+}
+
+function updateSpecialistReportList() {
+  const select = document.getElementById('specialistReportSelect');
+  const specialists = [...new Set(allReports.map(r => r.employeeName).filter(Boolean))];
+  select.innerHTML = '<option value="">-- اختر المختص --</option>';
+  specialists.forEach(name => {
+    const option = document.createElement('option');
+    option.value = name;
+    option.textContent = name;
+    select.appendChild(option);
+  });
+}
+
+function updateCustomSpecialistList() {
+  const select = document.getElementById('customSpecialist');
+  const specialists = [...new Set(allReports.map(r => r.employeeName).filter(Boolean))];
+  select.innerHTML = '<option value="">الكل</option>';
+  specialists.forEach(name => {
+    const option = document.createElement('option');
+    option.value = name;
+    option.textContent = name;
+    select.appendChild(option);
+  });
+}
+
+function selectReportType(type) {
+  currentReportType = type;
+  document.querySelectorAll('.report-type-btn').forEach(btn => btn.classList.remove('active'));
+  document.getElementById('rt-' + type).classList.add('active');
+  document.getElementById('reportOptions').classList.remove('hidden');
+  
+  document.getElementById('clientOptions').classList.add('hidden');
+  document.getElementById('monthlyOptions').classList.add('hidden');
+  document.getElementById('specialistOptions').classList.add('hidden');
+  document.getElementById('customOptions').classList.add('hidden');
+  
+  if (type === 'client') document.getElementById('clientOptions').classList.remove('hidden');
+  else if (type === 'monthly') document.getElementById('monthlyOptions').classList.remove('hidden');
+  else if (type === 'specialist') document.getElementById('specialistOptions').classList.remove('hidden');
+  else if (type === 'custom') document.getElementById('customOptions').classList.remove('hidden');
+  
+  document.getElementById('reportPreview').classList.add('hidden');
+}
+
+function clearReportOptions() {
+  currentReportType = null;
+  document.querySelectorAll('.report-type-btn').forEach(btn => btn.classList.remove('active'));
+  document.getElementById('reportOptions').classList.add('hidden');
+  document.getElementById('reportPreview').classList.add('hidden');
+  document.getElementById('clientSelect').value = '';
+  document.getElementById('specialistReportSelect').value = '';
+  document.getElementById('customSpecialist').value = '';
+  document.getElementById('customStatus').value = '';
+  document.getElementById('dateFrom').value = '';
+  document.getElementById('dateTo').value = '';
+}
+
+function generateReport() {
+  if (!currentReportType) { showToast('❌ اختر نوع التقرير أولاً', 'error'); return; }
+  
+  let filteredReports = [];
+  let reportTitle = '';
+  let reportDescription = '';
+  
+  if (currentReportType === 'client') {
+    const clientName = document.getElementById('clientSelect').value;
+    if (!clientName) { showToast('❌ اختر العميل', 'error'); return; }
+    filteredReports = allReports.filter(r => r.clientName === clientName);
+    reportTitle = 'تقرير شامل للعميل: ' + clientName;
+    reportDescription = 'جميع جلسات وتطورات العميل ' + clientName;
+  } else if (currentReportType === 'monthly') {
+    const month = parseInt(document.getElementById('monthSelect').value);
+    const year = parseInt(document.getElementById('yearSelect').value);
+    const monthNames = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+    filteredReports = allReports.filter(r => {
+      const d = new Date(r.date);
+      return d.getMonth() === month && d.getFullYear() === year;
+    });
+    reportTitle = 'التقرير الشهري - ' + monthNames[month] + ' ' + year;
+    reportDescription = 'ملخص شامل لنشاط المركز خلال شهر ' + monthNames[month] + ' ' + year;
+  } else if (currentReportType === 'specialist') {
+    const specialist = document.getElementById('specialistReportSelect').value;
+    if (!specialist) { showToast('❌ اختر المختص', 'error'); return; }
+    filteredReports = allReports.filter(r => r.employeeName === specialist);
+    reportTitle = 'تقرير أداء المختص: ' + specialist;
+    reportDescription = 'ملخص شامل لأداء المختص ' + specialist;
+  } else if (currentReportType === 'custom') {
+    const dateFrom = document.getElementById('dateFrom').value;
+    const dateTo = document.getElementById('dateTo').value;
+    const specialist = document.getElementById('customSpecialist').value;
+    const status = document.getElementById('customStatus').value;
+    
+    filteredReports = allReports.filter(r => {
+      if (dateFrom && new Date(r.date) < new Date(dateFrom)) return false;
+      if (dateTo && new Date(r.date) > new Date(dateTo + 'T23:59:59')) return false;
+      if (specialist && r.employeeName !== specialist) return false;
+      if (status && r.status !== status) return false;
+      return true;
+    });
+    reportTitle = 'تقرير مخصص';
+    reportDescription = 'تقرير حسب المعايير المحددة';
+  }
+  
+  if (filteredReports.length === 0) {
+    showToast('❌ لا توجد تقارير مطابقة للمعايير', 'error');
+    return;
+  }
+  
+  currentGeneratedReport = { title: reportTitle, description: reportDescription, reports: filteredReports, type: currentReportType };
+  renderGeneratedReport();
+  showToast('✅ تم توليد التقرير بنجاح', 'success');
+}
+
+function renderGeneratedReport() {
+  if (!currentGeneratedReport) return;
+  
+  const { title, description, reports, type } = currentGeneratedReport;
+  const container = document.getElementById('reportContent');
+  
+  let html = '<div class="text-center mb-6"><h2 class="text-2xl font-bold text-gray-800">' + escapeHtml(title) + '</h2><p class="text-gray-600 mt-2">' + escapeHtml(description) + '</p><p class="text-xs text-gray-500 mt-2">تاريخ التوليد: ' + new Date().toLocaleString('ar-EG') + '</p></div>';
+  
+  // إحصائيات عامة
+  const totalReports = reports.length;
+  const uniqueClients = [...new Set(reports.map(r => r.clientName))];
+  const uniqueSpecialists = [...new Set(reports.map(r => r.employeeName))];
+  const approvedCount = reports.filter(r => r.status === 'approved').length;
+  
+  html += '<div class="stat-grid">';
+  html += '<div class="stat-box"><div class="stat-box-value">' + totalReports + '</div><div class="stat-box-label">إجمالي التقارير</div></div>';
+  html += '<div class="stat-box" style="background:linear-gradient(to right,#10b981,#059669)"><div class="stat-box-value">' + uniqueClients.length + '</div><div class="stat-box-label">عدد العملاء</div></div>';
+  html += '<div class="stat-box" style="background:linear-gradient(to right,#f59e0b,#ea580c)"><div class="stat-box-value">' + uniqueSpecialists.length + '</div><div class="stat-box-label">عدد المختصين</div></div>';
+  html += '<div class="stat-box" style="background:linear-gradient(to right,#ef4444,#dc2626)"><div class="stat-box-value">' + approvedCount + '</div><div class="stat-box-label">معتمد</div></div>';
+  html += '</div>';
+  
+  // تقرير العميل الشامل
+  if (type === 'client') {
+    const clientName = reports[0].clientName;
+    const clientReports = reports.sort((a,b) => new Date(a.date) - new Date(b.date));
+    
+    html += '<div class="report-section"><h3 class="report-section-title">📋 ملخص العميل</h3>';
+    html += '<div class="report-detail-row"><span class="report-detail-label">اسم العميل:</span><span class="report-detail-value">' + escapeHtml(clientName) + '</span></div>';
+    html += '<div class="report-detail-row"><span class="report-detail-label">عدد الجلسات:</span><span class="report-detail-value">' + clientReports.length + ' جلسة</span></div>';
+    
+    const ages = clientReports.map(r => r.clientAge).filter(a => a);
+    if (ages.length > 0) {
+      html += '<div class="report-detail-row"><span class="report-detail-label">العمر:</span><span class="report-detail-value">' + escapeHtml(ages[ages.length - 1]) + '</span></div>';
+    }
+    html += '</div>';
+    
+    // تطور التقدم
+    const progressReports = clientReports.filter(r => r.formattedData && r.formattedData['تقييم التقدم']);
+    if (progressReports.length > 0) {
+      html += '<div class="report-section"><h3 class="report-section-title">📈 تطور التقدم</h3>';
+      const progressValues = { 'ممتاز': 4, 'جيد جداً': 3, 'جيد': 2, 'يحتاج تحسين': 1 };
+      const lastProgress = progressReports[progressReports.length - 1].formattedData['تقييم التقدم'];
+      const progressPercent = (progressValues[lastProgress] / 4) * 100;
+      html += '<p class="text-sm mb-2">آخر تقييم: <b>' + escapeHtml(lastProgress) + '</b></p>';
+      html += '<div class="progress-bar"><div class="progress-fill" style="width:' + progressPercent + '%"></div></div>';
+      html += '</div>';
+    }
+    
+    // قائمة الجلسات
+    html += '<div class="report-section"><h3 class="report-section-title">📝 سجل الجلسات</h3>';
+    clientReports.forEach((r, idx) => {
+      html += '<div class="session-item">';
+      html += '<div class="session-date">📅 الجلسة #' + (idx + 1) + ' - ' + new Date(r.date).toLocaleString('ar-EG') + ' | 👤 ' + escapeHtml(r.employeeName || '') + '</div>';
+      if (r.formattedData && r.formattedData['ملاحظات الجلسة']) {
+        html += '<div class="session-notes">' + escapeHtml(r.formattedData['ملاحظات الجلسة']) + '</div>';
+      }
+      if (r.formattedData && r.formattedData['تقييم التقدم']) {
+        html += '<div style="margin-top:6px"><span class="badge badge-approved">' + escapeHtml(r.formattedData['تقييم التقدم']) + '</span></div>';
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+  
+  // التقرير الشهري
+  else if (type === 'monthly') {
+    html += '<div class="report-section"><h3 class="report-section-title">📊 إحصائيات الشهر</h3>';
+    
+    // توزيع التقييمات
+    const progressCounts = {};
+    reports.forEach(r => {
+      if (r.formattedData && r.formattedData['تقييم التقدم']) {
+        const p = r.formattedData['تقييم التقدم'];
+        progressCounts[p] = (progressCounts[p] || 0) + 1;
+      }
+    });
+    
+    if (Object.keys(progressCounts).length > 0) {
+      html += '<h4 class="font-semibold mb-2">توزيع التقييمات:</h4>';
+      const total = Object.values(progressCounts).reduce((a,b) => a+b, 0);
+      Object.entries(progressCounts).forEach(([key, count]) => {
+        const percent = Math.round((count / total) * 100);
+        html += '<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span class="text-sm">' + escapeHtml(key) + '</span><span class="text-sm font-bold">' + count + ' (' + percent + '%)</span></div><div class="progress-bar"><div class="progress-fill" style="width:' + percent + '%"></div></div></div>';
+      });
+    }
+    html += '</div>';
+    
+    // أداء المختصين
+    html += '<div class="report-section"><h3 class="report-section-title">👨‍⚕️ أداء المختصين</h3>';
+    const specialistStats = {};
+    reports.forEach(r => {
+      const name = r.employeeName || 'مجهول';
+      if (!specialistStats[name]) specialistStats[name] = { count: 0, clients: new Set() };
+      specialistStats[name].count++;
+      specialistStats[name].clients.add(r.clientName);
+    });
+    Object.entries(specialistStats).forEach(([name, stats]) => {
+      html += '<div class="session-item"><div style="display:flex;justify-content:space-between;align-items:center"><div><b>' + escapeHtml(name) + '</b><div class="text-xs text-gray-500">' + stats.clients.size + ' عميل</div></div><span class="badge badge-bot">' + stats.count + ' تقرير</span></div></div>';
+    });
+    html += '</div>';
+    
+    // قائمة التقارير
+    html += '<div class="report-section"><h3 class="report-section-title">📄 قائمة التقارير</h3>';
+    reports.slice().reverse().forEach(r => {
+      html += '<div class="session-item"><div style="display:flex;justify-content:space-between;align-items:center"><div><b>' + escapeHtml(r.clientName || '') + '</b><div class="text-xs text-gray-500">' + escapeHtml(r.employeeName || '') + ' • ' + new Date(r.date).toLocaleDateString('ar-EG') + '</div></div><span class="badge badge-approved">' + (r.status === 'approved' ? 'معتمد' : r.status) + '</span></div></div>';
+    });
+    html += '</div>';
+  }
+  
+  // تقرير المختص
+  else if (type === 'specialist') {
+    const specialist = reports[0].employeeName;
+    html += '<div class="report-section"><h3 class="report-section-title">👨‍⚕️ ملخص المختص</h3>';
+    html += '<div class="report-detail-row"><span class="report-detail-label">المختص:</span><span class="report-detail-value">' + escapeHtml(specialist) + '</span></div>';
+    html += '<div class="report-detail-row"><span class="report-detail-label">إجمالي التقارير:</span><span class="report-detail-value">' + reports.length + '</span></div>';
+    const clients = [...new Set(reports.map(r => r.clientName))];
+    html += '<div class="report-detail-row"><span class="report-detail-label">عدد العملاء:</span><span class="report-detail-value">' + clients.length + '</span></div>';
+    html += '</div>';
+    
+    html += '<div class="report-section"><h3 class="report-section-title">📝 تقارير المختص</h3>';
+    reports.slice().reverse().forEach(r => {
+      html += '<div class="session-item"><div><b>' + escapeHtml(r.clientName || '') + '</b> <span class="text-xs text-gray-500">#' + escapeHtml(r.reportNumber || '') + '</span><div class="text-xs text-gray-500">' + new Date(r.date).toLocaleString('ar-EG') + '</div>';
+      if (r.formattedData && r.formattedData['ملاحظات الجلسة']) {
+        html += '<div class="session-notes" style="margin-top:6px">' + escapeHtml(r.formattedData['ملاحظات الجلسة']) + '</div>';
+      }
+      html += '</div></div>';
+    });
+    html += '</div>';
+  }
+  
+  // التقرير المخصص
+  else if (type === 'custom') {
+    html += '<div class="report-section"><h3 class="report-section-title">📄 التقارير المطابقة</h3>';
+    reports.slice().reverse().forEach(r => {
+      html += '<div class="session-item"><div style="display:flex;justify-content:space-between;align-items:center"><div><b>' + escapeHtml(r.clientName || '') + '</b><div class="text-xs text-gray-500">' + escapeHtml(r.employeeName || '') + ' • ' + new Date(r.date).toLocaleString('ar-EG') + '</div></div><span class="badge badge-approved">' + (r.status === 'approved' ? 'معتمد' : r.status) + '</span></div></div>';
+    });
+    html += '</div>';
+  }
+  
+  container.innerHTML = html;
+  document.getElementById('reportPreview').classList.remove('hidden');
+  container.scrollIntoView({ behavior: 'smooth' });
+}
+
+function exportReportPDF() {
+  if (!currentGeneratedReport) return;
+  const content = document.getElementById('reportContent').innerHTML;
+  const printWindow = window.open('', '_blank');
+  printWindow.document.write('<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>' + currentGeneratedReport.title + '</title><style>body{font-family:Arial,sans-serif;padding:20px;direction:rtl}h2{text-align:center;color:#667eea}.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0}.stat-box{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:16px;border-radius:12px;text-align:center}.stat-box-value{font-size:24px;font-weight:700}.stat-box-label{font-size:12px;opacity:.9}.report-section{background:#f9fafb;border-radius:8px;padding:16px;margin-bottom:12px}.report-section-title{font-weight:700;color:#6d28d9;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #e5e7eb}.session-item{background:#fff;border-radius:8px;padding:12px;margin-bottom:8px;border-right:4px solid #667eea}.session-date{font-size:12px;color:#6b7280;margin-bottom:4px}.session-notes{font-size:14px;color:#1f2937}.report-detail-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #e5e7eb}.report-detail-label{font-weight:600;color:#6d28d9}.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:#dcfce7;color:#166534}.progress-bar{height:8px;background:#e5e7eb;border-radius:4px;overflow:hidden;margin-top:8px}.progress-fill{height:100%;background:linear-gradient(to right,#10b981,#059669);border-radius:4px}@media print{body{padding:0}}</style></head><body>' + content + '<script>window.onload=function(){window.print()}<\/script></body></html>');
+  printWindow.document.close();
+  showToast('✅ تم فتح نافذة الطباعة/PDF', 'success');
+}
+
+function exportReportExcel() {
+  if (!currentGeneratedReport) return;
+  const { title, reports } = currentGeneratedReport;
+  let csv = '\uFEFF';
+  csv += 'رقم التقرير,العميل,العمر,المختص,التاريخ,الحالة,التشخيص,ملاحظات الجلسة,تقييم التقدم\n';
+  reports.forEach(r => {
+    const fd = r.formattedData || {};
+    csv += [
+      '"' + (r.reportNumber || '') + '"',
+      '"' + (r.clientName || '').replace(/"/g, '""') + '"',
+      '"' + (r.clientAge || '') + '"',
+      '"' + (r.employeeName || '').replace(/"/g, '""') + '"',
+      '"' + (r.date ? new Date(r.date).toLocaleDateString('ar-EG') : '') + '"',
+      '"' + (r.status || '') + '"',
+      '"' + (fd['التشخيص'] || '').replace(/"/g, '""') + '"',
+      '"' + (fd['ملاحظات الجلسة'] || '').replace(/"/g, '""') + '"',
+      '"' + (fd['تقييم التقدم'] || '') + '"'
+    ].join(',') + '\n';
+  });
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = title.replace(/[^\w\s\u0600-\u06FF]/g, '_') + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('✅ تم تصدير التقرير', 'success');
+}
+
 (async function start() {
   await initializeData();
   updateCloudStatus('pending', 'جاري الاتصال...');
-  
-  // ✅ محاولة استعادة الجلسة تلقائياً
   const restored = await autoRestoreSession();
-  if (!restored) {
-    console.log('📱 لا توجد جلسة محفوظة - عرض شاشة الاختيار');
-  }
+  if (!restored) console.log('📱 لا توجد جلسة محفوظة');
 })();
 </script>
 </body>
