@@ -87,9 +87,7 @@ a{color:inherit;text-decoration:none}
 @media print{.no-print{display:none!important}}
 ::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-track{background:#f3f4f6}::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:4px}::-webkit-scrollbar-thumb:hover{background:#9ca3af}
 
-/* ═══════════════════════════════════════════════════════════════
-   🤖 واجهة البوت العصرية
-   ═══════════════════════════════════════════════════════════════ */
+/* 🤖 واجهة البوت العصرية */
 .bot-container{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);position:relative;overflow:hidden}
 .bot-container::before{content:'';position:absolute;top:-50%;right:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,.1) 0%,transparent 70%);animation:rotate 30s linear infinite;pointer-events:none}
 @keyframes rotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
@@ -139,9 +137,6 @@ a{color:inherit;text-decoration:none}
 @media(max-width:480px){.bot-message{max-width:90%;font-size:14px}.bot-header{padding:12px 16px}.bot-chat{padding:16px 12px}.bot-input-area{padding:10px 12px}}
 @media(min-width:768px){.bot-container{border-radius:24px;margin:20px auto;min-height:calc(100vh - 40px);box-shadow:0 25px 50px rgba(0,0,0,.25);overflow:hidden}}
 
-/* ═══════════════════════════════════════════════════════════════
-   شاشة اختيار المختص
-   ═══════════════════════════════════════════════════════════════ */
 .specialist-selector{background:rgba(255,255,255,.98);backdrop-filter:blur(20px);padding:24px;border-radius:20px;margin:16px;box-shadow:0 10px 30px rgba(0,0,0,.2);position:relative;z-index:10}
 .specialist-selector h3{font-size:18px;font-weight:700;color:#1f2937;margin-bottom:12px;text-align:center}
 .specialist-selector p{font-size:13px;color:#6b7280;text-align:center;margin-bottom:16px}
@@ -151,9 +146,6 @@ a{color:inherit;text-decoration:none}
 .specialist-confirm:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(34,197,94,.5)}
 .specialist-confirm:disabled{opacity:.5;cursor:not-allowed;transform:none}
 
-/* ═══════════════════════════════════════════════════════════════
-   شاشة اختيار الوضع
-   ═══════════════════════════════════════════════════════════════ */
 .mode-selector{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);position:relative;overflow:hidden}
 .mode-selector::before{content:'';position:absolute;top:-50%;right:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,.1) 0%,transparent 70%);animation:rotate 30s linear infinite}
 .mode-card{background:rgba(255,255,255,.98);backdrop-filter:blur(20px);padding:40px;border-radius:24px;box-shadow:0 25px 50px rgba(0,0,0,.25);width:100%;max-width:500px;position:relative;z-index:10}
@@ -174,9 +166,6 @@ a{color:inherit;text-decoration:none}
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     شاشة اختيار الوضع
-     ═══════════════════════════════════════════════════════════════ -->
 <div id="modeSelector" class="mode-selector">
   <div class="mode-card">
     <div class="text-center mb-6">
@@ -185,17 +174,14 @@ a{color:inherit;text-decoration:none}
       <p class="text-gray-600 mt-2">نظام إدارة التقارير الذكي</p>
       <div id="cloudStatus" class="mt-3"></div>
     </div>
-    
     <button type="button" onclick="switchMode('bot')" class="mode-btn bot">
       <span class="mode-icon">🤖</span>
       <span>دخول كموظف (البوت الذكي)</span>
     </button>
-    
     <button type="button" onclick="switchMode('system')" class="mode-btn system">
       <span class="mode-icon">👑</span>
       <span>دخول كمدير (لوحة التحكم)</span>
     </button>
-    
     <div class="banner banner-info mt-6">
       <p class="font-bold mb-2">☁️ نظام سحابي حقيقي</p>
       <ul class="text-sm text-blue-700 list-disc pr-5" style="line-height:1.8">
@@ -208,9 +194,6 @@ a{color:inherit;text-decoration:none}
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     واجهة البوت العصرية
-     ═══════════════════════════════════════════════════════════════ -->
 <div id="botInterface" class="hidden">
   <div class="bot-container">
     <div class="bot-header">
@@ -228,33 +211,23 @@ a{color:inherit;text-decoration:none}
         </button>
       </div>
     </div>
-
-    <!-- ✅ اختيار المختص -->
     <div id="specialistSelector" class="specialist-selector">
       <h3>👤 اختر اسمك (المختص)</h3>
       <p>لازم تختار اسمك قبل ما تبدأ التقرير</p>
       <select id="specialistSelect" class="specialist-select">
         <option value="">-- اختر المختص --</option>
       </select>
-      <button type="button" id="confirmSpecialistBtn" class="specialist-confirm" disabled onclick="confirmSpecialist()">
-        ✅ تأكيد والبدء
-      </button>
+      <button type="button" id="confirmSpecialistBtn" class="specialist-confirm" disabled onclick="confirmSpecialist()">✅ تأكيد والبدء</button>
     </div>
-
     <div class="bot-quick-actions hidden" id="quickActionsBar">
       <button type="button" onclick="sendQuickAction('مساعدة')" class="quick-action">❓ مساعدة</button>
       <button type="button" onclick="sendQuickAction('إلغاء')" class="quick-action">❌ إلغاء</button>
       <button type="button" onclick="sendQuickAction('جلسة أحمد عمره 5 سنين اشتغلنا على نطق الراء')" class="quick-action">📝 مثال</button>
     </div>
-
     <div id="chatContainer" class="bot-chat"></div>
-    
     <div id="typingIndicator" class="typing-indicator">
-      <div class="typing-dot"></div>
-      <div class="typing-dot"></div>
-      <div class="typing-dot"></div>
+      <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
     </div>
-
     <div class="bot-input-area hidden" id="inputArea">
       <input type="text" id="messageInput" class="bot-input" placeholder="اكتب بيانات الجلسة..." autocomplete="off">
       <button onclick="sendMessage()" class="bot-send-btn" title="إرسال">
@@ -264,9 +237,6 @@ a{color:inherit;text-decoration:none}
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     واجهة النظام (لوحة التحكم)
-     ═══════════════════════════════════════════════════════════════ -->
 <div id="systemInterface" class="hidden">
   <div id="loginPage" class="login-container">
     <div class="login-card">
@@ -312,7 +282,6 @@ a{color:inherit;text-decoration:none}
         </div>
       </div>
     </nav>
-
     <div class="container py-8">
       <div class="flex flex-wrap gap-2 mb-6 bg-white p-2 rounded-lg shadow" id="tabsBar">
         <button type="button" data-tab="overview" class="tab-btn active">📊 نظرة عامة</button>
@@ -320,7 +289,6 @@ a{color:inherit;text-decoration:none}
         <button type="button" data-tab="users" class="tab-btn">👥 الحسابات</button>
         <button type="button" data-tab="template" class="tab-btn">📋 النموذج</button>
       </div>
-
       <div id="tab-overview" class="tab-panel">
         <div class="grid grid-4 gap-4 mb-6">
           <div class="stat-card gradient-purple"><p class="stat-label">التقارير المكتملة</p><p class="stat-value" id="statCompleted">0</p></div>
@@ -333,16 +301,13 @@ a{color:inherit;text-decoration:none}
           <div id="recentActivities"></div>
         </div>
       </div>
-
       <div id="tab-reports" class="tab-panel hidden">
         <div class="card p-6">
           <div class="flex justify-between items-center mb-6" style="flex-wrap:wrap;gap:12px">
             <h2 class="text-2xl font-bold text-gray-800">جميع التقارير</h2>
             <div class="flex gap-2" style="flex-wrap:wrap">
               <input type="text" id="searchReports" placeholder="🔍 بحث..." class="input" style="width:180px">
-              <select id="filterSpecialist" class="select" style="width:auto">
-                <option value="">كل المختصين</option>
-              </select>
+              <select id="filterSpecialist" class="select" style="width:auto"><option value="">كل المختصين</option></select>
               <select id="filterSource" class="select" style="width:auto">
                 <option value="">كل المصادر</option>
                 <option value="bot">🤖 من البوت</option>
@@ -353,7 +318,6 @@ a{color:inherit;text-decoration:none}
           <div id="allReportsList"></div>
         </div>
       </div>
-
       <div id="tab-users" class="tab-panel hidden">
         <div class="card p-6">
           <div class="flex justify-between items-center mb-6" style="flex-wrap:wrap;gap:12px">
@@ -363,7 +327,6 @@ a{color:inherit;text-decoration:none}
           <div id="usersList"></div>
         </div>
       </div>
-
       <div id="tab-template" class="tab-panel hidden">
         <div class="card p-6">
           <h2 class="text-2xl font-bold text-gray-800 mb-4">نموذج التقرير الموحد</h2>
@@ -379,7 +342,6 @@ a{color:inherit;text-decoration:none}
   </div>
 </div>
 
-<!-- Modal عرض التقرير -->
 <div id="reportDrawer" class="modal">
   <div class="modal-content" style="max-width:700px">
     <div class="flex justify-between items-center mb-6">
@@ -390,7 +352,6 @@ a{color:inherit;text-decoration:none}
   </div>
 </div>
 
-<!-- Modal إضافة مستخدم -->
 <div id="addUserModal" class="modal">
   <div class="modal-content">
     <h3 class="text-2xl font-bold text-gray-800 mb-6">إضافة حساب جديد</h3>
@@ -414,13 +375,12 @@ a{color:inherit;text-decoration:none}
 
 <div id="toastContainer" class="toast-container"></div>
 
-<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
 /* ═══════════════════════════════════════════════════════════════
-   ⚙️ إعدادات Firebase الحقيقية
+   ⚙️ إعدادات Firebase
    ═══════════════════════════════════════════════════════════════ */
 const firebaseConfig = {
   apiKey: "AIzaSyCVSkBviGIDznGBSSiRAcXn6iSN8nOQkSw",
@@ -437,6 +397,54 @@ const db = firebase.firestore();
 const USERS_COL = 'users';
 const REPORTS_COL = 'reports';
 const TEMPLATE_COL = 'template';
+const SESSION_KEY = 'tkhb_session'; // ✅ مفتاح حفظ الجلسة
+
+/* ═══════════════════════════════════════════════════════════════
+   ✅ نظام حفظ واستعادة الجلسة (حل مشكلة Refresh)
+   ═══════════════════════════════════════════════════════════════ */
+function saveSession(user, mode) {
+  try {
+    const session = {
+      userId: user.id,
+      username: user.username,
+      fullName: user.fullName,
+      role: user.role,
+      mode: mode, // 'bot' أو 'system'
+      specialistName: botSession.specialistName || null,
+      loginTime: new Date().toISOString()
+    };
+    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    console.log('✅ تم حفظ الجلسة:', session);
+  } catch(e) {
+    console.error('خطأ في حفظ الجلسة:', e);
+  }
+}
+
+function restoreSession() {
+  try {
+    const sessionStr = localStorage.getItem(SESSION_KEY);
+    if (!sessionStr) return null;
+    const session = JSON.parse(sessionStr);
+    
+    // التحقق من صلاحية الجلسة (24 ساعة)
+    const loginTime = new Date(session.loginTime);
+    const now = new Date();
+    const hoursDiff = (now - loginTime) / (1000 * 60 * 60);
+    if (hoursDiff > 24) {
+      localStorage.removeItem(SESSION_KEY);
+      return null;
+    }
+    
+    return session;
+  } catch(e) {
+    console.error('خطأ في استعادة الجلسة:', e);
+    return null;
+  }
+}
+
+function clearSession() {
+  localStorage.removeItem(SESSION_KEY);
+}
 
 /* ═══════════════════════════════════════════════════════════════
    التحقق من الاتصال
@@ -486,7 +494,7 @@ const DEFAULT_TEMPLATE = {
 };
 
 /* ═══════════════════════════════════════════════════════════════
-   🧠 محرك الذكاء الاصطناعي المتقدم
+   🧠 محرك الذكاء الاصطناعي
    ═══════════════════════════════════════════════════════════════ */
 const AIExtractor = {
   normalizeArabicNumbers: function(text) {
@@ -705,7 +713,7 @@ function showToast(message, type) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   🤖 واجهة البوت - مع اختيار المختص
+   🤖 واجهة البوت
    ═══════════════════════════════════════════════════════════════ */
 async function initBot() {
   botSession = { state: 'idle', extractedData: {}, currentQuestion: null, specialistName: null };
@@ -713,10 +721,7 @@ async function initBot() {
   document.getElementById('quickActionsBar').classList.add('hidden');
   document.getElementById('inputArea').classList.add('hidden');
   
-  // تحميل قائمة المختصين
   await loadSpecialists();
-  
-  // إظهار شاشة اختيار المختص
   document.getElementById('specialistSelector').classList.remove('hidden');
 }
 
@@ -724,11 +729,9 @@ async function loadSpecialists() {
   const select = document.getElementById('specialistSelect');
   select.innerHTML = '<option value="">-- اختر المختص --</option>';
   
-  // تحميل من Firebase
   try {
     const usersSnap = await db.collection(USERS_COL).where('active', '==', true).get();
     const specialists = usersSnap.docs.map(d => d.data());
-    
     specialists.forEach(user => {
       const option = document.createElement('option');
       option.value = user.fullName;
@@ -737,7 +740,6 @@ async function loadSpecialists() {
     });
   } catch(e) {
     console.error('Error loading specialists:', e);
-    // Fallback
     const fallback = ['د. سارة أحمد', 'د. محمد علي', 'المدير العام'];
     fallback.forEach(name => {
       const option = document.createElement('option');
@@ -754,17 +756,13 @@ async function loadSpecialists() {
 
 function confirmSpecialist() {
   const name = document.getElementById('specialistSelect').value;
-  if (!name) {
-    showToast('❌ يرجى اختيار المختص', 'error');
-    return;
-  }
+  if (!name) { showToast('❌ يرجى اختيار المختص', 'error'); return; }
   
   botSession.specialistName = name;
   document.getElementById('specialistSelector').classList.add('hidden');
   document.getElementById('quickActionsBar').classList.remove('hidden');
   document.getElementById('inputArea').classList.remove('hidden');
   
-  // رسالة ترحيب
   setTimeout(() => {
     addBotBubble('bot', 'أهلاً بك <b>' + escapeHtml(name) + '</b>! 👋\n\nأنا المساعد الذكي لمركز التخاطب.\nاكتب بيانات جلسة العميل بأي صيغة، وسأساعدك في تنظيمها.');
   }, 300);
@@ -899,16 +897,15 @@ async function confirmAndSend(reportNum) {
   const originalContent = botSession.extractedData['ملاحظات الجلسة'] || Object.values(botSession.extractedData).filter(v => v).join(' - ');
   const now = new Date();
   
-  // ✅ التقرير مع اسم المختص الحقيقي والتاريخ الأوتوماتيك
   const report = {
     reportNumber: reportNum,
     clientName: botSession.extractedData['اسم العميل'] || 'غير محدد',
     clientAge: botSession.extractedData['عمر العميل'] || '',
     formattedData: botSession.extractedData,
-    employeeName: botSession.specialistName || 'مختص', // ✅ اسم المختص الحقيقي
+    employeeName: botSession.specialistName || 'مختص',
     employeeUsername: currentUser ? currentUser.username : 'bot',
-    date: now.toISOString(), // ✅ التاريخ الأوتوماتيك
-    sentAt: now.toISOString(), // ✅ وقت الإرسال
+    date: now.toISOString(),
+    sentAt: now.toISOString(),
     status: 'approved',
     source: 'bot',
     originalContent: originalContent,
@@ -931,21 +928,27 @@ async function confirmAndSend(reportNum) {
 document.getElementById('messageInput').addEventListener('keypress', function(e) { if (e.key === 'Enter') sendMessage(); });
 
 /* ═══════════════════════════════════════════════════════════════
-   🔐 تسجيل دخول النظام
+   🔐 تسجيل دخول النظام - مع حفظ الجلسة
    ═══════════════════════════════════════════════════════════════ */
 async function handleLogin() {
   const username = (document.getElementById('username').value || '').trim();
   const password = document.getElementById('password').value || '';
   const errorEl = document.getElementById('loginError');
   errorEl.classList.add('hidden');
+  
   if (!username || !password) { errorEl.textContent = '❌ يرجى ملء جميع الحقول'; errorEl.classList.remove('hidden'); return; }
   if (!firebaseConnected) { errorEl.textContent = '❌ لا يوجد اتصال بـ Firebase'; errorEl.classList.remove('hidden'); return; }
+  
   try {
     const usersSnap = await db.collection(USERS_COL).get();
     allUsers = usersSnap.docs.map(d => ({ id: d.id, ...d.data() }));
     const user = allUsers.find(u => u.username === username && u.active && u.passwordHash === hashPassword(password));
+    
     if (user) {
       currentUser = user;
+      // ✅ حفظ الجلسة
+      saveSession(user, 'system');
+      
       document.getElementById('loginPage').classList.add('hidden');
       document.getElementById('dashboard').classList.remove('hidden');
       document.getElementById('currentUser').textContent = user.fullName;
@@ -964,11 +967,79 @@ document.getElementById('password').addEventListener('keypress', e => { if (e.ke
 
 function logout() {
   currentUser = null;
+  // ✅ مسح الجلسة عند الخروج
+  clearSession();
   document.getElementById('loginPage').classList.remove('hidden');
   document.getElementById('dashboard').classList.add('hidden');
   document.getElementById('username').value = '';
   document.getElementById('password').value = '';
   showToast('تم تسجيل الخروج', 'info');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ✅ استعادة الجلسة التلقائية عند تحميل الصفحة
+   ═══════════════════════════════════════════════════════════════ */
+async function autoRestoreSession() {
+  const session = restoreSession();
+  if (!session) return false;
+  
+  console.log('🔄 استعادة جلسة:', session);
+  
+  // إخفاء شاشة اختيار الوضع
+  document.getElementById('modeSelector').classList.add('hidden');
+  
+  if (session.mode === 'bot') {
+    // استعادة وضع البوت
+    document.getElementById('botInterface').classList.remove('hidden');
+    document.getElementById('systemInterface').classList.add('hidden');
+    await loadSpecialists();
+    
+    if (session.specialistName) {
+      botSession.specialistName = session.specialistName;
+      document.getElementById('specialistSelector').classList.add('hidden');
+      document.getElementById('quickActionsBar').classList.remove('hidden');
+      document.getElementById('inputArea').classList.remove('hidden');
+      showToast('👋 مرحباً بعودتك ' + session.specialistName, 'success');
+    } else {
+      initBot();
+    }
+  } else {
+    // استعادة وضع النظام
+    document.getElementById('botInterface').classList.add('hidden');
+    document.getElementById('systemInterface').classList.remove('hidden');
+    document.getElementById('loginPage').classList.add('hidden');
+    document.getElementById('dashboard').classList.remove('hidden');
+    
+    // البحث عن المستخدم في Firebase
+    try {
+      const usersSnap = await db.collection(USERS_COL).get();
+      allUsers = usersSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      const user = allUsers.find(u => u.username === session.username && u.active);
+      
+      if (user) {
+        currentUser = user;
+        document.getElementById('currentUser').textContent = user.fullName;
+        const roleNames = { admin: '👑 مدير', employee: '👤 موظف', reviewer: '👁️ مراجع' };
+        const roleClasses = { admin: 'badge-admin', employee: 'badge-employee', reviewer: 'badge-reviewer' };
+        document.getElementById('userRole').textContent = roleNames[user.role] || user.role;
+        document.getElementById('userRole').className = 'badge ' + (roleClasses[user.role] || '');
+        switchTab('overview');
+        showToast('👋 مرحباً بعودتك ' + user.fullName, 'success');
+      } else {
+        // المستخدم مش موجود أو معطل
+        clearSession();
+        document.getElementById('loginPage').classList.remove('hidden');
+        document.getElementById('dashboard').classList.add('hidden');
+        showToast('⚠️ انتهت الجلسة، يرجى تسجيل الدخول', 'warn');
+      }
+    } catch(e) {
+      console.error('Error restoring session:', e);
+      document.getElementById('loginPage').classList.remove('hidden');
+      document.getElementById('dashboard').classList.add('hidden');
+    }
+  }
+  
+  return true;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1021,7 +1092,6 @@ function loadAllReports() {
   const sourceFilter = document.getElementById('filterSource').value;
   const specialistFilter = document.getElementById('filterSpecialist').value;
   
-  // تحديث قائمة المختصين في الفلتر
   updateSpecialistFilter();
   
   const filtered = allReports.filter(r => {
@@ -1179,10 +1249,18 @@ async function saveTemplate() {
 function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
 /* ═══════════════════════════════════════════════════════════════
-   بدء التشغيل
+   بدء التشغيل - مع استعادة الجلسة التلقائية
    ═══════════════════════════════════════════════════════════════ */
-initializeData();
-updateCloudStatus('pending', 'جاري الاتصال...');
+(async function start() {
+  await initializeData();
+  updateCloudStatus('pending', 'جاري الاتصال...');
+  
+  // ✅ محاولة استعادة الجلسة تلقائياً
+  const restored = await autoRestoreSession();
+  if (!restored) {
+    console.log('📱 لا توجد جلسة محفوظة - عرض شاشة الاختيار');
+  }
+})();
 </script>
 </body>
 </html>
